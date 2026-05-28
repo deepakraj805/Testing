@@ -3,32 +3,539 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Projects</title>
+  <title>MyProjects — Business Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f5f3;
+      --bg-tertiary: #f0eeeb;
+      --text-primary: #0d0d0d;
+      --text-secondary: #6b6b68;
+      --border: rgba(0,0,0,0.1);
+      --border-md: rgba(0,0,0,0.15);
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 80px;
-      background: #f5f5f5;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
     }
-    .btn {
-      display: inline-block;
-      padding: 12px 24px;
-      margin: 10px;
-      background: #007bff;
-      color: white;
-      text-decoration: none;
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      height: 100vh;
+      position: fixed;
+      top: 0; left: 0;
+      background: #0d1b2a;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      z-index: 100;
+    }
+    .sidebar-logo {
+      padding: 24px 20px 20px;
+      border-bottom: 0.5px solid rgba(255,255,255,0.08);
+    }
+    .sidebar-logo-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: #e8d9b5;
+      letter-spacing: 0.02em;
+    }
+    .sidebar-logo-sub {
+      font-size: 10px;
+      color: rgba(232,217,181,0.45);
+      margin-top: 3px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .sidebar-section {
+      padding: 18px 16px 4px;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.22);
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      margin: 1px 8px;
       border-radius: 8px;
-      font-size: 18px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.52);
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
     }
-    .btn:hover {
-      background: #0056b3;
+    .nav-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.85); }
+    .nav-item.active { background: rgba(232,217,181,0.13); color: #e8d9b5; font-weight: 500; }
+    .nav-item .badge {
+      margin-left: auto;
+      background: #c8822a;
+      color: #fff;
+      font-size: 10px;
+      padding: 1px 7px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+    .nav-item i { font-size: 16px; }
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 16px 12px;
+      border-top: 0.5px solid rgba(255,255,255,0.08);
+    }
+    .user-row { display: flex; align-items: center; gap: 10px; }
+    .user-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #c8822a, #e8d9b5);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 600; font-size: 13px; color: #0d1b2a;
+      flex-shrink: 0;
+    }
+    .user-name { font-size: 12px; color: rgba(255,255,255,0.72); font-weight: 500; }
+    .user-role { font-size: 10px; color: rgba(255,255,255,0.32); }
+
+    /* ── MAIN CONTENT ── */
+    .main {
+      margin-left: 220px;
+      flex: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 28px;
+      background: var(--bg-primary);
+      border-bottom: 0.5px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .topbar-title { font-size: 15px; font-weight: 600; flex: 1; }
+    .topbar-search {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--bg-secondary);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 7px 14px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      cursor: text;
+    }
+    .topbar-btn {
+      background: #0d1b2a;
+      color: #e8d9b5;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
+      font-family: 'DM Sans', sans-serif;
+      transition: opacity 0.15s;
+    }
+    .topbar-btn:hover { opacity: 0.85; }
+
+    /* ── HERO BANNER ── */
+    .content-wrap { padding: 20px 28px; flex: 1; }
+
+    .hero {
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      position: relative;
+      height: 160px;
+      background: #0d1b2a;
+      margin-bottom: 18px;
+    }
+    .hero-pattern {
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(circle at 18% 50%, rgba(200,130,42,0.22) 0%, transparent 52%),
+        radial-gradient(circle at 80% 28%, rgba(20,80,160,0.28) 0%, transparent 52%);
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+    .hero-content {
+      position: relative; z-index: 2;
+      padding: 26px 32px;
+      height: 100%;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .hero-quote {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: #e8d9b5;
+      line-height: 1.5;
+      max-width: 560px;
+    }
+    .hero-meta { display: flex; align-items: center; gap: 14px; }
+    .hero-date { font-size: 11px; color: rgba(232,217,181,0.48); letter-spacing: 0.07em; }
+    .hero-pill {
+      background: rgba(200,130,42,0.2);
+      border: 0.5px solid rgba(200,130,42,0.4);
+      color: #e8d9b5;
+      font-size: 10px;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    /* ── STATS ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .stat-card {
+      background: var(--bg-primary);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px 18px;
+    }
+    .stat-icon {
+      float: right;
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px;
+    }
+    .icon-gold { background: rgba(200,130,42,0.12); color: #c8822a; }
+    .icon-blue { background: rgba(55,138,221,0.1); color: #185FA5; }
+    .icon-green { background: rgba(99,153,34,0.1); color: #3B6D11; }
+    .icon-red { background: rgba(226,75,74,0.1); color: #A32D2D; }
+    .stat-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 8px; }
+    .stat-value { font-size: 24px; font-weight: 600; }
+    .stat-delta { font-size: 11px; margin-top: 5px; }
+    .delta-up { color: #3B6D11; }
+    .delta-down { color: #A32D2D; }
+
+    /* ── GRID ── */
+    .lower-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .panel {
+      background: var(--bg-primary);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+    }
+    .panel-header {
+      padding: 15px 18px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 0.5px solid var(--border);
+    }
+    .panel-title { font-size: 13px; font-weight: 600; flex: 1; }
+    .panel-badge {
+      font-size: 10px; padding: 2px 9px; border-radius: 10px;
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      border: 0.5px solid var(--border);
+    }
+    .view-all {
+      font-size: 11px; color: #185FA5; cursor: pointer;
+      background: none; border: none; font-family: 'DM Sans', sans-serif;
+      display: flex; align-items: center; gap: 3px;
+    }
+    .panel-body { padding: 4px 18px 12px; }
+
+    /* ── TABLE ROWS ── */
+    .table-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 0.5px solid var(--border);
+      font-size: 12px;
+    }
+    .table-row:last-child { border-bottom: none; }
+    .row-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .dot-green { background: #639922; }
+    .dot-amber { background: #BA7517; }
+    .dot-blue { background: #378ADD; }
+    .dot-red { background: #E24B4A; }
+    .row-info { flex: 1; }
+    .row-name { font-weight: 500; color: var(--text-primary); }
+    .row-sub { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+    .row-amt { font-size: 12px; font-weight: 600; min-width: 72px; text-align: right; }
+    .row-status {
+      font-size: 10px; padding: 3px 9px; border-radius: 10px; font-weight: 500;
+    }
+    .st-open { background: rgba(55,138,221,0.1); color: #185FA5; }
+    .st-done { background: rgba(99,153,34,0.1); color: #3B6D11; }
+    .st-pend { background: rgba(186,117,23,0.1); color: #854F0B; }
+    .st-urgent { background: rgba(226,75,74,0.1); color: #A32D2D; }
+
+    /* ── QUICK ACTIONS ── */
+    .actions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 14px 18px;
+    }
+    .action-btn {
+      background: var(--bg-secondary);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 12px;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.15s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .action-btn:hover { background: var(--bg-tertiary); }
+    .action-btn i { font-size: 20px; color: #c8822a; display: block; margin-bottom: 7px; }
+    .action-label { font-size: 11px; font-weight: 500; color: var(--text-primary); }
+    .action-sub { font-size: 10px; color: var(--text-secondary); margin-top: 2px; }
+
+    /* ── ACTIVITY ── */
+    .activity-item {
+      display: flex; gap: 10px; padding: 10px 0;
+      border-bottom: 0.5px solid var(--border);
+      align-items: flex-start;
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .act-icon {
+      width: 30px; height: 30px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; flex-shrink: 0; margin-top: 1px;
+    }
+    .act-blue { background: rgba(55,138,221,0.1); color: #185FA5; }
+    .act-green { background: rgba(99,153,34,0.1); color: #3B6D11; }
+    .act-amber { background: rgba(186,117,23,0.1); color: #854F0B; }
+    .act-text { font-size: 12px; color: var(--text-primary); line-height: 1.55; }
+    .act-time { font-size: 10px; color: var(--text-secondary); margin-top: 2px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .sidebar { width: 60px; }
+      .sidebar-logo-name, .sidebar-logo-sub, .nav-item span:not(.badge), .user-name, .user-role, .sidebar-section { display: none; }
+      .nav-item { justify-content: center; padding: 12px; }
+      .main { margin-left: 60px; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .lower-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .hero-quote { font-size: 14px; }
+      .content-wrap { padding: 14px 14px; }
     }
   </style>
 </head>
 <body>
-  <h1>My Projects</h1>
-  <a class="btn" href="Sales/">Sales</a>
-  <a class="btn" href="Work%20Order/">Work Order</a>
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar" aria-label="Main navigation">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-name">MyProjects</div>
+      <div class="sidebar-logo-sub">Business Suite</div>
+    </div>
+
+    <div class="sidebar-section">Main</div>
+    <a href="#" class="nav-item active"><i class="ti ti-layout-dashboard" aria-hidden="true"></i><span>Dashboard</span></a>
+    <a href="#" class="nav-item"><i class="ti ti-chart-bar" aria-hidden="true"></i><span>Sales</span><span class="badge">3</span></a>
+    <a href="#" class="nav-item"><i class="ti ti-clipboard-list" aria-hidden="true"></i><span>Work Orders</span><span class="badge">7</span></a>
+    <a href="#" class="nav-item"><i class="ti ti-users" aria-hidden="true"></i><span>Clients</span></a>
+
+    <div class="sidebar-section">Manage</div>
+    <a href="#" class="nav-item"><i class="ti ti-file-invoice" aria-hidden="true"></i><span>Invoices</span></a>
+    <a href="#" class="nav-item"><i class="ti ti-calendar" aria-hidden="true"></i><span>Schedule</span></a>
+    <a href="#" class="nav-item"><i class="ti ti-packages" aria-hidden="true"></i><span>Inventory</span></a>
+    <a href="#" class="nav-item"><i class="ti ti-report-analytics" aria-hidden="true"></i><span>Reports</span></a>
+
+    <div class="sidebar-section">System</div>
+    <a href="#" class="nav-item"><i class="ti ti-settings" aria-hidden="true"></i><span>Settings</span></a>
+    <a href="#" class="nav-item"><i class="ti ti-bell" aria-hidden="true"></i><span>Notifications</span></a>
+
+    <div class="sidebar-bottom">
+      <div class="user-row">
+        <div class="user-avatar" aria-hidden="true">MP</div>
+        <div>
+          <div class="user-name">My Projects</div>
+          <div class="user-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <span class="topbar-title">Dashboard Overview</span>
+      <div class="topbar-search" role="search">
+        <i class="ti ti-search" style="font-size:14px" aria-hidden="true"></i>
+        <span>Search...</span>
+      </div>
+      <button class="topbar-btn"><i class="ti ti-plus" aria-hidden="true"></i>New Project</button>
+    </header>
+
+    <div class="content-wrap">
+
+      <!-- HERO -->
+      <section class="hero" aria-label="Daily quote">
+        <div class="hero-pattern" aria-hidden="true"></div>
+        <div class="hero-grid" aria-hidden="true"></div>
+        <div class="hero-content">
+          <p class="hero-quote">"Every project begins with a single step — and every great business grows one order at a time."</p>
+          <div class="hero-meta">
+            <span class="hero-date" id="hero-date">THURSDAY, 29 MAY 2026</span>
+            <span class="hero-pill">MyProjects Daily</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATS -->
+      <section class="stats-row" aria-label="Key metrics">
+        <div class="stat-card">
+          <div class="stat-icon icon-gold"><i class="ti ti-currency-rupee" aria-hidden="true"></i></div>
+          <div class="stat-label">Total Revenue</div>
+          <div class="stat-value">₹4.8L</div>
+          <div class="stat-delta delta-up"><i class="ti ti-trending-up" style="font-size:12px"></i> +12% this month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon icon-blue"><i class="ti ti-chart-bar" aria-hidden="true"></i></div>
+          <div class="stat-label">Active Sales</div>
+          <div class="stat-value">24</div>
+          <div class="stat-delta delta-up"><i class="ti ti-trending-up" style="font-size:12px"></i> 8 closing this week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon icon-green"><i class="ti ti-clipboard-check" aria-hidden="true"></i></div>
+          <div class="stat-label">Work Orders</div>
+          <div class="stat-value">17</div>
+          <div class="stat-delta delta-up"><i class="ti ti-check" style="font-size:12px"></i> 10 completed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon icon-red"><i class="ti ti-clock-exclamation" aria-hidden="true"></i></div>
+          <div class="stat-label">Overdue Tasks</div>
+          <div class="stat-value">3</div>
+          <div class="stat-delta delta-down"><i class="ti ti-alert-triangle" style="font-size:12px"></i> needs attention</div>
+        </div>
+      </section>
+
+      <!-- LOWER PANELS -->
+      <div class="lower-grid">
+
+        <!-- Sales Pipeline -->
+        <div class="panel">
+          <div class="panel-header">
+            <i class="ti ti-chart-bar" style="font-size:15px;color:#185FA5" aria-hidden="true"></i>
+            <span class="panel-title">Sales Pipeline</span>
+            <span class="panel-badge">24 active</span>
+            <button class="view-all">View all <i class="ti ti-chevron-right" style="font-size:11px"></i></button>
+          </div>
+          <div class="panel-body">
+            <div class="table-row"><div class="row-dot dot-green"></div><div class="row-info"><div class="row-name">Textile Export Deal</div><div class="row-sub">Erode Textiles Ltd.</div></div><div class="row-amt">₹1,20,000</div><span class="row-status st-done">Closed</span></div>
+            <div class="table-row"><div class="row-dot dot-blue"></div><div class="row-info"><div class="row-name">Machine Parts Supply</div><div class="row-sub">Coimbatore Tools Co.</div></div><div class="row-amt">₹85,000</div><span class="row-status st-open">Active</span></div>
+            <div class="table-row"><div class="row-dot dot-amber"></div><div class="row-info"><div class="row-name">Fabric Wholesale</div><div class="row-sub">Salem Garments</div></div><div class="row-amt">₹64,500</div><span class="row-status st-pend">Pending</span></div>
+            <div class="table-row"><div class="row-dot dot-red"></div><div class="row-info"><div class="row-name">Packaging Contract</div><div class="row-sub">Tirupur Exports</div></div><div class="row-amt">₹42,000</div><span class="row-status st-urgent">Overdue</span></div>
+            <div class="table-row"><div class="row-dot dot-blue"></div><div class="row-info"><div class="row-name">Logistics Agreement</div><div class="row-sub">Karur Transport</div></div><div class="row-amt">₹30,000</div><span class="row-status st-open">Active</span></div>
+          </div>
+        </div>
+
+        <!-- Work Orders -->
+        <div class="panel">
+          <div class="panel-header">
+            <i class="ti ti-clipboard-list" style="font-size:15px;color:#c8822a" aria-hidden="true"></i>
+            <span class="panel-title">Work Orders</span>
+            <span class="panel-badge">7 open</span>
+            <button class="view-all">View all <i class="ti ti-chevron-right" style="font-size:11px"></i></button>
+          </div>
+          <div class="panel-body">
+            <div class="table-row"><div class="row-dot dot-red"></div><div class="row-info"><div class="row-name">WO-1041 — Site Inspection</div><div class="row-sub">Assigned: Ravi Kumar</div></div><span class="row-status st-urgent">Urgent</span></div>
+            <div class="table-row"><div class="row-dot dot-amber"></div><div class="row-info"><div class="row-name">WO-1038 — Equipment Setup</div><div class="row-sub">Assigned: Priya S.</div></div><span class="row-status st-pend">In Progress</span></div>
+            <div class="table-row"><div class="row-dot dot-blue"></div><div class="row-info"><div class="row-name">WO-1035 — Quality Check</div><div class="row-sub">Assigned: Anand R.</div></div><span class="row-status st-open">Open</span></div>
+            <div class="table-row"><div class="row-dot dot-green"></div><div class="row-info"><div class="row-name">WO-1032 — Delivery Run</div><div class="row-sub">Assigned: Murugan T.</div></div><span class="row-status st-done">Completed</span></div>
+            <div class="table-row"><div class="row-dot dot-blue"></div><div class="row-info"><div class="row-name">WO-1030 — Client Visit</div><div class="row-sub">Assigned: Deepa M.</div></div><span class="row-status st-open">Open</span></div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="panel">
+          <div class="panel-header">
+            <i class="ti ti-bolt" style="font-size:15px;color:#c8822a" aria-hidden="true"></i>
+            <span class="panel-title">Quick Actions</span>
+          </div>
+          <div class="actions-grid">
+            <button class="action-btn"><i class="ti ti-file-plus" aria-hidden="true"></i><div class="action-label">New Sale</div><div class="action-sub">Add a sales entry</div></button>
+            <button class="action-btn"><i class="ti ti-clipboard-plus" aria-hidden="true"></i><div class="action-label">New Work Order</div><div class="action-sub">Assign a job</div></button>
+            <button class="action-btn"><i class="ti ti-user-plus" aria-hidden="true"></i><div class="action-label">Add Client</div><div class="action-sub">Register client</div></button>
+            <button class="action-btn"><i class="ti ti-file-invoice" aria-hidden="true"></i><div class="action-label">Generate Invoice</div><div class="action-sub">Billing & payments</div></button>
+            <button class="action-btn"><i class="ti ti-report-analytics" aria-hidden="true"></i><div class="action-label">View Reports</div><div class="action-sub">Analytics overview</div></button>
+            <button class="action-btn"><i class="ti ti-calendar-event" aria-hidden="true"></i><div class="action-label">Schedule</div><div class="action-sub">Plan & calendar</div></button>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="panel">
+          <div class="panel-header">
+            <i class="ti ti-activity" style="font-size:15px;color:#378ADD" aria-hidden="true"></i>
+            <span class="panel-title">Recent Activity</span>
+          </div>
+          <div class="panel-body">
+            <div class="activity-item"><div class="act-icon act-green"><i class="ti ti-check" aria-hidden="true"></i></div><div><div class="act-text">WO-1032 marked <strong>completed</strong> by Murugan T.</div><div class="act-time">Today, 10:42 AM</div></div></div>
+            <div class="activity-item"><div class="act-icon act-blue"><i class="ti ti-chart-bar" aria-hidden="true"></i></div><div><div class="act-text">New sale <strong>Textile Export Deal</strong> closed — ₹1,20,000</div><div class="act-time">Today, 9:15 AM</div></div></div>
+            <div class="activity-item"><div class="act-icon act-amber"><i class="ti ti-clock" aria-hidden="true"></i></div><div><div class="act-text">WO-1041 flagged as <strong>urgent</strong> — deadline today</div><div class="act-time">Yesterday, 5:30 PM</div></div></div>
+            <div class="activity-item"><div class="act-icon act-blue"><i class="ti ti-user-plus" aria-hidden="true"></i></div><div><div class="act-text">New client <strong>Tirupur Exports</strong> added to system</div><div class="act-time">Yesterday, 2:00 PM</div></div></div>
+            <div class="activity-item"><div class="act-icon act-green"><i class="ti ti-file-invoice" aria-hidden="true"></i></div><div><div class="act-text">Invoice #INV-204 sent to <strong>Salem Garments</strong></div><div class="act-time">28 May, 11:00 AM</div></div></div>
+          </div>
+        </div>
+
+      </div><!-- /lower-grid -->
+    </div><!-- /content-wrap -->
+  </div><!-- /main -->
+
+  <script>
+    // Live date in hero
+    const d = new Date();
+    const days = ['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'];
+    const months = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+    document.getElementById('hero-date').textContent =
+      days[d.getDay()] + ', ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+
+    // Active nav highlight
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
 </body>
 </html>
