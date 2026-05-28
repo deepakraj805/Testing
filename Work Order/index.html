@@ -613,9 +613,121 @@
     letter-spacing: 0.2px;
   }
 
-  @media(max-width:900px){ .kpi-grid{grid-template-columns:repeat(3,1fr)} .row2{grid-template-columns:1fr} }
-  @media(max-width:600px){ .kpi-grid{grid-template-columns:repeat(2,1fr)} }
-  @media(max-width:380px){ .kpi-grid{grid-template-columns:1fr} }
+  /* ═══════════════════════════════════════════════
+     FULLY RESPONSIVE — fluid for all screen sizes
+     Mobile → Tablet → Laptop → Monitor → 4K
+  ═══════════════════════════════════════════════ */
+
+  /* Base fluid font so everything scales proportionally */
+  html { font-size: clamp(12px, 1.1vw, 16px); }
+
+  /* Dashboard padding scales with viewport */
+  #dashboard { padding: clamp(0.75rem, 2vw, 2.5rem) clamp(0.75rem, 2.5vw, 2.5rem) 4rem; }
+
+  /* KPI grid: 6 cols → 3 → 2 → 1 */
+  .kpi-grid {
+    grid-template-columns: repeat(auto-fit, minmax(clamp(120px, 14vw, 200px), 1fr));
+  }
+
+  /* KPI value scales fluid */
+  .kpi-val { font-size: clamp(26px, 3.5vw, 48px); }
+
+  /* Charts row: side-by-side on wide, stacked on narrow */
+  .row2 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)); }
+
+  /* Topbar: responsive wrapping */
+  .topbar { padding: clamp(0.6rem, 1.2vw, 1.1rem) clamp(0.8rem, 2vw, 1.8rem); gap: clamp(0.5rem, 1vw, 1rem); }
+  .brand-name { font-size: clamp(13px, 1.2vw, 17px); }
+  .brand-sub   { font-size: clamp(10px, 0.85vw, 13px); }
+
+  /* Topbar buttons shrink on small screens */
+  .hbtn { padding: clamp(0.35rem, 0.6vw, 0.55rem) clamp(0.5rem, 1vw, 1rem); font-size: clamp(11px, 0.85vw, 13.5px); }
+
+  /* Table font scales */
+  .data-table    { font-size: clamp(10px, 0.9vw, 13px); }
+  .data-table th { font-size: clamp(9px, 0.75vw, 11px); }
+  .data-table td { font-size: clamp(10px, 0.85vw, 12.5px); }
+
+  /* Table vertical scroll height fluid */
+  .table-vscroll { max-height: clamp(260px, 38vh, 520px); }
+  .cargo-vscroll { max-height: clamp(300px, 42vh, 600px); }
+
+  /* Cards */
+  .card { padding: clamp(1rem, 2vw, 1.75rem); margin-bottom: clamp(10px, 1.2vw, 18px); }
+  .card-title { font-size: clamp(11px, 0.9vw, 13px); }
+
+  /* Filter bars */
+  .filter-bar, .global-filter-bar { padding: clamp(0.45rem, 0.8vw, 0.75rem) clamp(0.75rem, 1.5vw, 1.2rem); gap: clamp(5px, 0.8vw, 10px); }
+  .filter-input, .global-search-input { font-size: clamp(11px, 0.85vw, 13px); }
+  .filter-select, .global-filter-select { font-size: clamp(11px, 0.85vw, 13px); }
+
+  /* Modal fluid width */
+  .modal-box { width: min(700px, 96vw); padding: 0; }
+
+  /* Form grid stacks on narrow screens */
+  @media (max-width: 540px) { .form-grid { grid-template-columns: 1fr; } }
+
+  /* Cargo timeline scrolls horizontally on mobile */
+  .cargo-timeline { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .timeline-step  { min-width: clamp(70px, 10vw, 100px); }
+  .step-label     { font-size: clamp(0.55rem, 0.7vw, 0.65rem); }
+
+  /* Cargo card padding */
+  .cargo-card { padding: clamp(10px, 1.5vw, 18px); }
+
+  /* KPI label/sub scale */
+  .kpi-label { font-size: clamp(9px, 0.75vw, 11.5px); }
+  .kpi-sub   { font-size: clamp(10px, 0.8vw, 12.5px); }
+
+  /* Pills scale slightly */
+  .pill { font-size: clamp(9px, 0.75vw, 11px); }
+
+  /* Status bar */
+  #status-bar { font-size: clamp(11px, 0.85vw, 13px); }
+
+  /* Footer */
+  .footer { font-size: clamp(10px, 0.8vw, 12px); }
+
+  /* Large monitors / 4K: cap content width for readability */
+  @media (min-width: 1800px) {
+    #dashboard { max-width: 1700px; margin: 0 auto; }
+  }
+  @media (min-width: 2400px) {
+    #dashboard { max-width: 2200px; }
+  }
+
+  /* Tablet landscape */
+  @media (max-width: 1024px) and (min-width: 769px) {
+    .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+    .row2     { grid-template-columns: 1fr; }
+  }
+
+  /* Tablet portrait / large phone */
+  @media (max-width: 768px) {
+    .kpi-grid  { grid-template-columns: repeat(2, 1fr); }
+    .row2      { grid-template-columns: 1fr; }
+    .topbar    { flex-direction: column; align-items: flex-start; }
+    .topbar-right { width: 100%; justify-content: flex-start; }
+    .brand-icon { width: 30px; height: 30px; }
+    .global-filter-bar { flex-direction: column; align-items: stretch; }
+    .global-search-wrap { min-width: unset; }
+    .global-filter-divider { display: none; }
+  }
+
+  /* Small phone */
+  @media (max-width: 480px) {
+    .kpi-grid   { grid-template-columns: repeat(2, 1fr); }
+    .topbar-right .hbtn span { display: none; } /* icon-only buttons */
+    .filter-bar { flex-direction: column; align-items: stretch; }
+    .filter-count { margin-left: 0; }
+    .card { border-radius: 10px; }
+  }
+
+  /* Very small phone */
+  @media (max-width: 360px) {
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    html      { font-size: 11px; }
+  }
 </style>
 </head>
 <body>
