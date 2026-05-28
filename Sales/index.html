@@ -750,8 +750,9 @@
     </div>
   </div>
 
-  <div class="notice" id="publish-notice">
-    ℹ️ Some sheets returned no data — confirm each tab is published: <strong>File → Share → Publish to web → comma-separated values</strong>
+  <div class="notice" id="publish-notice" style="display:none">
+    ⚠️ <strong>Sheet not connected yet.</strong> To load your live data: open the Google Sheet → <strong>File → Share → Publish to web</strong> → select each tab (Travel, LEAD, PR, PO) → publish as <strong>Comma-separated values (.csv)</strong>. Then click Refresh. &nbsp;
+    <button onclick="loadAll()" style="background:var(--accent);color:white;border:none;border-radius:6px;padding:3px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">↻ Refresh Now</button>
   </div>
 
   <!-- KPIs -->
@@ -1156,20 +1157,43 @@ function parseCSV(text) {
   });
 }
 
+async function fetchTabSafe(tabName) {
+  try {
+    const resp = await fetch(csvUrl(tabName));
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const text = await resp.text();
+    // Check if response looks like valid CSV (not an HTML error page)
+    if (text.trim().startsWith('<!')) throw new Error('Got HTML instead of CSV');
+    return parseCSV(text);
+  } catch(e) {
+    console.warn(`Tab "${tabName}" failed:`, e.message);
+    return [];
+  }
+}
+
 async function loadAll() {
   show('loading-screen','Fetching latest data from Google Sheets…');
   hide('error-screen'); hide('dashboard');
+
+  // Use a timeout so we never hang forever
+  const timeout = new Promise((_,rej) => setTimeout(() => rej(new Error('timeout')), 12000));
+
   try {
-    const [travels,leads,prs,pos] = await Promise.all([
-      fetchTab(TABS.travel), fetchTab(TABS.lead), fetchTab(TABS.pr), fetchTab(TABS.po)
+    const fetched = await Promise.race([
+      Promise.all([
+        fetchTabSafe(TABS.travel),
+        fetchTabSafe(TABS.lead),
+        fetchTabSafe(TABS.pr),
+        fetchTabSafe(TABS.po)
+      ]),
+      timeout
     ]);
-    renderDashboard({travels,leads,prs,pos});
+    const [travels, leads, prs, pos] = fetched;
+    renderDashboard({travels, leads, prs, pos});
   } catch(e) {
-    console.error(e);
-    hide('loading-screen');
-    document.getElementById('error-msg').textContent =
-      `${e.message}. Make sure the sheet is published: File → Share → Publish to web → Each tab as CSV.`;
-    document.getElementById('error-screen').classList.add('show');
+    console.warn('Sheet fetch issue:', e.message);
+    // Still render dashboard with empty data so the UI is usable
+    renderDashboard({travels:[], leads:[], prs:[], pos:[]});
   }
 }
 
@@ -1191,12 +1215,13 @@ function renderDashboard({travels,leads,prs,pos}) {
   _data.aVisits = travels.filter(r=>r['Lead No']);
 
   const anyEmpty=[_data.aLeads,_data.aPRs,_data.aPOs,_data.aVisits].some(a=>a.length===0);
-  document.getElementById('publish-notice').classList.toggle('show',anyEmpty);
+  const noticeEl = document.getElementById('publish-notice');
+  if (noticeEl) { noticeEl.style.display = anyEmpty ? '' : 'none'; }
 
-  set('kpi-leads',_data.aLeads.length);
-  set('kpi-prs',_data.aPRs.length);
-  set('kpi-pos',_data.aPOs.length);
-  set('kpi-visits',_data.aVisits.length);
+  set('kpi-leads', _data.aLeads.length || '0');
+  set('kpi-prs',   _data.aPRs.length   || '0');
+  set('kpi-pos',   _data.aPOs.length   || '0');
+  set('kpi-visits',_data.aVisits.length|| '0');
 
   // Populate lead status dropdown + build stable per-status color map (assigned once, never shifts on filter)
   const statuses=[...new Set(_data.aLeads.map(r=>String(r['Lead Status']||'Unknown').trim()))].sort();
