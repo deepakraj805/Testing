@@ -1307,8 +1307,9 @@ function renderPipeline() {
   }).join('')||'<div class="empty">No lead data</div>');
 
   if(chartInstance){chartInstance.destroy();chartInstance=null;}
-  if(scEntries.length){
-    chartInstance=new Chart(document.getElementById('pipeChart'),{
+  const pipeCanvas=document.getElementById('pipeChart');
+  if(scEntries.length && pipeCanvas){
+    chartInstance=new Chart(pipeCanvas,{
       type:'doughnut',
       data:{labels:scEntries.map(([s])=>s),datasets:[{data:scEntries.map(([,n])=>n),backgroundColor:scEntries.map(([s])=>colorOf(s)),borderWidth:2,borderColor:'#1e2720'}]},
       options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:true,position:'bottom',labels:{color:'#8ab49a',font:{size:11,family:'DM Sans'},padding:8,boxWidth:10,boxHeight:10}},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw}`}}}}
@@ -2147,43 +2148,50 @@ function buildPOSlicers() {
     ).join('');
 }
 
-// Close modals on overlay click
-document.getElementById('entry-modal').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
-document.getElementById('script-config-modal').addEventListener('click', function(e) {
-  if (e.target === this) closeScriptConfig();
-});
+// ══════════════════════════════════════════════
+//  BOOT — wrapped in DOMContentLoaded so all
+//  elements exist before any JS touches them
+// ══════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', function() {
 
-// ── Init banner if URL already set ──
-if (_scriptUrl) {
-  document.getElementById('as-banner').innerHTML = '✅ <strong>Auto-save enabled!</strong> Changes sync to your Google Sheet. <button class="banner-cfg-btn" onclick="openScriptConfig()">Edit URL</button>';
-}
+  // Wire modal close-on-overlay
+  var em = document.getElementById('entry-modal');
+  if (em) em.addEventListener('click', function(e){ if(e.target===this) closeModal(); });
+  var scm = document.getElementById('script-config-modal');
+  if (scm) scm.addEventListener('click', function(e){ if(e.target===this) closeScriptConfig(); });
 
-// ── Render dashboard immediately so spinner never blocks ──
-renderDashboard({travels:[], leads:[], prs:[], pos:[]});
-
-// ── Then silently fetch sheet data in background ──
-(async function backgroundFetch() {
-  try {
-    const withTimeout = (promise, ms) => Promise.race([
-      promise,
-      new Promise(res => setTimeout(() => res([]), ms))
-    ]);
-    const [travels, leads, prs, pos] = await Promise.all([
-      withTimeout(fetchTabSafe(TABS.travel), 8000),
-      withTimeout(fetchTabSafe(TABS.lead),   8000),
-      withTimeout(fetchTabSafe(TABS.pr),     8000),
-      withTimeout(fetchTabSafe(TABS.po),     8000),
-    ]);
-    // Only re-render if we actually got data
-    if (travels.length || leads.length || prs.length || pos.length) {
-      renderDashboard({travels, leads, prs, pos});
-    }
-  } catch(e) {
-    console.warn('Background fetch failed:', e);
+  // Show banner if URL already configured
+  if (_scriptUrl) {
+    var b = document.getElementById('as-banner');
+    if (b) b.innerHTML = '✅ <strong>Auto-save enabled!</strong> Changes sync to your Google Sheet. <button class="banner-cfg-btn" onclick="openScriptConfig()">Edit URL</button>';
   }
-})();
+
+  // ── Render dashboard immediately with empty data ──
+  try {
+    renderDashboard({travels:[], leads:[], prs:[], pos:[]});
+  } catch(e) {
+    console.error('Initial render failed:', e);
+  }
+
+  // ── Then fetch sheet data in background ──
+  (async function backgroundFetch() {
+    try {
+      const withTimeout = (p, ms) => Promise.race([p, new Promise(r => setTimeout(()=>r([]),ms))]);
+      const [travels, leads, prs, pos] = await Promise.all([
+        withTimeout(fetchTabSafe(TABS.travel), 8000),
+        withTimeout(fetchTabSafe(TABS.lead),   8000),
+        withTimeout(fetchTabSafe(TABS.pr),     8000),
+        withTimeout(fetchTabSafe(TABS.po),     8000),
+      ]);
+      if (travels.length || leads.length || prs.length || pos.length) {
+        renderDashboard({travels, leads, prs, pos});
+      }
+    } catch(e) {
+      console.warn('Background sheet fetch failed:', e);
+    }
+  })();
+
+});
 </script>
 </body>
 </html>
