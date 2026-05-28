@@ -1,1 +1,329 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vishak Tech - Business Intelligence Hub</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+    color:#1e293b;
+}
+
+/* NAVBAR */
+
+nav{
+    width:100%;
+    padding:20px 8%;
+    background:#0f172a;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+nav h1{
+    color:#fff;
+    font-size:28px;
+}
+
+nav ul{
+    display:flex;
+    gap:30px;
+    list-style:none;
+}
+
+nav ul li a{
+    color:#fff;
+    text-decoration:none;
+    font-size:16px;
+    transition:0.3s;
+}
+
+nav ul li a:hover{
+    color:#38bdf8;
+}
+
+/* HERO */
+
+.hero{
+    min-height:90vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:40px;
+    background:linear-gradient(135deg,#0f172a,#1e3a8a);
+    color:#fff;
+}
+
+.hero-content h2{
+    font-size:58px;
+    margin-bottom:20px;
+}
+
+.hero-content p{
+    font-size:20px;
+    max-width:800px;
+    margin:auto;
+    line-height:1.8;
+}
+
+.hero-buttons{
+    margin-top:35px;
+}
+
+.hero-buttons a{
+    text-decoration:none;
+    padding:15px 30px;
+    margin:10px;
+    border-radius:10px;
+    font-weight:600;
+    display:inline-block;
+    transition:0.3s;
+}
+
+.btn-primary{
+    background:#38bdf8;
+    color:#fff;
+}
+
+.btn-primary:hover{
+    background:#0ea5e9;
+}
+
+.btn-secondary{
+    border:2px solid #fff;
+    color:#fff;
+}
+
+.btn-secondary:hover{
+    background:#fff;
+    color:#0f172a;
+}
+
+/* DASHBOARD CARDS */
+
+.section{
+    padding:80px 8%;
+}
+
+.section-title{
+    text-align:center;
+    margin-bottom:50px;
+}
+
+.section-title h3{
+    font-size:40px;
+    color:#0f172a;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:30px;
+}
+
+.card{
+    background:#fff;
+    padding:35px;
+    border-radius:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-10px);
+}
+
+.card h4{
+    font-size:24px;
+    margin-bottom:15px;
+}
+
+.card p{
+    color:#475569;
+    line-height:1.7;
+    margin-bottom:20px;
+}
+
+.card a{
+    text-decoration:none;
+    color:#2563eb;
+    font-weight:600;
+}
+
+/* FOOTER */
+
+footer{
+    background:#0f172a;
+    color:#fff;
+    text-align:center;
+    padding:25px;
+    margin-top:50px;
+}
+
+@media(max-width:768px){
+
+.hero-content h2{
+    font-size:40px;
+}
+
+.hero-content p{
+    font-size:16px;
+}
+
+nav{
+    flex-direction:column;
+    gap:15px;
+}
+
+}
+
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+
+<nav>
+    <h1>Vishak Tech</h1>
+
+    <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#dashboards">Dashboards</a></li>
+        <li><a href="#about">About</a></li>
+    </ul>
+</nav>
+
+<!-- HERO -->
+
+<section class="hero">
+
+<div class="hero-content">
+
+<h2>Business Intelligence Hub</h2>
+
+<p>
+Manage all your Sales, Work Orders, Production Tracking,
+RFQ Pipeline and Business Reports from one powerful dashboard.
+</p>
+
+<div class="hero-buttons">
+
+<a href="#dashboards" class="btn-primary">
+Open Dashboards
+</a>
+
+<a href="#about" class="btn-secondary">
+Learn More
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- DASHBOARD SECTION -->
+
+<section class="section" id="dashboards">
+
+<div class="section-title">
+<h3>Business Dashboards</h3>
+</div>
+
+<div class="cards">
+
+<div class="card">
+<h4>Sales Dashboard</h4>
+
+<p>
+Track customer leads, quotations, orders,
+follow-ups and sales performance.
+</p>
+
+<a href="Sales/index.html">
+Open Dashboard →
+</a>
+
+</div>
+
+<div class="card">
+
+<h4>Work Order Dashboard</h4>
+
+<p>
+Manage production work orders,
+fabrication, casting and dispatch status.
+</p>
+
+<a href="Work Order/index.html">
+Open Dashboard →
+</a>
+
+</div>
+
+<div class="card">
+
+<h4>Production Tracking</h4>
+
+<p>
+Monitor fabrication stages,
+QC, warehouse movement and packing updates.
+</p>
+
+<a href="#">
+Open Dashboard →
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ABOUT -->
+
+<section class="section" id="about">
+
+<div class="section-title">
+<h3>About Vishak Tech</h3>
+</div>
+
+<div style="max-width:900px;margin:auto;text-align:center;font-size:18px;line-height:1.9;color:#475569;">
+
+Vishak Tech provides intelligent business dashboards and workflow
+automation solutions using Google Sheets, GitHub Pages and n8n automation.
+
+This portal centralizes all departments into one modern web dashboard.
+
+</div>
+
+</section>
+
+<!-- FOOTER -->
+
+<footer>
+
+© 2026 Vishak Tech | Business Intelligence Hub
+
+</footer>
+
+</body>
+</html>
+```
