@@ -6,68 +6,160 @@
 <title>Vishak Tech | Industrial Solutions Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--primary:#10b981;--secondary:#3b82f6;--card:rgba(255,255,255,.08)}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
-body{min-height:100vh;color:#fff;overflow-x:hidden;background:
+body{
+min-height:100vh;color:#fff;
+background:
 radial-gradient(circle at 10% 20%, rgba(16,185,129,.20), transparent 25%),
 radial-gradient(circle at 90% 10%, rgba(59,130,246,.20), transparent 25%),
-radial-gradient(circle at 50% 90%, rgba(20,184,166,.20), transparent 30%),
-linear-gradient(135deg,#020617,#0f172a,#111827);}
-.navbar{display:flex;justify-content:space-between;align-items:center;padding:18px 50px;background:rgba(255,255,255,.04);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.08);position:sticky;top:0;z-index:100}
-.logo{height:55px}
-.nav-right{display:flex;align-items:center}
-.contact-dropdown{position:relative}
-.contact-btn{background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.25);color:#34d399;padding:10px 18px;border-radius:50px;cursor:pointer;font-weight:600}
-.contact-content{display:none;position:absolute;right:0;top:55px;width:340px;background:#0f172a;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:20px;box-shadow:0 20px 40px rgba(0,0,0,.35);z-index:1000}
-.contact-dropdown:hover .contact-content{display:block}
-.contact-content h4{margin:10px 0 5px;color:#10b981}
-.contact-content p,.contact-content a{color:#cbd5e1;text-decoration:none;line-height:1.6}
-.hero{text-align:center;padding:100px 20px 80px}
-.hero h1{font-size:4.8rem;font-weight:700;line-height:1.1;background:linear-gradient(90deg,#fff,#a7f3d0,#93c5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero p{max-width:900px;margin:25px auto;font-size:1.15rem;line-height:1.9;color:#cbd5e1}
-.cards{max-width:1200px;margin:auto;padding:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:30px}
-.card{background:var(--card);backdrop-filter:blur(25px);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:40px;text-decoration:none;color:white}
-.card-icon{font-size:70px;margin-bottom:20px}
-.card h2{margin-bottom:15px}
-.footer{margin-top:80px;padding:40px;text-align:center;border-top:1px solid rgba(255,255,255,.08);color:#94a3b8}
+linear-gradient(135deg,#020617,#0f172a,#111827);
+}
+.navbar{
+display:flex;justify-content:space-between;align-items:center;
+padding:18px 40px;
+background:rgba(255,255,255,.04);
+backdrop-filter:blur(20px);
+border-bottom:1px solid rgba(255,255,255,.08);
+}
+.logo{height:60px}
+.contact-btn{
+background:linear-gradient(135deg,#10b981,#3b82f6);
+border:none;color:#fff;padding:12px 22px;border-radius:50px;
+cursor:pointer;font-weight:600;
+box-shadow:0 10px 20px rgba(16,185,129,.25);
+}
+.hero{text-align:center;padding:100px 20px 70px}
+.hero h1{
+font-size:4.5rem;
+background:linear-gradient(90deg,#fff,#d1fae5,#93c5fd);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+.hero p{max-width:900px;margin:25px auto;color:#cbd5e1;line-height:1.9}
+.cards{
+max-width:1100px;margin:auto;padding:20px;
+display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:30px;
+}
+.card{
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.08);
+padding:40px;border-radius:24px;
+text-decoration:none;color:#fff;
+backdrop-filter:blur(20px);
+transition:.3s;
+}
+.card:hover{transform:translateY(-8px)}
+.card h2{margin:15px 0}
+.footer{
+margin-top:60px;padding:30px;text-align:center;color:#94a3b8;
+border-top:1px solid rgba(255,255,255,.08);
+}
+
+/* Modal */
+.modal{
+display:none;position:fixed;inset:0;
+background:rgba(0,0,0,.7);
+backdrop-filter:blur(8px);
+z-index:9999;
+}
+.modal-content{
+width:90%;max-width:520px;
+margin:80px auto;
+padding:30px;border-radius:30px;
+background:linear-gradient(135deg,rgba(15,23,42,.98),rgba(30,41,59,.98));
+border:1px solid rgba(255,255,255,.08);
+}
+.close-btn{
+float:right;font-size:34px;cursor:pointer;
+}
+.contact-item{margin:18px 0}
+.contact-item h4{color:#10b981;margin-bottom:5px}
+.contact-item p,.contact-item a{color:#cbd5e1;text-decoration:none}
 </style>
 </head>
 <body>
+
 <header class="navbar">
 <a href="https://vishaktec.com/home" target="_blank">
-<img src="VISHAKTECH%20LOGO.jpeg" alt="Vishak Tech" class="logo">
+<img src="VISHAKTECH%20LOGO.jpeg" class="logo">
 </a>
-<div class="nav-right">
-<div class="contact-dropdown">
-<button class="contact-btn">Contact Us ▼</button>
-<div class="contact-content">
-<h4>📞 Phone</h4><p>+91 96779 74323</p>
-<h4>✉ Email</h4><p>sales@vishaktec.com</p>
-<h4>📍 Address</h4>
-<p>Building No. 3,<br>Venkateshwara Nagar,<br>Pavandakavundanur,<br>Kavindapadi,<br>Erode - 638455,<br>Tamil Nadu, India</p>
-<h4>🌐 Website</h4>
-<p><a href="https://vishaktec.com/home" target="_blank">www.vishaktec.com</a></p>
-</div></div></div>
+
+<button class="contact-btn" onclick="openContact()">Contact Us</button>
 </header>
 
 <section class="hero">
 <h1>Engineering Reliable Industrial Solutions</h1>
-<p>Delivering Hydraulic Systems, Industrial Equipment, Casting Components, Fabrication Solutions and Engineering Services for Cement, Steel, Power and Process Industries.</p>
+<p>
+Delivering Hydraulic Systems, Industrial Equipment, Casting Components,
+Fabrication Solutions and Engineering Services for Cement, Steel,
+Power and Process Industries.
+</p>
 </section>
 
 <div class="cards">
 <a href="Sales/" class="card">
-<div class="card-icon">📈</div>
-<h2>Sales Dashboard</h2>
+<h2>📈 Sales Dashboard</h2>
 <p>Manage Leads, RFQs, Quotations, Purchase Requests, Purchase Orders and Customer Follow-ups.</p>
 </a>
 
 <a href="Work%20Order/" class="card">
-<div class="card-icon">🏭</div>
-<h2>Work Order Dashboard</h2>
-<p>Monitor Fabrication, Casting, Production Progress, QC, Packing and Dispatch Activities.</p>
+<h2>🏭 Work Order Dashboard</h2>
+<p>Track Fabrication, Casting, Production Progress, Quality Control, Packing and Dispatch.</p>
 </a>
 </div>
 
-<div class="footer">Driven by Engineering. Powered by Innovation.<br>© 2026 Vishak Tech</div>
-</body></html>
+<div id="contactModal" class="modal">
+<div class="modal-content">
+<span class="close-btn" onclick="closeContact()">&times;</span>
+
+<h2>Contact Vishak Tech</h2>
+
+<div class="contact-item">
+<h4>📞 Phone</h4>
+<p>+91 96779 74323</p>
+</div>
+
+<div class="contact-item">
+<h4>✉ Email</h4>
+<p>sales@vishaktec.com</p>
+</div>
+
+<div class="contact-item">
+<h4>📍 Address</h4>
+<p>
+Building No. 3,<br>
+Venkateshwara Nagar,<br>
+Pavandakavundanur,<br>
+Kavindapadi, Erode - 638455,<br>
+Tamil Nadu, India
+</p>
+</div>
+
+<div class="contact-item">
+<h4>🌐 Website</h4>
+<p><a href="https://vishaktec.com/home" target="_blank">www.vishaktec.com</a></p>
+</div>
+
+</div>
+</div>
+
+<div class="footer">
+Driven by Engineering. Powered by Innovation.<br>
+© 2026 Vishak Tech
+</div>
+
+<script>
+function openContact(){
+document.getElementById('contactModal').style.display='block';
+}
+function closeContact(){
+document.getElementById('contactModal').style.display='none';
+}
+window.onclick=function(e){
+const modal=document.getElementById('contactModal');
+if(e.target===modal){modal.style.display='none';}
+}
+</script>
+
+</body>
+</html>
