@@ -1,23 +1,25 @@
-```html
+</> HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vishak Tech Portal</title>
+<title>Vishak Tech | Business Portal</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:'Segoe UI',sans-serif;
+    font-family:'Poppins',sans-serif;
 }
 
 body{
-    background:linear-gradient(135deg,#003d35,#0a5c4b);
-    color:white;
+    background:linear-gradient(135deg,#003d35,#0b5d4b);
     min-height:100vh;
+    color:#fff;
 }
 
 .hero{
@@ -33,22 +35,22 @@ body{
     margin:0 auto 20px;
 }
 
-.portal-title{
+.hero h1{
     font-size:3.5rem;
-    font-weight:700;
     margin-bottom:10px;
+    font-weight:700;
 }
 
-.portal-subtitle{
-    color:#d1d5db;
-    font-size:1.2rem;
+.hero p{
+    font-size:1.15rem;
+    color:#dbe4e4;
     margin-bottom:20px;
 }
 
 .status{
     display:inline-block;
     background:#22c55e;
-    padding:10px 20px;
+    padding:10px 24px;
     border-radius:50px;
     font-weight:600;
 }
@@ -61,50 +63,51 @@ body{
 
 .cards{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
     gap:30px;
 }
 
 .card{
-    background:rgba(255,255,255,0.08);
-    border:1px solid rgba(255,255,255,0.15);
-    backdrop-filter:blur(10px);
-    border-radius:20px;
-    padding:35px;
     text-decoration:none;
     color:white;
-    transition:0.3s;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,0.15);
+    border-radius:20px;
+    padding:35px;
+    transition:.3s;
 }
 
 .card:hover{
-    transform:translateY(-8px);
-    box-shadow:0 15px 35px rgba(0,0,0,0.3);
+    transform:translateY(-10px);
+    box-shadow:0 20px 40px rgba(0,0,0,.3);
 }
 
-.card-icon{
+.icon{
     font-size:60px;
     margin-bottom:20px;
 }
 
 .card h2{
     margin-bottom:15px;
+    font-size:28px;
 }
 
 .card p{
-    color:#d1d5db;
-    line-height:1.6;
+    color:#dbe4e4;
+    line-height:1.7;
 }
 
 .features{
+    margin-top:60px;
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
     gap:20px;
-    margin-top:50px;
 }
 
 .feature{
     background:rgba(255,255,255,0.05);
-    padding:20px;
+    padding:25px;
     border-radius:15px;
     text-align:center;
 }
@@ -113,11 +116,29 @@ body{
     margin-bottom:10px;
 }
 
+.feature p{
+    color:#dbe4e4;
+}
+
 .footer{
     text-align:center;
-    padding:30px;
-    color:#d1d5db;
-    margin-top:40px;
+    padding:40px 20px;
+    color:#dbe4e4;
+}
+
+@media(max-width:768px){
+
+.hero h1{
+    font-size:2.2rem;
+}
+
+.card{
+    padding:25px;
+}
+
+.logo{
+    width:95%;
+}
 }
 </style>
 </head>
@@ -126,12 +147,13 @@ body{
 
 <section class="hero">
 
-<img src="logo.jpeg" alt="Vishak Tech Logo" class="logo">
+<img src="VISHAKTECH%20LOGO.jpeg" alt="Vishak Tech Logo" class="logo">
 
-<h1 class="portal-title">Business Management Portal</h1>
+<h1>Business Management Portal</h1>
 
-<p class="portal-subtitle">
-Centralized platform for Sales, Work Orders, Production Tracking and Business Operations
+<p>
+Centralized platform for Sales, Work Orders,
+Production Tracking and Business Operations
 </p>
 
 <div class="status">
@@ -145,7 +167,7 @@ Centralized platform for Sales, Work Orders, Production Tracking and Business Op
 <div class="cards">
 
 <a href="Sales/" class="card">
-<div class="card-icon">📈</div>
+<div class="icon">📈</div>
 <h2>Sales Dashboard</h2>
 <p>
 Manage Leads, RFQs, Purchase Requests,
@@ -154,11 +176,11 @@ Purchase Orders and Site Visit Activities.
 </a>
 
 <a href="Work%20Order/" class="card">
-<div class="card-icon">🏭</div>
+<div class="icon">🏭</div>
 <h2>Work Order Dashboard</h2>
 <p>
 Track Production, Fabrication, Casting,
-QC, Packing and Dispatch Operations.
+Quality Control, Packing and Dispatch.
 </p>
 </a>
 
@@ -172,8 +194,8 @@ QC, Packing and Dispatch Operations.
 </div>
 
 <div class="feature">
-<h3>📁 Google Sheets</h3>
-<p>Connected cloud database</p>
+<h3>📁 Cloud Database</h3>
+<p>Google Sheets integration</p>
 </div>
 
 <div class="feature">
@@ -183,7 +205,7 @@ QC, Packing and Dispatch Operations.
 
 <div class="feature">
 <h3>🔒 Secure Data</h3>
-<p>Centralized information management</p>
+<p>Centralized business records</p>
 </div>
 
 </div>
