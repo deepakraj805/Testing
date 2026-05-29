@@ -781,6 +781,42 @@
   .pt-empty { color:var(--text3); font-size:12px; text-align:center; padding:2rem 0; }
   .pt-list { display:flex; flex-direction:column; gap:10px; }
 
+  /* ═══════════════ SCROLLABLE TABLE WRAPPER ═══════════════ */
+  /* Pipeline Tracker list scrollable */
+  .pt-list-scroll {
+    max-height: 480px;
+    overflow-y: auto;
+    padding-right: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pt-list-scroll::-webkit-scrollbar { width: 5px; }
+  .pt-list-scroll::-webkit-scrollbar-track { background: var(--surface2); border-radius: 3px; }
+  .pt-list-scroll::-webkit-scrollbar-thumb { background: var(--surface4); border-radius: 3px; }
+  .pt-list-scroll::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
+
+  /* PR / PO table scroll wrapper */
+  .table-scroll-wrap {
+    max-height: 340px;
+    overflow-y: auto;
+    margin-top: 2px;
+    border-radius: 0 0 var(--radius) var(--radius);
+  }
+  .table-scroll-wrap::-webkit-scrollbar { width: 5px; }
+  .table-scroll-wrap::-webkit-scrollbar-track { background: var(--surface2); border-radius: 3px; }
+  .table-scroll-wrap::-webkit-scrollbar-thumb { background: var(--surface4); border-radius: 3px; }
+  .table-scroll-wrap::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
+
+  /* Sticky header inside scrollable table */
+  .table-scroll-wrap .data-table thead th {
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+    z-index: 2;
+    box-shadow: 0 1px 0 var(--border-strong);
+  }
+
 </style>
 </head>
 <body>
@@ -934,6 +970,7 @@
         <option value="">All Status</option>
       </select>
     </div>
+    <div class="table-scroll-wrap">
     <table class="data-table">
       <thead><tr>
         <th onclick="sortTable('pr','Internal PR No',this)">PR No <span class="sort-icon">↕</span></th>
@@ -944,6 +981,7 @@
       </tr></thead>
       <tbody id="pr-tbody"></tbody>
     </table>
+    </div>
     <span class="row-count" id="pr-count"></span>
   </div>
 
@@ -962,6 +1000,7 @@
         <option value="">All Stage</option>
       </select>
     </div>
+    <div class="table-scroll-wrap">
     <table class="data-table">
       <thead><tr>
         <th onclick="sortTable('po','Date',this)">Date <span class="sort-icon">↕</span></th>
@@ -973,6 +1012,7 @@
       </tr></thead>
       <tbody id="po-tbody"></tbody>
     </table>
+    </div>
     <span class="row-count" id="po-count"></span>
   </div>
 
@@ -987,7 +1027,7 @@
     <div class="pt-search">
       <input class="pt-search-input" type="text" id="pt-search" placeholder="Search Lead No / Customer…" oninput="renderPipelineTracker()">
     </div>
-    <div class="pt-list" id="pt-list"></div>
+    <div class="pt-list-scroll" id="pt-list"></div>
   </div>
 
 <!-- SCRIPT CONFIG MODAL -->
