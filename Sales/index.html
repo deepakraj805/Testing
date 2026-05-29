@@ -1403,7 +1403,13 @@ function fmtDate(v){if(!v)return'—';const d=new Date(v);if(isNaN(d))return Str
 function trunc(s,n){const t=String(s||'');return t.length>n?t.slice(0,n)+'…':t;}
 function matches(r,q){if(!q)return true;q=q.toLowerCase();return Object.values(r).some(v=>v&&String(v).toLowerCase().includes(q));}
 
+function normalizeRow(r,map){const out=Object.assign({},r);for(const [f,t] of Object.entries(map)){if(out[f]!==undefined&&out[t]===undefined)out[t]=out[f];}return out;}
+
 function renderDashboard({travels,leads,prs,pos}) {
+  leads=leads.map(r=>normalizeRow(r,{"Lead Generated Date":"Created Date","Plant Name and Location":"Plant Name Location","Plant Name & Location":"Plant Name Location","Contact Details":"Contact Person","Mail ID":"Email","Scope in Lead":"Product Service"}));
+  travels=travels.map(r=>normalizeRow(r,{"Plant Name & Location":"Plant Name Location","Plant Name and Location":"Plant Name Location","Appointment Status":"Visit Status"}));
+  prs=prs.map(r=>normalizeRow(r,{"Quotation Number":"Quotation Ref No","Date of Submission":"Quotation Date"}));
+  pos=pos.map(r=>normalizeRow(r,{"PO Number":"PO No","Work Order Status":"Production Stage"}));
   _data.aLeads  = leads.filter(r=>r['Lead No']);
   _data.aPRs    = prs.filter(r=>r['Internal PR No']);
   _data.aPOs    = pos.filter(r=>r['Customer Name']&&r['Production Stage']&&String(r['Customer Name']).length>2&&String(r['Production Stage']).length>0&&!String(r['Customer Name']).toLowerCase().includes('grand total')&&!String(r['Customer Name']).toLowerCase().includes('production stage'));
@@ -2198,19 +2204,16 @@ async function saveEntry() {
     const cust = document.getElementById('f-lead-customer').value.trim();
     if (!no || !cust) { showToast('Lead No and Customer Name are required', 'error'); valid=false; }
     rowData = {
-      'Lead No':             no,
-      'Lead Status':         document.getElementById('f-lead-status').value,
-      'Customer Name':       cust,
-      'Plant Name Location': document.getElementById('f-lead-plant').value.trim(),
-      'Created Date':        document.getElementById('f-lead-date').value,
-      'Source':              document.getElementById('f-lead-source').value.trim(),
-      'Contact Person':      document.getElementById('f-lead-contact').value.trim(),
-      'Phone':               document.getElementById('f-lead-phone').value.trim(),
-      'Email':               document.getElementById('f-lead-email').value.trim(),
-      'Product Service':     document.getElementById('f-lead-product').value.trim(),
-      'Estimated Value':     document.getElementById('f-lead-value').value.trim(),
-      'Expected Close Date': document.getElementById('f-lead-closedate').value,
-      'Remarks':             document.getElementById('f-lead-remarks').value.trim(),
+      'Lead No':                  no,
+      'Lead Status':              document.getElementById('f-lead-status').value,
+      'Customer Name':            cust,
+      'Plant Name and Location':  document.getElementById('f-lead-plant').value.trim(),
+      'Lead Generated Date':      document.getElementById('f-lead-date').value,
+      'Contact Details':          document.getElementById('f-lead-contact').value.trim(),
+      'Mail ID':                  document.getElementById('f-lead-email').value.trim(),
+      'Scope in Lead':            document.getElementById('f-lead-product').value.trim(),
+      'Expected Close Date':      document.getElementById('f-lead-closedate').value,
+      'Remarks':                  document.getElementById('f-lead-remarks').value.trim(),
     };
   } else if (_modalType === 'visit') {
     const ln = document.getElementById('f-visit-lead').value.trim();
@@ -2220,11 +2223,9 @@ async function saveEntry() {
       'Lead No':                          ln,
       'Schedule Date':                    document.getElementById('f-visit-date').value,
       'Customer Name':                    document.getElementById('f-visit-customer').value.trim(),
-      'Plant Name Location':              pl,
+      'Plant Name & Location':            pl,
       'Meeting Person and Designation':   document.getElementById('f-visit-person').value.trim(),
-      'Visit Type':                       document.getElementById('f-visit-type').value,
-      'Visit Status':                     document.getElementById('f-visit-status').value,
-      'Next Follow-up Date':              document.getElementById('f-visit-followup').value,
+      'Appointment Status':               document.getElementById('f-visit-status').value,
       'VISIT Discription':                document.getElementById('f-visit-desc').value.trim(),
       'Action Items':                     document.getElementById('f-visit-action').value.trim(),
     };
@@ -2236,39 +2237,23 @@ async function saveEntry() {
       'Internal PR No':   pno,
       'PR Date':          document.getElementById('f-pr-date').value,
       'Customer Name':    cust,
-      'Lead No Ref':      document.getElementById('f-pr-leadref').value.trim(),
       'PR Description':   document.getElementById('f-pr-desc').value.trim(),
       'Quotation Status': document.getElementById('f-pr-qstatus').value,
-      'Quotation Value':  document.getElementById('f-pr-value').value.trim(),
+      'Quotation Number': document.getElementById('f-pr-qref').value.trim(),
       'Quotation Date':   document.getElementById('f-pr-qdate').value,
-      'Quotation Ref No': document.getElementById('f-pr-qref').value.trim(),
-      'Scope of Work':    document.getElementById('f-pr-scope').value.trim(),
-      'Delivery Timeline':document.getElementById('f-pr-delivery').value.trim(),
-      'Priority':         document.getElementById('f-pr-priority').value,
-      'Remark 3':         document.getElementById('f-pr-remark').value.trim(),
     };
   } else if (_modalType === 'po') {
     const cust = document.getElementById('f-po-customer').value.trim();
     const desc = document.getElementById('f-po-desc').value.trim();
     if (!cust || !desc) { showToast('Customer and Description are required', 'error'); valid=false; }
     rowData = {
-      'Work Order No':      document.getElementById('f-po-wono').value.trim(),
       'Date':               document.getElementById('f-po-date').value,
       'Customer Name':      cust,
-      'PO No':              document.getElementById('f-po-pono').value.trim(),
+      'PO Number':          document.getElementById('f-po-pono').value.trim(),
       'Short Description':  desc,
       'Internal PR':        document.getElementById('f-po-pr').value.trim(),
-      'PO Value':           document.getElementById('f-po-value').value.trim(),
-      'Outsourcing Status': document.getElementById('f-po-out-status').value,
-      'Outsourcing No':     document.getElementById('f-po-out-no').value.trim(),
-      'Outsourcing Date':   document.getElementById('f-po-out-date').value,
-      'Vendor':             document.getElementById('f-po-vendor').value.trim(),
-      'Packing H':          document.getElementById('f-po-height').value.trim(),
-      'Packing W':          document.getElementById('f-po-width').value.trim(),
-      'Packing L':          document.getElementById('f-po-length').value.trim(),
-      'Weight KG':          document.getElementById('f-po-weight').value.trim(),
       'Production Stage':   document.getElementById('f-po-stage').value,
-      'Expected Delivery':  document.getElementById('f-po-delivery').value,
+      'Work Order Status':  document.getElementById('f-po-stage').value,
       'Remarks':            document.getElementById('f-po-remark').value.trim(),
     };
   }
@@ -2578,19 +2563,19 @@ async function saveBSEntry() {
 
   if (type === 'lead') {
     if (!g('lead-no') || !g('lead-customer')) { showToast('Lead No and Customer Name are required','error'); btn.disabled=false; document.getElementById('bs-save-btn-text').textContent='Save Entry'; return; }
-    row = {'Lead No':g('lead-no'),'Created Date':g('lead-date'),'Customer Name':g('lead-customer'),'Plant Name Location':g('lead-plant'),'Lead Status':g('lead-status'),'Source':g('lead-source'),'Contact Person':g('lead-contact'),'Phone':g('lead-phone'),'Email':g('lead-email'),'Product Service':g('lead-product'),'Estimated Value':g('lead-value'),'Expected Close Date':g('lead-closedate'),'Remarks':g('lead-remarks')};
+    row = {'Lead No':g('lead-no'),'Lead Generated Date':g('lead-date'),'Customer Name':g('lead-customer'),'Plant Name and Location':g('lead-plant'),'Lead Status':g('lead-status'),'Source':g('lead-source'),'Contact Details':g('lead-contact'),'Mail ID':g('lead-email'),'Scope in Lead':g('lead-product'),'Expected Close Date':g('lead-closedate'),'Remarks':g('lead-remarks')};
     arr = _data.aLeads; key = g('lead-no');
   } else if (type === 'visit') {
     if (!g('visit-lead') || !g('visit-date')) { showToast('Lead No and Schedule Date are required','error'); btn.disabled=false; document.getElementById('bs-save-btn-text').textContent='Save Entry'; return; }
-    row = {'Lead No':g('visit-lead'),'Schedule Date':g('visit-date'),'Customer Name':g('visit-customer'),'Plant Name Location':g('visit-plant'),'Meeting Person and Designation':g('visit-person'),'Visit Type':g('visit-type'),'Visit Status':g('visit-status'),'VISIT Discription':g('visit-desc'),'Action Items':g('visit-action'),'Next Follow-up Date':g('visit-followup')};
+    row = {'Lead No':g('visit-lead'),'Schedule Date':g('visit-date'),'Customer Name':g('visit-customer'),'Plant Name & Location':g('visit-plant'),'Meeting Person and Designation':g('visit-person'),'Appointment Status':g('visit-status'),'VISIT Discription':g('visit-desc'),'Action Items':g('visit-action')};
     arr = _data.aVisits; key = g('visit-lead')+'|'+g('visit-date');
   } else if (type === 'pr') {
     if (!g('pr-no') || !g('pr-customer')) { showToast('PR No and Customer Name are required','error'); btn.disabled=false; document.getElementById('bs-save-btn-text').textContent='Save Entry'; return; }
-    row = {'Internal PR No':g('pr-no'),'PR Date':g('pr-date'),'Customer Name':g('pr-customer'),'Lead No Ref':g('pr-leadref'),'PR Description':g('pr-desc'),'Quotation Status':g('pr-qstatus'),'Quotation Value':g('pr-value'),'Quotation Date':g('pr-qdate'),'Quotation Ref No':g('pr-qref'),'Scope of Work':g('pr-scope'),'Delivery Timeline':g('pr-delivery'),'Priority':g('pr-priority'),'Remark 3':g('pr-remark')};
+    row = {'Internal PR No':g('pr-no'),'PR Date':g('pr-date'),'Customer Name':g('pr-customer'),'PR Description':g('pr-desc'),'Quotation Status':g('pr-qstatus'),'Quotation Number':g('pr-qref'),'Quotation Date':g('pr-qdate'),'Outsourcing Status':g('pr-scope'),'Packing H':g('po-height')};
     arr = _data.aPRs; key = g('pr-no');
   } else if (type === 'po') {
     if (!g('po-customer')) { showToast('Customer Name is required','error'); btn.disabled=false; document.getElementById('bs-save-btn-text').textContent='Save Entry'; return; }
-    row = {'Work Order No':g('po-wono'),'Date':g('po-date'),'Customer Name':g('po-customer'),'PO No':g('po-pono'),'Internal PR':g('po-pr'),'Short Description':g('po-desc'),'PO Value':g('po-value'),'Expected Delivery':g('po-delivery'),'Outsourcing Status':g('po-out-status'),'Outsourcing No':g('po-out-no'),'Outsourcing Date':g('po-out-date'),'Vendor':g('po-vendor'),'Packing H':g('po-height'),'Packing W':g('po-width'),'Packing L':g('po-length'),'Weight KG':g('po-weight'),'Production Stage':g('po-stage'),'Remarks':g('po-remark')};
+    row = {'Date':g('po-date'),'Customer Name':g('po-customer'),'PO Number':g('po-pono'),'Internal PR':g('po-pr'),'Short Description':g('po-desc'),'Production Stage':g('po-stage'),'Work Order Status':g('po-stage'),'Remarks':g('po-remark')};
     arr = _data.aPOs; key = g('po-customer')+'|'+g('po-date');
   }
 
