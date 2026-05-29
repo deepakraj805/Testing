@@ -59,6 +59,54 @@
   ::-webkit-scrollbar-thumb { background: var(--surface4); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--surface4); }
   /* ══════════════════════════════════════════════
+     BOTTOM SHEET (Add/Edit form)
+  ══════════════════════════════════════════════ */
+  .bottom-sheet-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.52); backdrop-filter: blur(3px);
+    z-index: 200; display: none; align-items: flex-end; justify-content: center;
+  }
+  .bottom-sheet-overlay.open { display: flex; }
+  .bottom-sheet {
+    background: var(--surface); border: 1px solid var(--border-strong);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    width: min(720px, 100vw); max-height: 88vh;
+    overflow: hidden; display: flex; flex-direction: column;
+    box-shadow: 0 -16px 60px rgba(0,0,0,0.45);
+    animation: sheetUp 0.28s cubic-bezier(0.34,1.2,0.64,1);
+  }
+  @keyframes sheetUp { from { transform: translateY(60px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .bottom-sheet-handle {
+    width: 40px; height: 4px; border-radius: 2px; background: var(--surface4);
+    margin: 10px auto 0; flex-shrink: 0;
+  }
+  .bottom-sheet-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.9rem 1.5rem 0.85rem; border-bottom: 1px solid var(--border);
+    background: var(--surface2); flex-shrink: 0;
+  }
+  .bottom-sheet-title { font-size: 15px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 9px; }
+  .bottom-sheet-title svg { width: 16px; height: 16px; stroke: var(--accent); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .bottom-sheet-tabs {
+    display: flex; gap: 4px; padding: 0.6rem 1.5rem; border-bottom: 1px solid var(--border);
+    background: var(--surface2); flex-shrink: 0; overflow-x: auto;
+  }
+  .bs-tab {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 0.4rem 1rem; border-radius: 8px; font-size: 12px; font-weight: 700;
+    border: 1px solid var(--border-strong); background: var(--surface3);
+    color: var(--text2); cursor: pointer; font-family: inherit; transition: all 0.16s;
+    white-space: nowrap;
+  }
+  .bs-tab:hover { background: var(--surface4); color: var(--text); }
+  .bs-tab.active { background: var(--accent); border-color: var(--accent); color: white; box-shadow: 0 2px 10px rgba(224,96,48,0.32); }
+  .bs-tab svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .bottom-sheet-body { padding: 1.2rem 1.5rem; overflow-y: auto; flex: 1; }
+  .bottom-sheet-footer {
+    display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+    padding: 0.85rem 1.5rem; border-top: 1px solid var(--border); background: var(--surface2); flex-shrink: 0;
+  }
+
+  /* ══════════════════════════════════════════════
      ADD / EDIT MODAL
   ══════════════════════════════════════════════ */
   .modal-overlay {
@@ -194,98 +242,6 @@
   /* SLICER SECTION for PR/PO */
   .section-slicer-wrap { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; align-items: center; }
   .section-slicer-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text3); white-space: nowrap; }
-
-  /* ═══════════════ VERTICAL SLICER PANEL ═══════════════ */
-  .vslicer-layout {
-    display: flex; gap: 14px; align-items: flex-start;
-  }
-  .vslicer-sidebar {
-    width: 160px; flex-shrink: 0;
-    display: flex; flex-direction: column; gap: 10px;
-  }
-  .vslicer-main { flex: 1; min-width: 0; }
-  .vslicer-panel {
-    background: var(--surface2);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-  .vslicer-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 7px 10px 5px;
-    background: var(--surface3);
-    border-bottom: 1px solid var(--border-strong);
-    gap: 6px;
-  }
-  .vslicer-title {
-    font-size: 9.5px; font-weight: 800; color: var(--text3);
-    text-transform: uppercase; letter-spacing: 0.9px; flex: 1;
-    display: flex; align-items: center; gap: 5px;
-  }
-  .vslicer-title svg { width: 10px; height: 10px; stroke: var(--accent); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
-  .vslicer-clear {
-    font-size: 9px; color: var(--text3); background: none; border: none;
-    cursor: pointer; font-family: inherit; padding: 1px 4px; border-radius: 4px;
-    transition: all 0.14s; font-weight: 600; white-space: nowrap;
-  }
-  .vslicer-clear:hover { color: var(--red); background: rgba(208,48,48,0.08); }
-  .vslicer-search {
-    width: 100%; background: var(--surface); border: none; border-bottom: 1px solid var(--border);
-    color: var(--text); padding: 5px 8px 5px 24px; font-size: 11px; font-family: inherit;
-    outline: none; display: block;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a95af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: 7px center;
-    transition: background 0.14s;
-  }
-  .vslicer-search:focus { background-color: var(--surface2); }
-  .vslicer-search::placeholder { color: var(--text3); }
-  .vslicer-list {
-    max-height: 200px; overflow-y: auto;
-    padding: 4px 0;
-  }
-  .vslicer-list::-webkit-scrollbar { width: 3px; }
-  .vslicer-list::-webkit-scrollbar-thumb { background: var(--surface4); border-radius: 3px; }
-  .vslicer-item {
-    display: flex; align-items: center; gap: 7px;
-    padding: 5px 10px; cursor: pointer;
-    font-size: 11.5px; font-weight: 500; color: var(--text2);
-    transition: background 0.12s; user-select: none; border: none;
-    background: none; width: 100%; font-family: inherit; text-align: left;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .vslicer-item:hover { background: var(--surface3); color: var(--text); }
-  .vslicer-item.selected { background: rgba(224,96,48,0.10); color: var(--accent); font-weight: 700; }
-  .vslicer-item .vs-check {
-    width: 13px; height: 13px; border-radius: 3px; flex-shrink: 0;
-    border: 1.5px solid var(--border-strong); background: var(--surface);
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.14s;
-  }
-  .vslicer-item.selected .vs-check {
-    background: var(--accent); border-color: var(--accent);
-  }
-  .vslicer-item.selected .vs-check::after {
-    content: ''; display: block; width: 6px; height: 3px;
-    border-left: 1.5px solid white; border-bottom: 1.5px solid white;
-    transform: rotate(-45deg) translateY(-1px);
-  }
-  .vslicer-item .vs-dot {
-    width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
-  }
-  .vslicer-item .vs-label { flex: 1; overflow: hidden; text-overflow: ellipsis; }
-  .vslicer-item .vs-count {
-    font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace;
-    font-weight: 600; flex-shrink: 0; margin-left: auto;
-  }
-  .vslicer-item.selected .vs-count { color: var(--accent); }
-  .vslicer-empty { font-size: 11px; color: var(--text3); text-align: center; padding: 14px 0; }
-
-  @media(max-width:760px) {
-    .vslicer-layout { flex-direction: column; }
-    .vslicer-sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; }
-    .vslicer-panel { width: 100%; }
-    .vslicer-list { max-height: 120px; }
-  }
 
   /* CONFIRM DELETE */
   .confirm-overlay {
@@ -919,25 +875,17 @@
     </select>
     <select class="filter-select" id="filter-pr-status" onchange="applyAllFilters()">
       <option value="">All PR Status</option>
-      <option value="submitted">Submitted</option>
-      <option value="not submitted">Not Submitted</option>
     </select>
     <select class="filter-select" id="filter-po-stage" onchange="applyAllFilters()">
       <option value="">All PO Stage</option>
-      <option value="PROCESSING">Processing</option>
-      <option value="COMPLETED">Completed</option>
-      <option value="25% COMPLETED">25% Completed</option>
-      <option value="50% COMPLETED">50% Completed</option>
-      <option value="75% COMPLETED">75% Completed</option>
-      <option value="YET TO START">Yet to Start</option>
     </select>
     <button class="clear-btn" onclick="clearAllFilters()">✕ Clear</button>
     <span class="filter-count" id="filter-summary"></span>
     <div class="filter-divider"></div>
-    <button class="btn-filter-add" onclick="openAddModal('lead')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Lead</button>
-    <button class="btn-filter-add" onclick="openAddModal('visit')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Visit</button>
-    <button class="btn-filter-add" onclick="openAddModal('pr')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>PR</button>
-    <button class="btn-filter-add" onclick="openAddModal('po')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>PO</button>
+    <button class="btn-filter-add" onclick="openAddSheet('lead')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Lead</button>
+    <button class="btn-filter-add" onclick="openAddSheet('visit')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Visit</button>
+    <button class="btn-filter-add" onclick="openAddSheet('pr')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>PR</button>
+    <button class="btn-filter-add" onclick="openAddSheet('po')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>PO</button>
   </div>
 
   <!-- PIPELINE + VISITS -->
@@ -947,65 +895,26 @@
         <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         Lead pipeline
       </div>
-      <div class="vslicer-layout">
-        <div class="vslicer-sidebar">
-          <div class="vslicer-panel">
-            <div class="vslicer-header">
-              <span class="vslicer-title"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Status</span>
-              <button class="vslicer-clear" onclick="clearVSlicer('lead-status')">✕</button>
-            </div>
-            <input class="vslicer-search" type="text" placeholder="Search…" oninput="filterVSlicerSearch(this,'vs-lead-status')">
-            <div class="vslicer-list" id="vs-lead-status"></div>
-          </div>
-          <div class="vslicer-panel">
-            <div class="vslicer-header">
-              <span class="vslicer-title"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Location</span>
-              <button class="vslicer-clear" onclick="clearVSlicer('lead-location')">✕</button>
-            </div>
-            <input class="vslicer-search" type="text" placeholder="Search…" oninput="filterVSlicerSearch(this,'vs-lead-location')">
-            <div class="vslicer-list" id="vs-lead-location"></div>
-          </div>
-        </div>
-        <div class="vslicer-main">
-          <div id="pipeline-bars"></div>
-          <div class="chart-wrap"><canvas id="pipeChart" role="img" aria-label="Donut chart of lead pipeline stages"></canvas></div>
-        </div>
-      </div>
+      <div id="pipeline-bars"></div>
+      <div class="chart-wrap"><canvas id="pipeChart" role="img" aria-label="Donut chart of lead pipeline stages"></canvas></div>
     </div>
     <div class="card">
       <div class="card-title">
         <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         Site visits
       </div>
-      <div class="vslicer-layout">
-        <div class="vslicer-sidebar">
-          <div class="vslicer-panel">
-            <div class="vslicer-header">
-              <span class="vslicer-title"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Status</span>
-              <button class="vslicer-clear" onclick="clearVSlicer('visit-status')">✕</button>
-            </div>
-            <input class="vslicer-search" type="text" placeholder="Search…" oninput="filterVSlicerSearch(this,'vs-visit-status')">
-            <div class="vslicer-list" id="vs-visit-status"></div>
-          </div>
-          <div class="vslicer-panel">
-            <div class="vslicer-header">
-              <span class="vslicer-title"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Month</span>
-              <button class="vslicer-clear" onclick="clearVSlicer('visit-month')">✕</button>
-            </div>
-            <div class="vslicer-list" id="vs-visit-month"></div>
-          </div>
-        </div>
-        <div class="vslicer-main">
-          <div class="card-search">
-            <input class="card-search-input" type="text" id="visit-search" placeholder="Search location, person…" oninput="renderVisits()">
-          </div>
-          <div id="visits-list"></div>
-          <button class="view-all-btn" id="view-all-visits-btn" onclick="openVisitsDrawer()" style="display:none">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-            <span id="view-all-label">View all visits</span>
-          </button>
-        </div>
+      <div class="card-search">
+        <input class="card-search-input" type="text" id="visit-search" placeholder="Search location, person…" oninput="renderVisits()">
       </div>
+      <div class="slicer-wrap">
+        <span class="slicer-label">Quick Filter</span>
+        <div class="slicer-bar" id="visit-status-slicers"></div>
+      </div>
+      <div id="visits-list"></div>
+      <button class="view-all-btn" id="view-all-visits-btn" onclick="openVisitsDrawer()" style="display:none">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        <span id="view-all-label">View all visits</span>
+      </button>
     </div>
   </div>
 
@@ -1015,41 +924,26 @@
       <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       Purchase requests tracker
     </div>
-    <div class="vslicer-layout">
-      <div class="vslicer-sidebar">
-        <div class="vslicer-panel">
-          <div class="vslicer-header">
-            <span class="vslicer-title"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Customer</span>
-            <button class="vslicer-clear" onclick="clearVSlicer('pr-customer')">✕</button>
-          </div>
-          <input class="vslicer-search" type="text" placeholder="Search…" oninput="filterVSlicerSearch(this,'vs-pr-customer')">
-          <div class="vslicer-list" id="vs-pr-customer"></div>
-        </div>
-        <div class="vslicer-panel">
-          <div class="vslicer-header">
-            <span class="vslicer-title"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Status</span>
-            <button class="vslicer-clear" onclick="clearVSlicer('pr-status')">✕</button>
-          </div>
-          <div class="vslicer-list" id="vs-pr-status"></div>
-        </div>
-      </div>
-      <div class="vslicer-main">
-        <div class="card-search" style="margin-bottom:0.85rem">
-          <input class="card-search-input" type="text" id="pr-search" placeholder="Search PR No, description, customer…" oninput="renderPRs()">
-        </div>
-        <table class="data-table">
-          <thead><tr>
-            <th onclick="sortTable('pr','Internal PR No',this)">PR No <span class="sort-icon">↕</span></th>
-            <th onclick="sortTable('pr','PR Description',this)">Description <span class="sort-icon">↕</span></th>
-            <th onclick="sortTable('pr','Customer Name',this)">Customer <span class="sort-icon">↕</span></th>
-            <th>Status</th>
-            <th style="width:64px">Actions</th>
-          </tr></thead>
-          <tbody id="pr-tbody"></tbody>
-        </table>
-        <span class="row-count" id="pr-count"></span>
-      </div>
+    <div class="card-search">
+      <input class="card-search-input" type="text" id="pr-search" placeholder="Search PR No, description, customer…" oninput="renderPRs()">
+      <select class="card-search-select" id="pr-status-filter" onchange="renderPRs()">
+        <option value="">All Status</option>
+        <option value="submitted">Submitted</option>
+        <option value="not submitted">Not Submitted</option>
+      </select>
     </div>
+    <div class="section-slicer-wrap" id="pr-slicer-wrap"></div>
+    <table class="data-table">
+      <thead><tr>
+        <th onclick="sortTable('pr','Internal PR No',this)">PR No <span class="sort-icon">↕</span></th>
+        <th onclick="sortTable('pr','PR Description',this)">Description <span class="sort-icon">↕</span></th>
+        <th onclick="sortTable('pr','Customer Name',this)">Customer <span class="sort-icon">↕</span></th>
+        <th>Status</th>
+        <th style="width:64px">Actions</th>
+      </tr></thead>
+      <tbody id="pr-tbody"></tbody>
+    </table>
+    <span class="row-count" id="pr-count"></span>
   </div>
 
   <!-- PO TRACKER -->
@@ -1058,49 +952,31 @@
       <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
       Purchase orders
     </div>
-    <div class="vslicer-layout">
-      <div class="vslicer-sidebar">
-        <div class="vslicer-panel">
-          <div class="vslicer-header">
-            <span class="vslicer-title"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Customer</span>
-            <button class="vslicer-clear" onclick="clearVSlicer('po-customer')">✕</button>
-          </div>
-          <input class="vslicer-search" type="text" placeholder="Search…" oninput="filterVSlicerSearch(this,'vs-po-customer')">
-          <div class="vslicer-list" id="vs-po-customer"></div>
-        </div>
-        <div class="vslicer-panel">
-          <div class="vslicer-header">
-            <span class="vslicer-title"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Stage</span>
-            <button class="vslicer-clear" onclick="clearVSlicer('po-stage')">✕</button>
-          </div>
-          <div class="vslicer-list" id="vs-po-stage"></div>
-        </div>
-        <div class="vslicer-panel">
-          <div class="vslicer-header">
-            <span class="vslicer-title"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Month</span>
-            <button class="vslicer-clear" onclick="clearVSlicer('po-month')">✕</button>
-          </div>
-          <div class="vslicer-list" id="vs-po-month"></div>
-        </div>
-      </div>
-      <div class="vslicer-main">
-        <div class="card-search" style="margin-bottom:0.85rem">
-          <input class="card-search-input" type="text" id="po-search" placeholder="Search customer, PR ref, description…" oninput="renderPOs()">
-        </div>
-        <table class="data-table">
-          <thead><tr>
-            <th onclick="sortTable('po','Date',this)">Date <span class="sort-icon">↕</span></th>
-            <th onclick="sortTable('po','Customer Name',this)">Customer <span class="sort-icon">↕</span></th>
-            <th>PR ref</th>
-            <th onclick="sortTable('po','Short Description',this)">Description <span class="sort-icon">↕</span></th>
-            <th>Stage</th>
-            <th style="width:64px">Actions</th>
-          </tr></thead>
-          <tbody id="po-tbody"></tbody>
-        </table>
-        <span class="row-count" id="po-count"></span>
-      </div>
+    <div class="card-search">
+      <input class="card-search-input" type="text" id="po-search" placeholder="Search customer, PR ref, description…" oninput="renderPOs()">
+      <select class="card-search-select" id="po-stage-filter" onchange="renderPOs()">
+        <option value="">All Stage</option>
+        <option value="PROCESSING">Processing</option>
+        <option value="COMPLETED">Completed</option>
+        <option value="25% COMPLETED">25% Completed</option>
+        <option value="50% COMPLETED">50% Completed</option>
+        <option value="75% COMPLETED">75% Completed</option>
+        <option value="YET TO START">Yet to Start</option>  
+      </select>
     </div>
+    <div class="section-slicer-wrap" id="po-slicer-wrap"></div>
+    <table class="data-table">
+      <thead><tr>
+        <th onclick="sortTable('po','Date',this)">Date <span class="sort-icon">↕</span></th>
+        <th onclick="sortTable('po','Customer Name',this)">Customer <span class="sort-icon">↕</span></th>
+        <th>PR ref</th>
+        <th onclick="sortTable('po','Short Description',this)">Description <span class="sort-icon">↕</span></th>
+        <th>Stage</th>
+        <th style="width:64px">Actions</th>
+      </tr></thead>
+      <tbody id="po-tbody"></tbody>
+    </table>
+    <span class="row-count" id="po-count"></span>
   </div>
 
 
@@ -1118,10 +994,104 @@
   </div>
 
 <!-- APPS SCRIPT BANNER -->
-<div class="apps-script-banner" id="as-banner" style="display:none!important"></div>
+<div class="apps-script-banner" id="as-banner">
+  ⚡ <strong>Auto-save to Google Sheets:</strong> Configure your Apps Script Web App URL to enable direct write-back from this dashboard.
+  <button class="banner-cfg-btn" onclick="openScriptConfig()">Configure URL</button>
+</div>
 
-<!-- SCRIPT CONFIG MODAL (hidden — URL hardcoded) -->
-<div class="modal-overlay" id="script-config-modal" style="display:none!important"></div>
+<!-- SCRIPT CONFIG MODAL -->
+<div class="modal-overlay" id="script-config-modal">
+  <div class="modal" style="width:min(500px,95vw)">
+    <div class="modal-header">
+      <div class="modal-title"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Configure Apps Script URL</div>
+      <button class="modal-close" onclick="closeScriptConfig()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text2);margin-bottom:1.2rem;line-height:1.6">
+        To enable <strong>Add / Edit / Delete</strong> to auto-save into your Google Sheet, deploy an <strong>Apps Script Web App</strong> from your spreadsheet and paste the URL below.<br><br>
+        <span style="font-size:11.5px;color:var(--text3)">Steps: Open sheet → Extensions → Apps Script → paste the provided script → Deploy → Web App → copy URL</span>
+      </p>
+      <div class="form-group">
+        <label class="form-label">Apps Script Web App URL</label>
+        <input class="form-input" type="url" id="script-url-input" placeholder="https://script.google.com/macros/s/…/exec" style="font-size:12px">
+      </div>
+      <details style="margin-top:1.2rem">
+        <summary style="font-size:12px;color:var(--accent);cursor:pointer;font-weight:600">📋 Copy the Apps Script code to deploy</summary>
+        <pre style="margin-top:0.75rem;background:var(--surface2);border:1px solid var(--border-strong);border-radius:8px;padding:1rem;font-size:11px;overflow-x:auto;color:var(--text2);line-height:1.6">function doPost(e) {
+  var ss = SpreadsheetApp.openById("1Yy9KtzH45YLBU3O1OYgpZydccfx7EUz_8OZf0rGMksA");
+  var data = JSON.parse(e.postData.contents);
+  var sheet = ss.getSheetByName(data.tab);
+  var headers = sheet.getRange(1,1,1,sheet.getLastColumn()).getValues()[0];
+
+  if (data.action === "append") {
+    var row = headers.map(h => data.row[h] || "");
+    sheet.appendRow(row);
+  } else if (data.action === "update") {
+    var rows = sheet.getDataRange().getValues();
+    for (var i=1; i&lt;rows.length; i++) {
+      if (String(rows[i][0]) === String(data.key)) {
+        headers.forEach((h,j) => { if(data.row[h]!==undefined) sheet.getRange(i+1,j+1).setValue(data.row[h]); });
+        break;
+      }
+    }
+  } else if (data.action === "delete") {
+    var rows = sheet.getDataRange().getValues();
+    for (var i=1; i&lt;rows.length; i++) {
+      if (String(rows[i][0]) === String(data.key)) { sheet.deleteRow(i+1); break; }
+    }
+  }
+  return ContentService.createTextOutput(JSON.stringify({status:"ok"})).setMimeType(ContentService.MimeType.JSON);
+}
+function doGet(e) { return ContentService.createTextOutput("ok"); }</pre>
+      </details>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeScriptConfig()">Cancel</button>
+      <button class="btn-save" onclick="saveScriptUrl()">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Save URL
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM SHEET (Add / Edit) -->
+<div class="bottom-sheet-overlay" id="add-sheet">
+  <div class="bottom-sheet">
+    <div class="bottom-sheet-handle"></div>
+    <div class="bottom-sheet-header">
+      <div class="bottom-sheet-title" id="bs-title-text">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Entry
+      </div>
+      <button class="modal-close" onclick="closeBottomSheet()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <!-- Tab switcher (only shown in add mode) -->
+    <div class="bottom-sheet-tabs" id="bs-tab-bar">
+      <button class="bs-tab active" id="bs-tab-lead" onclick="switchBSTab('lead')">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Lead
+      </button>
+      <button class="bs-tab" id="bs-tab-visit" onclick="switchBSTab('visit')">
+        <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Visit
+      </button>
+      <button class="bs-tab" id="bs-tab-pr" onclick="switchBSTab('pr')">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>PR
+      </button>
+      <button class="bs-tab" id="bs-tab-po" onclick="switchBSTab('po')">
+        <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/></svg>PO
+      </button>
+    </div>
+    <div class="bottom-sheet-body" id="bs-body">
+      <!-- forms injected here dynamically -->
+    </div>
+    <div class="bottom-sheet-footer">
+      <button class="btn-cancel" onclick="closeBottomSheet()">Cancel</button>
+      <button class="btn-save" id="bs-save-btn" onclick="saveBSEntry()">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        <span id="bs-save-btn-text">Save Entry</span>
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- ADD / EDIT MODAL -->
 <div class="modal-overlay" id="entry-modal">
@@ -1461,6 +1431,27 @@ function renderDashboard({travels,leads,prs,pos}) {
   const statuses=[...new Set(_data.aLeads.map(r=>String(r['Lead Status']||'Unknown').trim()))].sort();
   const sel=document.getElementById('filter-lead-status');
   sel.innerHTML='<option value="">All Lead Status</option>'+statuses.map(s=>`<option value="${s}">${s}</option>`).join('');
+
+  // ── Dynamically populate PR Status filter from actual data ──
+  const prStatuses=[...new Set(_data.aPRs.map(r=>{
+    const q=r['Quotation Status']||(r['Remark 3']?'Submitted':'Not Submitted');
+    return String(q).trim();
+  }).filter(Boolean))].sort();
+  const prSel=document.getElementById('filter-pr-status');
+  if(prSel) prSel.innerHTML='<option value="">All PR Status</option>'+prStatuses.map(s=>`<option value="${s.toLowerCase()}">${s}</option>`).join('');
+
+  // ── Also sync the card-level PR status filter ──
+  const prCardSel=document.getElementById('pr-status-filter');
+  if(prCardSel) { const prev=prCardSel.value; prCardSel.innerHTML='<option value="">All Status</option>'+prStatuses.map(s=>`<option value="${s.toLowerCase()}">${s}</option>`).join(''); prCardSel.value=prev; }
+
+  // ── Dynamically populate PO Stage filter from actual data ──
+  const poStages=[...new Set(_data.aPOs.map(r=>String(r['Production Stage']||'').trim()).filter(Boolean))].sort();
+  const poSel=document.getElementById('filter-po-stage');
+  if(poSel) poSel.innerHTML='<option value="">All PO Stage</option>'+poStages.map(s=>`<option value="${s}">${s==='YET TO START'?'Yet to Start':s.charAt(0)+s.slice(1).toLowerCase()}</option>`).join('');
+
+  // ── Also sync the card-level PO stage filter ──
+  const poCardSel=document.getElementById('po-stage-filter');
+  if(poCardSel) { const prev=poCardSel.value; poCardSel.innerHTML='<option value="">All Stage</option>'+poStages.map(s=>`<option value="${s}">${s==='YET TO START'?'Yet to Start':s.charAt(0)+s.slice(1).toLowerCase()}</option>`).join(''); poCardSel.value=prev; }
   // Professional semantic palette — status name drives color, not position
   // Known statuses get hand-picked colors; unknowns get distinct palette slots
   const _SEMANTIC={
@@ -1488,7 +1479,9 @@ function renderDashboard({travels,leads,prs,pos}) {
 
   renderPipeline();
   renderVisits(); renderPRs(); renderPOs(); try{renderPipelineTracker();}catch(e){console.error("PT error:",e);}
-  _vsRebuildAll();
+  buildVisitSlicers();
+  buildPRSlicers();
+  buildPOSlicers();
 
   const now=new Date().toLocaleString();
   set('file-info',`Google Sheets · refreshed ${now}`);
@@ -1505,14 +1498,7 @@ function renderDashboard({travels,leads,prs,pos}) {
 
 function renderPipeline() {
   const gls=(document.getElementById('filter-lead-status')||{}).value||'';
-  const filteredLeads=_data.aLeads.filter(r=>{
-    const s = String(r['Lead Status']||'Unknown').trim();
-    const loc = String(r['Plant Name / Location']||r['Plant Name Location']||r['Location']||'').trim();
-    if(gls && s !== gls) return false;
-    if(!_vsPass('lead-status', s)) return false;
-    if(_vslicers['lead-location'].size>0 && loc && !_vsPass('lead-location', loc)) return false;
-    return true;
-  });
+  const filteredLeads=gls?_data.aLeads.filter(r=>String(r['Lead Status']||'Unknown').trim()===gls):_data.aLeads;
 
   // Pipeline bars + chart
   const sc={};
@@ -1573,21 +1559,14 @@ function renderVisits() {
   const q=(document.getElementById('visit-search')||{}).value||'';
   const gq=(document.getElementById('global-search')||{}).value||'';
   const gls=(document.getElementById('filter-lead-status')||{}).value||'';
+  const activeStatus = gls || _visitSlicerStatus;
   const vc=['#4a8fd4','#e0a030','#3db87a','#8b6fd4','#e05c3a','#545868'];
   const filtered=_data.aVisits.filter(r=>{
     if(!matches(r,q))return false;
     if(!matches(r,gq))return false;
-    const lead=_data.aLeads.find(l=>l['Lead No']===r['Lead No']);
-    const status = lead ? String(lead['Lead Status']||'Unknown').trim() : 'Unknown';
-    if(gls && status !== gls) return false;
-    if(!_vsPass('visit-status', status)) return false;
-    // Month slicer
-    if(_vslicers['visit-month'].size>0) {
-      const d = new Date(r['Schedule Date']||r['Date']||'');
-      if(!isNaN(d)) {
-        const mv = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-        if(!_vsPass('visit-month', mv)) return false;
-      } else return false;
+    if(activeStatus){
+      const lead=_data.aLeads.find(l=>l['Lead No']===r['Lead No']);
+      if(!lead||String(lead['Lead Status']||'Unknown').trim()!==activeStatus)return false;
     }
     return true;
   });
@@ -1609,7 +1588,7 @@ function renderVisits() {
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0">
         <span class="visit-badge" style="background:${c}28;color:${c}">${r['Lead No']||''}</span>
-        <div class="row-actions"><button class="btn-dots" title="Actions" onclick="toggleDotMenu(event,'dmv${_vi}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button><div class="dot-menu" id="dmv${_vi}"><button class="dot-menu-item" onclick="closeDotMenus();openEditModal('visit',${_vi})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button><div class="dot-menu-divider"></div><button class="dot-menu-item danger" onclick="closeDotMenus();confirmDelete('visit',${_vi})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete</button></div></div>
+        <div class="row-actions"><button class="btn-dots" title="Actions" onclick="toggleDotMenu(event,'dmv${_vi}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button><div class="dot-menu" id="dmv${_vi}"><button class="dot-menu-item" onclick="closeDotMenus();openEditSheetFrom('visit',${_vi})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button><div class="dot-menu-divider"></div><button class="dot-menu-item danger" onclick="closeDotMenus();confirmDelete('visit',${_vi})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete</button></div></div>
       </div>
     </div>`;
   }).join('')||'<div class="empty">No visits match</div>');
@@ -1757,24 +1736,27 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeVisitsD
 function renderPRs() {
   const q=(document.getElementById('pr-search')||{}).value||'';
   const gq=(document.getElementById('global-search')||{}).value||'';
+  const psf=(document.getElementById('pr-status-filter')||{}).value||'';
   const gps=(document.getElementById('filter-pr-status')||{}).value||'';
+  // Both filters are ANDed: if both set they must both match; if one set it must match
+  const activeFilter=gps||psf;
 
   let rows=_data.aPRs.filter(r=>{
     if(!matches(r,q))return false;
     if(!matches(r,gq))return false;
-    const quot=String(r['Quotation Status']||(r['Remark 3']?'Submitted':'Not Submitted')).trim();
-    if(gps && quot.toLowerCase()!==gps) return false;
-    if(!_vsPass('pr-customer', String(r['Customer Name']||'').trim())) return false;
-    if(!_vsPass('pr-status', quot)) return false;
+    if(activeFilter){const quot=r['Quotation Status']||(r['Remark 3']?'submitted':'not submitted');if(String(quot).toLowerCase().trim()!==activeFilter)return false;}
     return true;
   });
   const {col,dir}=_sort.pr;
   if(col) rows=[...rows].sort((a,b)=>String(a[col]||'').localeCompare(String(b[col]||''))*dir);
 
+  // Apply customer slicer
+  if (_prSlicer) rows = rows.filter(r => r['Customer Name'] === _prSlicer);
+
   set('pr-tbody',rows.map((r,idx)=>{
     const quot=r['Quotation Status']||(r['Remark 3']?'Submitted':'Not Submitted');
     const _pidx=_data.aPRs.indexOf(r);
-    return `<tr><td class="mono">${r['Internal PR No']||'—'}</td><td class="name">${trunc(r['PR Description']||'—',40)}</td><td>${trunc(r['Customer Name']||'—',35)}</td><td><span class="pill ${pillPR(quot)}">${quot}</span></td><td><div class="row-actions"><button class="btn-dots" title="Actions" onclick="toggleDotMenu(event,'dmp${_pidx}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button><div class="dot-menu" id="dmp${_pidx}"><button class="dot-menu-item" onclick="closeDotMenus();openEditModal('pr',${_pidx})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button><div class="dot-menu-divider"></div><button class="dot-menu-item danger" onclick="closeDotMenus();confirmDelete('pr',${_pidx})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete</button></div></div></td></tr>`;
+    return `<tr><td class="mono">${r['Internal PR No']||'—'}</td><td class="name">${trunc(r['PR Description']||'—',40)}</td><td>${trunc(r['Customer Name']||'—',35)}</td><td><span class="pill ${pillPR(quot)}">${quot}</span></td><td><div class="row-actions"><button class="btn-dots" title="Actions" onclick="toggleDotMenu(event,'dmp${_pidx}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button><div class="dot-menu" id="dmp${_pidx}"><button class="dot-menu-item" onclick="closeDotMenus();openEditSheetFrom('pr',${_pidx})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button><div class="dot-menu-divider"></div><button class="dot-menu-item danger" onclick="closeDotMenus();confirmDelete('pr',${_pidx})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete</button></div></div></td></tr>`;
   }).join('')||'<tr><td colspan="5" class="empty">No PR data matches</td></tr>');
   const el=document.getElementById('pr-count');
   if(el) el.textContent=rows.length!==_data.aPRs.length?`Showing ${rows.length} of ${_data.aPRs.length} records`:'';
@@ -1783,26 +1765,24 @@ function renderPRs() {
 function renderPOs() {
   const q=(document.getElementById('po-search')||{}).value||'';
   const gq=(document.getElementById('global-search')||{}).value||'';
+  const psf=(document.getElementById('po-stage-filter')||{}).value||'';
   const gps=(document.getElementById('filter-po-stage')||{}).value||'';
+  const activeFilter=(gps||psf).trim();
 
   let rows=_data.aPOs.filter(r=>{
     if(!matches(r,q))return false;
     if(!matches(r,gq))return false;
-    const stage=String(r['Production Stage']||'').trim();
-    if(gps && stage.toLowerCase()!==gps.toLowerCase()) return false;
-    if(!_vsPass('po-customer', String(r['Customer Name']||'').trim())) return false;
-    if(!_vsPass('po-stage', stage)) return false;
-    if(_vslicers['po-month'].size>0) {
-      const d = new Date(r['Date']||'');
-      if(!isNaN(d)) {
-        const mv = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-        if(!_vsPass('po-month', mv)) return false;
-      } else return false;
+    if(activeFilter){
+      const stage=String(r['Production Stage']||'').trim();
+      if(stage.toLowerCase()!==activeFilter.toLowerCase()) return false;
     }
     return true;
   });
   const {col,dir}=_sort.po;
   if(col) rows=[...rows].sort((a,b)=>String(a[col]||'').localeCompare(String(b[col]||''))*dir);
+
+  // Apply customer slicer
+  if (_poSlicer) rows = rows.filter(r => r['Customer Name'] === _poSlicer);
 
   set('po-tbody',rows.map((r,idx)=>{const _pidx=_data.aPOs.indexOf(r);return `<tr>
     <td class="mono">${fmtDate(r['Date'])}</td>
@@ -1810,13 +1790,21 @@ function renderPOs() {
     <td class="mono">${r['Internal PR']||'—'}</td>
     <td>${trunc(r['Short Description']||'—',35)}</td>
     <td><span class="pill ${pillPO(r['Production Stage'])}">${r['Production Stage']==='YET TO START'?'Yet to Start':r['Production Stage']==='75% COMPLETED'?'75% Completed':r['Production Stage']||'—'}</span></td>
-    <td><div class="row-actions"><button class="btn-dots" title="Actions" onclick="toggleDotMenu(event,'dmpo${_pidx}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button><div class="dot-menu" id="dmpo${_pidx}"><button class="dot-menu-item" onclick="closeDotMenus();openEditModal('po',${_pidx})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button><div class="dot-menu-divider"></div><button class="dot-menu-item danger" onclick="closeDotMenus();confirmDelete('po',${_pidx})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete</button></div></div></td>
+    <td><div class="row-actions"><button class="btn-dots" title="Actions" onclick="toggleDotMenu(event,'dmpo${_pidx}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button><div class="dot-menu" id="dmpo${_pidx}"><button class="dot-menu-item" onclick="closeDotMenus();openEditSheetFrom('po',${_pidx})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button><div class="dot-menu-divider"></div><button class="dot-menu-item danger" onclick="closeDotMenus();confirmDelete('po',${_pidx})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete</button></div></div></td>
   </tr>`; }).join('')||'<tr><td colspan="6" class="empty">No PO data matches</td></tr>');
   const el=document.getElementById('po-count');
   if(el) el.textContent=rows.length!==_data.aPOs.length?`Showing ${rows.length} of ${_data.aPOs.length} records`:'';
 }
 
 function applyAllFilters() {
+  // Global filters always override card-level filters
+  const gps=document.getElementById('filter-pr-status');
+  const psf=document.getElementById('pr-status-filter');
+  if(gps&&psf) psf.value=gps.value;
+  const gpo=document.getElementById('filter-po-stage');
+  const pof=document.getElementById('po-stage-filter');
+  if(gpo&&pof) pof.value=gpo.value;
+
   renderVisits(); renderPRs(); renderPOs(); try{renderPipelineTracker();}catch(e){console.error("PT error:",e);} renderPipeline();
   const active=[
     document.getElementById('global-search').value,
@@ -1830,13 +1818,12 @@ function applyAllFilters() {
 
 function clearAllFilters() {
   ['global-search','filter-lead-status','filter-pr-status','filter-po-stage',
-   'pr-search','po-search','visit-search'].forEach(id=>{
+   'pr-search','pr-status-filter','po-search','po-stage-filter','visit-search'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.value='';
   });
   _visitSlicerStatus = '';
   _drawerStatusSlicer = '';
   _drawerMonthSlicer  = '';
-  clearAllVSlicers();
   applyAllFilters();
 }
 
@@ -2333,7 +2320,6 @@ async function saveEntry() {
   // Re-render everything
   renderPipeline(); renderVisits(); renderPRs(); renderPOs();
   try { renderPipelineTracker(); } catch(e) {}
-  _vsRebuildAll();
   set('kpi-leads', _data.aLeads.length);
   set('kpi-prs',   _data.aPRs.length);
   set('kpi-pos',   _data.aPOs.length);
@@ -2385,7 +2371,6 @@ async function executeDelete() {
   }
   renderPipeline(); renderVisits(); renderPRs(); renderPOs();
   try { renderPipelineTracker(); } catch(e) {}
-  _vsRebuildAll();
   set('kpi-leads', _data.aLeads.length);
   set('kpi-prs',   _data.aPRs.length);
   set('kpi-pos',   _data.aPOs.length);
@@ -2422,215 +2407,240 @@ function closeDotMenus() {
 }
 
 // ══════════════════════════════════════════════════════
-//  VERTICAL SLICER ENGINE
+//  PR SLICERS
 // ══════════════════════════════════════════════════════
-
-// Multi-select slicer state — sets of selected values per slicer id
-const _vslicers = {
-  'lead-status':   new Set(),
-  'lead-location': new Set(),
-  'visit-status':  new Set(),
-  'visit-month':   new Set(),
-  'pr-customer':   new Set(),
-  'pr-status':     new Set(),
-  'po-customer':   new Set(),
-  'po-stage':      new Set(),
-  'po-month':      new Set(),
-};
-
-function _vsToggle(slicerId, val) {
-  const s = _vslicers[slicerId];
-  if (!s) return;
-  if (s.has(val)) s.delete(val); else s.add(val);
-  _vsRebuildAll();
-}
-
-function clearVSlicer(slicerId) {
-  if (_vslicers[slicerId]) _vslicers[slicerId].clear();
-  _vsRebuildAll();
-}
-
-function clearAllVSlicers() {
-  Object.keys(_vslicers).forEach(k => _vslicers[k].clear());
-  _vsRebuildAll();
-}
-
-function filterVSlicerSearch(input, listId) {
-  const q = input.value.toLowerCase();
-  const list = document.getElementById(listId);
-  if (!list) return;
-  list.querySelectorAll('.vslicer-item').forEach(btn => {
-    const label = (btn.dataset.val || '').toLowerCase();
-    btn.style.display = label.includes(q) ? '' : 'none';
-  });
-}
-
-function _vsRebuildAll() {
-  _buildVSlicer_LeadStatus();
-  _buildVSlicer_LeadLocation();
-  _buildVSlicer_VisitStatus();
-  _buildVSlicer_VisitMonth();
-  _buildVSlicer_PRCustomer();
-  _buildVSlicer_PRStatus();
-  _buildVSlicer_POCustomer();
-  _buildVSlicer_POStage();
-  _buildVSlicer_POMonth();
-  renderPipeline();
-  renderVisits();
-  renderPRs();
-  renderPOs();
-}
-
-function _renderVSlicerItems(listId, items, slicerId) {
-  const el = document.getElementById(listId);
-  if (!el) return;
-  const sel = _vslicers[slicerId];
-  if (!items.length) { el.innerHTML = '<div class="vslicer-empty">No data</div>'; return; }
-  el.innerHTML = items.map(({val, label, count, color}) => {
-    const isSelected = sel.has(val);
-    const dotHtml = color ? `<span class="vs-dot" style="background:${color}"></span>` : '';
-    return `<button class="vslicer-item${isSelected?' selected':''}" data-val="${val.replace(/"/g,'&quot;')}"
-      onclick="_vsToggle('${slicerId}',${JSON.stringify(val)})">
-      <span class="vs-check"></span>
-      ${dotHtml}
-      <span class="vs-label">${label||val}</span>
-      <span class="vs-count">${count}</span>
-    </button>`;
-  }).join('');
-}
-
-// ── LEAD STATUS slicer ──
-function _buildVSlicer_LeadStatus() {
-  const counts = {};
-  _data.aLeads.forEach(r => {
-    const v = String(r['Lead Status']||'Unknown').trim();
-    counts[v] = (counts[v]||0) + 1;
-  });
-  const items = Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([v,n])=>({
-    val: v, label: v, count: n,
-    color: (_data.statusColorMap && _data.statusColorMap[v]) || '#64748b'
-  }));
-  _renderVSlicerItems('vs-lead-status', items, 'lead-status');
-}
-
-// ── LEAD LOCATION slicer ──
-function _buildVSlicer_LeadLocation() {
-  const counts = {};
-  _data.aLeads.forEach(r => {
-    const v = String(r['Plant Name / Location']||r['Plant Name Location']||r['Location']||'').trim();
-    if (v) counts[v] = (counts[v]||0) + 1;
-  });
-  const items = Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([v,n])=>({val:v,label:v,count:n}));
-  _renderVSlicerItems('vs-lead-location', items, 'lead-location');
-}
-
-// ── VISIT STATUS slicer (from linked lead) ──
-function _buildVSlicer_VisitStatus() {
-  const counts = {};
-  _data.aVisits.forEach(v => {
-    const lead = _data.aLeads.find(l => l['Lead No'] === v['Lead No']);
-    const s = lead ? String(lead['Lead Status']||'Unknown').trim() : 'Unknown';
-    counts[s] = (counts[s]||0) + 1;
-  });
-  const items = Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([v,n])=>({
-    val:v, label:v, count:n,
-    color: (_data.statusColorMap && _data.statusColorMap[v]) || '#64748b'
-  }));
-  _renderVSlicerItems('vs-visit-status', items, 'visit-status');
-}
-
-// ── VISIT MONTH slicer ──
-function _buildVSlicer_VisitMonth() {
-  const counts = {};
-  _data.aVisits.forEach(r => {
-    const d = new Date(r['Schedule Date']||r['Date']||'');
-    if (isNaN(d)) return;
-    const v = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-    const label = d.toLocaleString('default',{month:'short',year:'numeric'});
-    counts[v] = counts[v] || {label, count:0};
-    counts[v].count++;
-  });
-  const items = Object.entries(counts).sort((a,b)=>a[0].localeCompare(b[0])).map(([v,{label,count}])=>({val:v,label,count}));
-  _renderVSlicerItems('vs-visit-month', items, 'visit-month');
-}
-
-// ── PR CUSTOMER slicer ──
-function _buildVSlicer_PRCustomer() {
-  const counts = {};
-  _data.aPRs.forEach(r => {
-    const v = String(r['Customer Name']||'').trim();
-    if (v) counts[v] = (counts[v]||0) + 1;
-  });
-  const items = Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([v,n])=>({val:v,label:v,count:n}));
-  _renderVSlicerItems('vs-pr-customer', items, 'pr-customer');
-}
-
-// ── PR STATUS slicer ──
-function _buildVSlicer_PRStatus() {
-  const counts = {};
-  _data.aPRs.forEach(r => {
-    const v = String(r['Quotation Status']||(r['Remark 3']?'Submitted':'Not Submitted')).trim();
-    counts[v] = (counts[v]||0) + 1;
-  });
-  const items = Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([v,n])=>({val:v,label:v,count:n}));
-  _renderVSlicerItems('vs-pr-status', items, 'pr-status');
-}
-
-// ── PO CUSTOMER slicer ──
-function _buildVSlicer_POCustomer() {
-  const counts = {};
-  _data.aPOs.forEach(r => {
-    const v = String(r['Customer Name']||'').trim();
-    if (v) counts[v] = (counts[v]||0) + 1;
-  });
-  const items = Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([v,n])=>({val:v,label:v,count:n}));
-  _renderVSlicerItems('vs-po-customer', items, 'po-customer');
-}
-
-// ── PO STAGE slicer ──
-function _buildVSlicer_POStage() {
-  const counts = {};
-  _data.aPOs.forEach(r => {
-    const v = String(r['Production Stage']||'').trim();
-    if (v) counts[v] = (counts[v]||0) + 1;
-  });
-  const items = Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([v,n])=>({val:v,label:v,count:n}));
-  _renderVSlicerItems('vs-po-stage', items, 'po-stage');
-}
-
-// ── PO MONTH slicer ──
-function _buildVSlicer_POMonth() {
-  const counts = {};
-  _data.aPOs.forEach(r => {
-    const d = new Date(r['Date']||'');
-    if (isNaN(d)) return;
-    const v = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-    const label = d.toLocaleString('default',{month:'short',year:'numeric'});
-    counts[v] = counts[v] || {label, count:0};
-    counts[v].count++;
-  });
-  const items = Object.entries(counts).sort((a,b)=>a[0].localeCompare(b[0])).map(([v,{label,count}])=>({val:v,label,count}));
-  _renderVSlicerItems('vs-po-month', items, 'po-month');
-}
-
-// Helper: check if a value passes a slicer (empty set = show all)
-function _vsPass(slicerId, val) {
-  const s = _vslicers[slicerId];
-  return s.size === 0 || s.has(val);
-}
-
-// ── OLD slicer shims (keep buildPRSlicers etc. as no-ops so nothing breaks) ──
 let _prSlicer = '';
 let _poSlicer = '';
 let _leadSlicer = '';
-function buildPRSlicers() {}
-function buildPOSlicers() {}
-function buildVisitSlicers() {}
 
-// ══════════════════════════════════════════════
-//  BOOT — wrapped in DOMContentLoaded so all
-//  elements exist before any JS touches them
-// ══════════════════════════════════════════════
+function buildPRSlicers() {
+  const wrap = document.getElementById('pr-slicer-wrap');
+  if (!wrap) return;
+  const customers = [...new Set(_data.aPRs.map(r=>r['Customer Name']).filter(Boolean))].sort().slice(0,12);
+  wrap.innerHTML = '<span class="section-slicer-label">Customer:</span>' +
+    `<button class="slicer-chip${!_prSlicer?' active':''}" onclick="_prSlicer='';buildPRSlicers();renderPRs()">All</button>` +
+    customers.map(c =>
+      `<button class="slicer-chip${_prSlicer===c?' active':''}" onclick="_prSlicer='${c.replace(/'/g,"\'")}';buildPRSlicers();renderPRs()">${c}</button>`
+    ).join('');
+}
+
+function buildPOSlicers() {
+  const wrap = document.getElementById('po-slicer-wrap');
+  if (!wrap) return;
+  const customers = [...new Set(_data.aPOs.map(r=>r['Customer Name']).filter(Boolean))].sort().slice(0,12);
+  wrap.innerHTML = '<span class="section-slicer-label">Customer:</span>' +
+    `<button class="slicer-chip${!_poSlicer?' active':''}" onclick="_poSlicer='';buildPOSlicers();renderPOs()">All</button>` +
+    customers.map(c =>
+      `<button class="slicer-chip${_poSlicer===c?' active':''}" onclick="_poSlicer='${c.replace(/'/g,"\'")}';buildPOSlicers();renderPOs()">${c}</button>`
+    ).join('');
+}
+
+
+// ══════════════════════════════════════════════════════
+//  BOTTOM SHEET (Add/Edit) — replaces center modal for Add buttons
+// ══════════════════════════════════════════════════════
+
+// Form HTML templates (same fields as existing forms, rendered into bottom sheet)
+const FORM_TEMPLATES = {
+  lead: () => document.getElementById('form-lead').outerHTML.replace('style="display:none"','').replace('id="form-lead"','id="bs-form-lead"'),
+  visit: () => document.getElementById('form-visit').outerHTML.replace('style="display:none"','').replace('id="form-visit"','id="bs-form-visit"'),
+  pr: () => document.getElementById('form-pr').outerHTML.replace('style="display:none"','').replace('id="form-pr"','id="bs-form-pr"'),
+  po: () => document.getElementById('form-po').outerHTML.replace('style="display:none"','').replace('id="form-po"','id="bs-form-po"'),
+};
+
+let _bsMode = 'add';  // 'add' | 'edit'
+let _bsType = '';
+let _bsEditIndex = null;
+let _bsEditKey = null;
+
+function openAddSheet(type) {
+  _bsMode = 'add'; _bsType = type; _bsEditIndex = null; _bsEditKey = null;
+  _renderBSForm(type);
+  document.getElementById('bs-title-text').innerHTML =
+    `<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add ${type.charAt(0).toUpperCase()+type.slice(1)}`;
+  document.getElementById('bs-save-btn-text').textContent = 'Save Entry';
+  document.getElementById('bs-tab-bar').style.display = '';
+  _activateBSTab(type);
+  // Pre-fill today
+  const today = new Date().toISOString().split('T')[0];
+  _bsTrySet('bs-f-lead-date', today); _bsTrySet('bs-f-visit-date', today);
+  _bsTrySet('bs-f-pr-date', today);   _bsTrySet('bs-f-po-date', today);
+  document.getElementById('add-sheet').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function openEditSheetFrom(type, idx) {
+  _bsMode = 'edit'; _bsType = type; _bsEditIndex = idx;
+  _renderBSForm(type);
+  document.getElementById('bs-title-text').innerHTML =
+    `<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit ${type.charAt(0).toUpperCase()+type.slice(1)}`;
+  document.getElementById('bs-save-btn-text').textContent = 'Update Entry';
+  document.getElementById('bs-tab-bar').style.display = 'none';
+  // Populate fields
+  const arr = { lead: _data.aLeads, visit: _data.aVisits, pr: _data.aPRs, po: _data.aPOs }[type];
+  const row = arr[idx];
+  _fillBSForm(type, row);
+  document.getElementById('add-sheet').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeBottomSheet() {
+  document.getElementById('add-sheet').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function switchBSTab(type) {
+  _bsType = type;
+  _renderBSForm(type);
+  _activateBSTab(type);
+  const today = new Date().toISOString().split('T')[0];
+  _bsTrySet('bs-f-lead-date', today); _bsTrySet('bs-f-visit-date', today);
+  _bsTrySet('bs-f-pr-date', today);   _bsTrySet('bs-f-po-date', today);
+  document.getElementById('bs-title-text').innerHTML =
+    `<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add ${type.charAt(0).toUpperCase()+type.slice(1)}`;
+}
+
+function _activateBSTab(type) {
+  ['lead','visit','pr','po'].forEach(t => {
+    const btn = document.getElementById('bs-tab-'+t);
+    if (btn) btn.classList.toggle('active', t === type);
+  });
+}
+
+function _renderBSForm(type) {
+  // Clone the hidden form from the existing modal and inject into bottom sheet body
+  const srcId = 'form-' + type;
+  const src = document.getElementById(srcId);
+  if (!src) return;
+  const clone = src.cloneNode(true);
+  clone.id = 'bs-form-' + type;
+  clone.style.display = 'grid';
+  // Prefix all input/select/textarea IDs with 'bs-'
+  clone.querySelectorAll('[id]').forEach(el => { el.id = 'bs-' + el.id; });
+  clone.querySelectorAll('[for]').forEach(el => { el.setAttribute('for', 'bs-' + el.getAttribute('for')); });
+  const body = document.getElementById('bs-body');
+  body.innerHTML = '';
+  body.appendChild(clone);
+}
+
+function _bsTrySet(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.value = val;
+}
+
+function _fillBSForm(type, row) {
+  function s(id, val) { const el = document.getElementById('bs-f-'+id); if(el) el.value = val||''; }
+  function d(id, val) { if(!val) return; try { const el=document.getElementById('bs-f-'+id); if(el) el.value=new Date(val).toISOString().split('T')[0]; }catch(e){} }
+
+  if (type === 'lead') {
+    _bsEditKey = row['Lead No'];
+    s('lead-no', row['Lead No']); s('lead-status', row['Lead Status']||'New');
+    s('lead-customer', row['Customer Name']); s('lead-plant', row['Plant Name Location']);
+    s('lead-source', row['Source']); s('lead-contact', row['Contact Person']);
+    s('lead-phone', row['Phone']); s('lead-email', row['Email']);
+    s('lead-product', row['Product Service']); s('lead-value', row['Estimated Value']);
+    s('lead-remarks', row['Remarks']||row['Remark']);
+    d('lead-date', row['Created Date']||row['Date']); d('lead-closedate', row['Expected Close Date']);
+  } else if (type === 'visit') {
+    _bsEditKey = (row['Lead No']||'') + '|' + (row['Schedule Date']||'');
+    s('visit-lead', row['Lead No']); s('visit-customer', row['Customer Name']);
+    s('visit-plant', row['Plant Name Location']); s('visit-person', row['Meeting Person and Designation']);
+    s('visit-type', row['Visit Type']); s('visit-status', row['Visit Status']||'Scheduled');
+    s('visit-desc', row['VISIT Discription']); s('visit-action', row['Action Items']);
+    d('visit-date', row['Schedule Date']); d('visit-followup', row['Next Follow-up Date']);
+  } else if (type === 'pr') {
+    _bsEditKey = row['Internal PR No'];
+    s('pr-no', row['Internal PR No']); s('pr-customer', row['Customer Name']);
+    s('pr-leadref', row['Lead No Ref']); s('pr-desc', row['PR Description']);
+    s('pr-qstatus', row['Quotation Status']||'Not Submitted');
+    s('pr-value', row['Quotation Value']||row['Value']); s('pr-qref', row['Quotation Ref No']);
+    s('pr-scope', row['Scope of Work']); s('pr-delivery', row['Delivery Timeline']);
+    s('pr-priority', row['Priority']); s('pr-remark', row['Remark 3']||row['Remarks']);
+    d('pr-date', row['PR Date']); d('pr-qdate', row['Quotation Date']);
+  } else if (type === 'po') {
+    _bsEditKey = (row['Customer Name']||'') + '|' + (row['Date']||'');
+    s('po-wono', row['Work Order No']); s('po-customer', row['Customer Name']);
+    s('po-pono', row['PO No']); s('po-pr', row['Internal PR']);
+    s('po-desc', row['Short Description']); s('po-value', row['PO Value']||row['Value']);
+    s('po-out-status', row['Outsourcing Status']); s('po-out-no', row['Outsourcing No']);
+    s('po-vendor', row['Vendor']); s('po-height', row['Packing H']);
+    s('po-width', row['Packing W']); s('po-length', row['Packing L']);
+    s('po-weight', row['Weight KG']); s('po-stage', row['Production Stage']||'YET TO START');
+    s('po-remark', row['Remarks']);
+    d('po-date', row['Date']); d('po-delivery', row['Expected Delivery']); d('po-out-date', row['Outsourcing Date']);
+  }
+}
+
+async function saveBSEntry() {
+  const btn = document.getElementById('bs-save-btn');
+  btn.disabled = true;
+  document.getElementById('bs-save-btn-text').textContent = 'Saving…';
+  const type = _bsType;
+
+  function g(id) { const el = document.getElementById('bs-f-'+id); return el ? el.value.trim() : ''; }
+
+  let row = {};
+  let arr, key;
+
+  if (type === 'lead') {
+    if (!g('lead-no') || !g('lead-customer')) { showToast('Lead No and Customer Name are required','error'); btn.disabled=false; document.getElementById('bs-save-btn-text').textContent='Save Entry'; return; }
+    row = {'Lead No':g('lead-no'),'Created Date':g('lead-date'),'Customer Name':g('lead-customer'),'Plant Name Location':g('lead-plant'),'Lead Status':g('lead-status'),'Source':g('lead-source'),'Contact Person':g('lead-contact'),'Phone':g('lead-phone'),'Email':g('lead-email'),'Product Service':g('lead-product'),'Estimated Value':g('lead-value'),'Expected Close Date':g('lead-closedate'),'Remarks':g('lead-remarks')};
+    arr = _data.aLeads; key = g('lead-no');
+  } else if (type === 'visit') {
+    if (!g('visit-lead') || !g('visit-date')) { showToast('Lead No and Schedule Date are required','error'); btn.disabled=false; document.getElementById('bs-save-btn-text').textContent='Save Entry'; return; }
+    row = {'Lead No':g('visit-lead'),'Schedule Date':g('visit-date'),'Customer Name':g('visit-customer'),'Plant Name Location':g('visit-plant'),'Meeting Person and Designation':g('visit-person'),'Visit Type':g('visit-type'),'Visit Status':g('visit-status'),'VISIT Discription':g('visit-desc'),'Action Items':g('visit-action'),'Next Follow-up Date':g('visit-followup')};
+    arr = _data.aVisits; key = g('visit-lead')+'|'+g('visit-date');
+  } else if (type === 'pr') {
+    if (!g('pr-no') || !g('pr-customer')) { showToast('PR No and Customer Name are required','error'); btn.disabled=false; document.getElementById('bs-save-btn-text').textContent='Save Entry'; return; }
+    row = {'Internal PR No':g('pr-no'),'PR Date':g('pr-date'),'Customer Name':g('pr-customer'),'Lead No Ref':g('pr-leadref'),'PR Description':g('pr-desc'),'Quotation Status':g('pr-qstatus'),'Quotation Value':g('pr-value'),'Quotation Date':g('pr-qdate'),'Quotation Ref No':g('pr-qref'),'Scope of Work':g('pr-scope'),'Delivery Timeline':g('pr-delivery'),'Priority':g('pr-priority'),'Remark 3':g('pr-remark')};
+    arr = _data.aPRs; key = g('pr-no');
+  } else if (type === 'po') {
+    if (!g('po-customer')) { showToast('Customer Name is required','error'); btn.disabled=false; document.getElementById('bs-save-btn-text').textContent='Save Entry'; return; }
+    row = {'Work Order No':g('po-wono'),'Date':g('po-date'),'Customer Name':g('po-customer'),'PO No':g('po-pono'),'Internal PR':g('po-pr'),'Short Description':g('po-desc'),'PO Value':g('po-value'),'Expected Delivery':g('po-delivery'),'Outsourcing Status':g('po-out-status'),'Outsourcing No':g('po-out-no'),'Outsourcing Date':g('po-out-date'),'Vendor':g('po-vendor'),'Packing H':g('po-height'),'Packing W':g('po-width'),'Packing L':g('po-length'),'Weight KG':g('po-weight'),'Production Stage':g('po-stage'),'Remarks':g('po-remark')};
+    arr = _data.aPOs; key = g('po-customer')+'|'+g('po-date');
+  }
+
+  const tabName = TAB_MAP[type];
+  const action = _bsMode === 'edit' ? 'update' : 'append';
+
+  if (_bsMode === 'edit' && _bsEditIndex !== null) {
+    arr[_bsEditIndex] = { ...arr[_bsEditIndex], ...row };
+  } else {
+    arr.push(row);
+  }
+
+  if (_scriptUrl) {
+    try {
+      await fetch(_scriptUrl, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tab: tabName, action, row, key: _bsEditKey || key })
+      });
+      showToast(_bsMode==='edit'?'Record updated in Google Sheets':'Record saved to Google Sheets','success');
+    } catch(e) {
+      showToast('Saved locally — Sheet sync failed','error');
+    }
+  } else {
+    showToast('Saved locally (configure URL to sync to Sheet)','success');
+  }
+
+  closeBottomSheet();
+  btn.disabled = false;
+  document.getElementById('bs-save-btn-text').textContent = _bsMode==='add'?'Save Entry':'Update Entry';
+  renderPipeline(); renderVisits(); renderPRs(); renderPOs();
+  try { renderPipelineTracker(); } catch(e) {}
+  set('kpi-leads', _data.aLeads.length);
+  set('kpi-prs',   _data.aPRs.length);
+  set('kpi-pos',   _data.aPOs.length);
+  set('kpi-visits',_data.aVisits.length);
+}
+
+// Close bottom sheet on overlay click
+window.addEventListener('DOMContentLoaded', function() {
+  var bs = document.getElementById('add-sheet');
+  if (bs) bs.addEventListener('click', function(e){ if(e.target===this) closeBottomSheet(); });
+});
+
 window.addEventListener('DOMContentLoaded', function() {
 
   // Wire modal close-on-overlay-click
@@ -2644,7 +2654,11 @@ window.addEventListener('DOMContentLoaded', function() {
     if (!e.target.closest('.row-actions')) closeDotMenus();
   });
 
-  // Auto-save URL hardcoded — banner hidden
+  // Show banner if URL already configured
+  if (_scriptUrl) {
+    var b = document.getElementById('as-banner');
+    if (b) b.innerHTML = '✅ <strong>Auto-save enabled!</strong> Changes sync to your Google Sheet. <button class="banner-cfg-btn" onclick="openScriptConfig()">Edit URL</button>';
+  }
 
   // ── Render dashboard immediately with empty data ──
   try {
