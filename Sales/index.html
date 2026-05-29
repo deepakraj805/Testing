@@ -2216,25 +2216,15 @@ function openAddModal(type) {
     `${MODAL_ICONS[type] || MODAL_ICONS.lead} ${MODAL_LABELS[type] || ('Add ' + type.charAt(0).toUpperCase()+type.slice(1))}`;
   document.getElementById('save-btn-text').textContent = 'Save Entry';
   resetForms(); showForm(type);
-  // Pre-fill date fields with today
   const today = new Date().toISOString().split('T')[0];
   if (type==='visit') document.getElementById('f-visit-date').value = today;
   if (type==='po')    document.getElementById('f-po-date').value   = today;
   if (type==='lead')  document.getElementById('f-lead-date').value  = today;
   if (type==='pr')    document.getElementById('f-pr-date').value    = today;
   document.getElementById('entry-modal').classList.add('open');
-  // reset any centering from edit mode, then position below Add button
-  const _am = document.querySelector('#entry-modal .modal');
-  if (_am) { _am.style.transform=''; _am.style.top=''; _am.style.left=''; _am.style.right='24px'; _am.style.width=''; }
-  requestAnimationFrame(_positionModalBelowAdd);
 }
 
-function openEditModal_positionCenter() {
-  // edit modal stays centered (called from openEditModal at end)
-  const modal = document.querySelector('.modal');
-  if (!modal) return;
-  modal.style.top = ''; modal.style.left = ''; modal.style.right = '24px'; modal.style.width = '';
-}
+function openEditModal(type, idx) {
   _modalMode = 'edit'; _modalType = type; _editIndex = idx;
   document.getElementById('modal-title-text').innerHTML =
     `${MODAL_ICONS[type] || MODAL_ICONS.lead} Edit ${type.charAt(0).toUpperCase()+type.slice(1)}`;
@@ -2317,10 +2307,9 @@ function openEditModal_positionCenter() {
     if (do2) { try { document.getElementById('f-po-out-date').value = new Date(do2).toISOString().split('T')[0]; } catch(e){} }
   }
   document.getElementById('entry-modal').classList.add('open');
-  // center the edit modal
-  const _em = document.querySelector('#entry-modal .modal');
-  if (_em) { _em.style.top='50%'; _em.style.left='50%'; _em.style.transform='translate(-50%,-50%)'; _em.style.right=''; _em.style.width='min(680px, 96vw)'; }
 }
+
+function closeModal() {
   document.getElementById('entry-modal').classList.remove('open');
 }
 
@@ -2583,21 +2572,6 @@ let _bsEditKey = null;
 
 function openAddSheet(type, triggerEl) {
   openAddModal(type);
-}
-
-function _positionModalBelowAdd() {
-  const btn = document.getElementById('filter-add-main-btn');
-  const modal = document.querySelector('.modal');
-  if (!btn || !modal) return;
-  const rect = btn.getBoundingClientRect();
-  const modalW = Math.min(560, window.innerWidth * 0.96);
-  let left = rect.right - modalW;
-  if (left < 8) left = 8;
-  if (left + modalW > window.innerWidth - 8) left = window.innerWidth - modalW - 8;
-  modal.style.top  = (rect.bottom + 8) + 'px';
-  modal.style.right = '';
-  modal.style.left  = left + 'px';
-  modal.style.width = modalW + 'px';
 }
 
 function openEditSheetFrom(type, idx, triggerEl) {
