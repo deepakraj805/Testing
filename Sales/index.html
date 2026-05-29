@@ -66,12 +66,13 @@
   ══════════════════════════════════════════════ */
   .popover-backdrop {
     position: fixed; inset: 0; z-index: 199;
-    display: none;
+    background: rgba(0,0,0,0.55); backdrop-filter: blur(4px);
+    display: none; align-items: center; justify-content: center;
   }
-  .popover-backdrop.open { display: block; }
+  .popover-backdrop.open { display: flex; }
 
   .popover-form {
-    position: fixed;
+    position: relative;
     z-index: 200;
     background: var(--surface);
     border: 1px solid var(--border-strong);
@@ -81,8 +82,8 @@
     overflow: hidden;
     display: none;
     flex-direction: column;
-    box-shadow: 0 16px 60px rgba(0,0,0,0.40);
-    animation: popoverIn 0.2s cubic-bezier(0.34,1.4,0.64,1);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.45);
+    animation: popoverIn 0.22s cubic-bezier(0.34,1.56,0.64,1);
   }
   .popover-form.open { display: flex; }
   @keyframes popoverIn {
@@ -2521,33 +2522,11 @@ function openAddSheet(type, triggerEl) {
   _bsTrySet('bs-f-lead-date', today); _bsTrySet('bs-f-visit-date', today);
   _bsTrySet('bs-f-pr-date', today);   _bsTrySet('bs-f-po-date', today);
 
-  // Position popover near the trigger button
+  // Always open centered in viewport
   const pop = document.getElementById('popover-form');
+  pop.style.left = ''; pop.style.top = ''; pop.style.width = ''; pop.style.transform = '';
   pop.classList.add('open');
   document.getElementById('popover-backdrop').classList.add('open');
-
-  if (triggerEl) {
-    const rect = triggerEl.getBoundingClientRect();
-    const popW = Math.min(600, window.innerWidth * 0.96);
-    const popH = Math.min(window.innerHeight * 0.82, 640);
-    let left = rect.right - popW; // align right edge with button right
-    let top  = rect.bottom + 8;   // just below the button
-
-    // Keep within viewport
-    if (left < 8) left = 8;
-    if (left + popW > window.innerWidth - 8) left = window.innerWidth - popW - 8;
-    if (top + popH > window.innerHeight - 8) top = rect.top - popH - 8; // flip above if no room below
-
-    pop.style.left = left + 'px';
-    pop.style.top  = top  + 'px';
-    pop.style.width = popW + 'px';
-  } else {
-    // Fallback: center
-    pop.style.left = '50%';
-    pop.style.top  = '50%';
-    pop.style.transform = 'translate(-50%,-50%)';
-    pop.style.width = '';
-  }
 }
 
 function openEditSheetFrom(type, idx, triggerEl) {
@@ -2562,34 +2541,14 @@ function openEditSheetFrom(type, idx, triggerEl) {
   _fillBSForm(type, row);
 
   const pop = document.getElementById('popover-form');
+  pop.style.left = ''; pop.style.top = ''; pop.style.width = ''; pop.style.transform = '';
   pop.classList.add('open');
   document.getElementById('popover-backdrop').classList.add('open');
-
-  const anchor = triggerEl || document.querySelector('.btn-dots');
-  if (anchor) {
-    const rect = anchor.getBoundingClientRect();
-    const popW = Math.min(600, window.innerWidth * 0.96);
-    const popH = Math.min(window.innerHeight * 0.82, 640);
-    let left = rect.right - popW;
-    let top  = rect.bottom + 8;
-    if (left < 8) left = 8;
-    if (left + popW > window.innerWidth - 8) left = window.innerWidth - popW - 8;
-    if (top + popH > window.innerHeight - 8) top = rect.top - popH - 8;
-    pop.style.left = left + 'px';
-    pop.style.top  = top  + 'px';
-    pop.style.width = popW + 'px';
-    pop.style.transform = '';
-  } else {
-    pop.style.left = '50%'; pop.style.top = '50%';
-    pop.style.transform = 'translate(-50%,-50%)'; pop.style.width = '';
-  }
 }
 
 function closeBottomSheet() {
   document.getElementById('popover-form').classList.remove('open');
   document.getElementById('popover-backdrop').classList.remove('open');
-  const pop = document.getElementById('popover-form');
-  pop.style.transform = '';
 }
 
 function switchBSTab(type) {
