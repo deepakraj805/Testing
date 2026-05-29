@@ -1414,10 +1414,11 @@ function renderDashboard({travels,leads,prs,pos}) {
   leads=leads.map(r=>normalizeRow(r,{"Lead Generated Date":"Created Date","Plant Name and Location":"Plant Name Location","Plant Name & Location":"Plant Name Location","Contact Details":"Contact Person","Mail ID":"Email","Scope in Lead":"Product Service"}));
   travels=travels.map(r=>normalizeRow(r,{"Plant Name & Location":"Plant Name Location","Plant Name and Location":"Plant Name Location","Appointment Status":"Visit Status"}));
   prs=prs.map(r=>normalizeRow(r,{"Quotation Number":"Quotation Ref No","Date of Submission":"Quotation Date"}));
-  pos=pos.map(r=>normalizeRow(r,{"PO Number":"PO No","Work Order Status":"Production Stage"}));
+  pos=pos.map(r=>normalizeRow(r,{"PO Number":"PO No","Work Order Status":"Production Stage","Production Stage":"Production Stage"}));
+  pos=pos.map(r=>{if(!r['Production Stage']&&r['Work Order Status'])r['Production Stage']=r['Work Order Status'];return r;});
   _data.aLeads  = leads.filter(r=>r['Lead No']);
   _data.aPRs    = prs.filter(r=>r['Internal PR No']);
-  _data.aPOs    = pos.filter(r=>r['Customer Name']&&r['Production Stage']&&String(r['Customer Name']).length>2&&String(r['Production Stage']).length>0&&!String(r['Customer Name']).toLowerCase().includes('grand total')&&!String(r['Customer Name']).toLowerCase().includes('production stage'));
+  _data.aPOs    = pos.filter(r=>r['Customer Name']&&String(r['Customer Name']).trim().length>2&&!String(r['Customer Name']).toLowerCase().includes('grand total'));
   _data.aVisits = travels.filter(r=>r['Lead No']);
 
   const anyEmpty=[_data.aLeads,_data.aPRs,_data.aPOs,_data.aVisits].some(a=>a.length===0);
