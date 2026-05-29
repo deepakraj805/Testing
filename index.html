@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vishak Tech Dashboard</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.container{
+    text-align:center;
+}
+
+h1{
+    font-size:40px;
+    color:#0b5d4b;
+    margin-bottom:10px;
+}
+
+p{
+    color:#666;
+    margin-bottom:40px;
+}
+
+.cards{
+    display:flex;
+    gap:30px;
+    justify-content:center;
+    flex-wrap:wrap;
+}
+
+.card{
+    width:300px;
+    background:white;
+    padding:40px;
+    border-radius:15px;
+    text-decoration:none;
+    color:#333;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+}
+
+.card h2{
+    margin-bottom:10px;
+    color:#0b5d4b;
+}
+
+.card p{
+    margin:0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Vishak Tech</h1>
+    <p>Select Dashboard</p>
+
+    <div class="cards">
+
+        <a href="Sales/" class="card">
+            <h2>📊 Sales Dashboard</h2>
+            <p>Open Sales Pipeline Dashboard</p>
+        </a>
+
+        <a href="Work%20Order/" class="card">
+            <h2>📋 Work Order Dashboard</h2>
+            <p>Open Work Order Dashboard</p>
+        </a>
+
+    </div>
+</div>
+
+</body>
+</html>
