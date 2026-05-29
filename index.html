@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,32 +18,24 @@
 }
 
 body{
-    background:linear-gradient(135deg,#003d35,#0b5d4b);
+    background:
+    radial-gradient(circle at top left,#0f766e 0%,transparent 35%),
+    radial-gradient(circle at top right,#1e3a8a 0%,transparent 35%),
+    linear-gradient(135deg,#081028 0%,#0f172a 50%,#111827 100%);
     min-height:100vh;
     color:white;
 }
 
-/* Header */
+/* NAVBAR */
 
 .navbar{
     display:flex;
     justify-content:space-between;
     align-items:center;
     padding:18px 50px;
-    background:rgba(255,255,255,0.08);
-    backdrop-filter:blur(12px);
-    border-bottom:1px solid rgba(255,255,255,0.1);
-}
-
-.logo{
-    height:55px;
-    width:auto;
-}
-
-.company-name{
-    font-size:18px;
-    font-weight:600;
-    margin-left:15px;
+    background:rgba(15,23,42,0.75);
+    backdrop-filter:blur(20px);
+    border-bottom:1px solid rgba(255,255,255,0.08);
 }
 
 .brand{
@@ -51,33 +43,63 @@ body{
     align-items:center;
 }
 
-.portal-name{
-    color:#d1d5db;
-    font-size:15px;
+.logo{
+    height:55px;
+    width:auto;
 }
 
-/* Hero Section */
+.company-info{
+    margin-left:15px;
+}
+
+.company-name{
+    font-size:18px;
+    font-weight:600;
+}
+
+.company-tag{
+    font-size:13px;
+    color:#94a3b8;
+}
+
+.version{
+    background:rgba(16,185,129,.15);
+    color:#34d399;
+    padding:8px 16px;
+    border-radius:50px;
+    font-size:13px;
+    border:1px solid rgba(16,185,129,.25);
+}
+
+/* HERO */
 
 .hero{
     text-align:center;
-    padding:80px 20px 50px;
+    padding:100px 20px 70px;
 }
 
 .hero h1{
-    font-size:4rem;
+    font-size:4.5rem;
     font-weight:700;
     margin-bottom:20px;
+    background:linear-gradient(
+        90deg,
+        #ffffff,
+        #a7f3d0
+    );
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
 }
 
 .hero p{
-    max-width:900px;
+    color:#cbd5e1;
+    max-width:850px;
     margin:auto;
-    color:#d1d5db;
     font-size:1.2rem;
     line-height:1.8;
 }
 
-/* Cards */
+/* DASHBOARD CARDS */
 
 .container{
     max-width:1200px;
@@ -94,21 +116,32 @@ body{
 .card{
     text-decoration:none;
     color:white;
-    background:rgba(255,255,255,0.08);
-    border:1px solid rgba(255,255,255,0.15);
-    backdrop-filter:blur(15px);
+    background:
+    linear-gradient(
+    135deg,
+    rgba(255,255,255,.08),
+    rgba(255,255,255,.03)
+    );
+
+    border:1px solid rgba(255,255,255,.08);
+    backdrop-filter:blur(20px);
     border-radius:24px;
     padding:35px;
-    transition:all .3s ease;
+    transition:.35s;
 }
 
 .card:hover{
-    transform:translateY(-10px);
-    box-shadow:0 20px 40px rgba(0,0,0,.25);
+    transform:translateY(-12px);
+
+    box-shadow:
+    0 20px 40px rgba(0,0,0,.35),
+    0 0 30px rgba(16,185,129,.2);
+
+    border-color:rgba(16,185,129,.4);
 }
 
-.icon{
-    font-size:60px;
+.card-icon{
+    font-size:65px;
     margin-bottom:20px;
 }
 
@@ -118,23 +151,24 @@ body{
 }
 
 .card p{
-    color:#d1d5db;
+    color:#cbd5e1;
     line-height:1.8;
 }
 
-/* Features */
+/* FEATURES */
 
 .features{
+    margin-top:70px;
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
     gap:20px;
-    margin-top:60px;
 }
 
 .feature{
-    background:rgba(255,255,255,0.05);
-    padding:25px;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.06);
     border-radius:18px;
+    padding:25px;
     text-align:center;
 }
 
@@ -143,20 +177,20 @@ body{
 }
 
 .feature p{
-    color:#d1d5db;
+    color:#94a3b8;
 }
 
-/* Footer */
+/* FOOTER */
 
 .footer{
-    margin-top:60px;
     text-align:center;
-    padding:30px;
-    color:#d1d5db;
+    padding:40px;
+    margin-top:70px;
     border-top:1px solid rgba(255,255,255,.08);
+    color:#94a3b8;
 }
 
-/* Mobile */
+/* MOBILE */
 
 @media(max-width:768px){
 
@@ -164,16 +198,20 @@ body{
     padding:15px 20px;
 }
 
-.logo{
-    height:45px;
-}
-
-.company-name{
+.company-info{
     display:none;
 }
 
+.version{
+    display:none;
+}
+
+.hero{
+    padding:60px 20px;
+}
+
 .hero h1{
-    font-size:2.4rem;
+    font-size:2.5rem;
 }
 
 .hero p{
@@ -192,91 +230,102 @@ body{
 
 <header class="navbar">
 
-    <div class="brand">
-        <img src="VISHAKTECH%20LOGO.jpeg" alt="Vishak Tech Logo" class="logo">
+<div class="brand">
 
-        <div style="margin-left:15px;">
-            <div class="company-name">VISHAK TECH</div>
-            <div class="portal-name">Business Management Portal</div>
-        </div>
-    </div>
+<img src="VISHAKTECH%20LOGO.jpeg"
+alt="Vishak Tech"
+class="logo">
+
+<div class="company-info">
+<div class="company-name">VISHAK TECH</div>
+<div class="company-tag">
+Industrial Solutions & Engineering Services
+</div>
+</div>
+
+</div>
+
+<div class="version">
+Business Portal
+</div>
 
 </header>
 
 <section class="hero">
 
-    <h1>Business Management Portal</h1>
+<h1>Business Management Portal</h1>
 
-    <p>
-        Centralized platform for Sales Management,
-        Work Orders, Production Tracking,
-        Quality Control and Business Operations.
-    </p>
+<p>
+Manage Sales Operations, Work Orders,
+Production Tracking, Quality Control,
+Customer Follow-ups and Business Analytics
+from a single integrated platform.
+</p>
 
 </section>
 
 <div class="container">
 
-    <div class="cards">
+<div class="cards">
 
-        <a href="Sales/" class="card">
+<a href="Sales/" class="card">
 
-            <div class="icon">📈</div>
+<div class="card-icon">📈</div>
 
-            <h2>Sales Dashboard</h2>
+<h2>Sales Dashboard</h2>
 
-            <p>
-                Manage Leads, RFQs, Purchase Requests,
-                Purchase Orders, Customer Follow-ups
-                and Site Visit Activities.
-            </p>
+<p>
+Track Leads, RFQs, Purchase Requests,
+Purchase Orders, Customer Interactions,
+Site Visits and Business Opportunities.
+</p>
 
-        </a>
+</a>
 
-        <a href="Work%20Order/" class="card">
+<a href="Work%20Order/" class="card">
 
-            <div class="icon">🏭</div>
+<div class="card-icon">🏭</div>
 
-            <h2>Work Order Dashboard</h2>
+<h2>Work Order Dashboard</h2>
 
-            <p>
-                Monitor Fabrication, Casting,
-                Production Progress, Quality Checks,
-                Packing and Dispatch Operations.
-            </p>
+<p>
+Monitor Fabrication, Casting,
+Production Progress, Quality Checks,
+Packing, Dispatch and Delivery Status.
+</p>
 
-        </a>
+</a>
 
-    </div>
+</div>
 
-    <div class="features">
+<div class="features">
 
-        <div class="feature">
-            <h3>📊 Live Reporting</h3>
-            <p>Real-time business insights</p>
-        </div>
+<div class="feature">
+<h3>📊 Real-Time Reporting</h3>
+<p>Business insights and performance tracking.</p>
+</div>
 
-        <div class="feature">
-            <h3>📁 Google Sheets</h3>
-            <p>Cloud-connected data source</p>
-        </div>
+<div class="feature">
+<h3>☁ Cloud Connected</h3>
+<p>Google Sheets integrated data platform.</p>
+</div>
 
-        <div class="feature">
-            <h3>⚡ Fast Access</h3>
-            <p>Quick dashboard navigation</p>
-        </div>
+<div class="feature">
+<h3>⚡ Fast Navigation</h3>
+<p>Instant access to operational dashboards.</p>
+</div>
 
-        <div class="feature">
-            <h3>🔒 Centralized Data</h3>
-            <p>Organized business records</p>
-        </div>
+<div class="feature">
+<h3>🔒 Secure Management</h3>
+<p>Centralized and organized business records.</p>
+</div>
 
-    </div>
+</div>
 
 </div>
 
 <footer class="footer">
-    © 2026 Vishak Tech | Industrial Solutions & Engineering Services
+© 2026 Vishak Tech • Business Management Portal
 </footer>
 
 </body>
