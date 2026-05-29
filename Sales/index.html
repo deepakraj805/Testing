@@ -68,8 +68,8 @@
   .modal-overlay.open { display: flex; }
   .modal {
     background: var(--surface); border: 1px solid var(--border-strong);
-    border-radius: var(--radius-xl); width: min(560px, 96vw);
-    max-height: 90vh; overflow: hidden; display: flex; flex-direction: column;
+    border-radius: var(--radius-xl); width: min(680px, 96vw);
+    max-height: 92vh; overflow: hidden; display: flex; flex-direction: column;
     box-shadow: 0 24px 80px rgba(0,0,0,0.45);
     animation: modalIn 0.22s cubic-bezier(0.34,1.56,0.64,1);
   }
@@ -143,8 +143,8 @@
 
   /* ACTION BUTTONS in table rows */
   .row-actions { display: flex; gap: 5px; white-space: nowrap; }
-  .btn-edit, .btn-del, .btn-view {
-    width: 26px; height: 26px; border-radius: 6px; border: 1px solid var(--border-strong);
+  .btn-edit, .btn-del {
+    width: 28px; height: 28px; border-radius: 7px; border: 1px solid var(--border-strong);
     cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
     transition: all 0.15s; flex-shrink: 0;
   }
@@ -152,9 +152,15 @@
   .btn-edit:hover { background: var(--blue); color: white; border-color: var(--blue); }
   .btn-del  { background: rgba(208,48,48,0.08); color: var(--red); }
   .btn-del:hover  { background: var(--red); color: white; border-color: var(--red); }
-  .btn-view { background: var(--green-bg); color: var(--green); }
-  .btn-view:hover { background: var(--green); color: white; border-color: var(--green); }
-  .btn-edit svg, .btn-del svg, .btn-view svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .btn-edit svg, .btn-del svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* FORM SECTION HEADERS inside modal */
+  .form-section-title {
+    grid-column: 1 / -1; font-size: 10px; font-weight: 800; color: var(--accent);
+    text-transform: uppercase; letter-spacing: 1.2px; padding: 0.6rem 0 0.4rem;
+    border-bottom: 1.5px dashed var(--border-accent); margin-bottom: 2px; margin-top: 6px;
+  }
+  .form-section-title:first-child { margin-top: 0; padding-top: 0; }
 
   /* ADD ENTRY button in card-title */
   .btn-add-entry {
@@ -990,9 +996,13 @@ function doGet(e) { return ContentService.createTextOutput("ok"); }</pre>
       <button class="modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div class="modal-body">
-      <!-- Lead Form -->
+      <!-- ═══ LEAD FORM ═══ -->
       <div id="form-lead" class="form-grid" style="display:none">
+        <div class="form-section-title">Basic Info</div>
         <div class="form-group"><label class="form-label">Lead No *</label><input class="form-input" id="f-lead-no" placeholder="e.g. L-001"></div>
+        <div class="form-group"><label class="form-label">Created Date</label><input class="form-input" type="date" id="f-lead-date"></div>
+        <div class="form-group"><label class="form-label">Customer Name *</label><input class="form-input" id="f-lead-customer" placeholder="Company / Customer"></div>
+        <div class="form-group"><label class="form-label">Plant Name / Location</label><input class="form-input" id="f-lead-plant" placeholder="Plant or city"></div>
         <div class="form-group"><label class="form-label">Lead Status *</label>
           <select class="form-select" id="f-lead-status">
             <option>New</option><option>Contacted</option><option>Follow Up</option><option>Qualified</option>
@@ -1000,39 +1010,105 @@ function doGet(e) { return ContentService.createTextOutput("ok"); }</pre>
             <option>PR Processed</option><option>Accepted</option><option>Closed Won</option><option>Closed Lost</option><option>Rejected</option>
           </select>
         </div>
-        <div class="form-group"><label class="form-label">Customer Name *</label><input class="form-input" id="f-lead-customer" placeholder="Company name"></div>
-        <div class="form-group"><label class="form-label">Plant Name / Location</label><input class="form-input" id="f-lead-plant" placeholder="Plant or city"></div>
-        <div class="form-group"><label class="form-label">Created Date</label><input class="form-input" type="date" id="f-lead-date"></div>
         <div class="form-group"><label class="form-label">Source</label><input class="form-input" id="f-lead-source" placeholder="Referral, Website…"></div>
-        <div class="form-group full"><label class="form-label">Remarks</label><textarea class="form-textarea" id="f-lead-remarks" placeholder="Any notes…"></textarea></div>
+        <div class="form-section-title">Contact Details</div>
+        <div class="form-group"><label class="form-label">Contact Person</label><input class="form-input" id="f-lead-contact" placeholder="Name & Designation"></div>
+        <div class="form-group"><label class="form-label">Phone / Mobile</label><input class="form-input" id="f-lead-phone" placeholder="+91 XXXXX XXXXX"></div>
+        <div class="form-group full"><label class="form-label">Email</label><input class="form-input" type="email" id="f-lead-email" placeholder="email@company.com"></div>
+        <div class="form-section-title">Requirement</div>
+        <div class="form-group full"><label class="form-label">Product / Service Required</label><input class="form-input" id="f-lead-product" placeholder="What does the customer need?"></div>
+        <div class="form-group"><label class="form-label">Estimated Value (INR)</label><input class="form-input" id="f-lead-value" placeholder="e.g. 500000"></div>
+        <div class="form-group"><label class="form-label">Expected Close Date</label><input class="form-input" type="date" id="f-lead-closedate"></div>
+        <div class="form-group full"><label class="form-label">Remarks / Notes</label><textarea class="form-textarea" id="f-lead-remarks" placeholder="Any follow-up notes, context…"></textarea></div>
       </div>
-      <!-- Visit Form -->
+
+      <!-- ═══ VISIT FORM ═══ -->
       <div id="form-visit" class="form-grid" style="display:none">
+        <div class="form-section-title">Visit Info</div>
         <div class="form-group"><label class="form-label">Lead No *</label><input class="form-input" id="f-visit-lead" placeholder="e.g. L-001"></div>
         <div class="form-group"><label class="form-label">Schedule Date *</label><input class="form-input" type="date" id="f-visit-date"></div>
+        <div class="form-group"><label class="form-label">Customer Name</label><input class="form-input" id="f-visit-customer" placeholder="Company name"></div>
         <div class="form-group"><label class="form-label">Plant Name / Location *</label><input class="form-input" id="f-visit-plant" placeholder="Location"></div>
+        <div class="form-section-title">Meeting Details</div>
         <div class="form-group"><label class="form-label">Meeting Person & Designation</label><input class="form-input" id="f-visit-person" placeholder="Name, Title"></div>
-        <div class="form-group full"><label class="form-label">Visit Description</label><textarea class="form-textarea" id="f-visit-desc" placeholder="Details about the visit…"></textarea></div>
+        <div class="form-group"><label class="form-label">Visit Type</label>
+          <select class="form-select" id="f-visit-type">
+            <option value="">— Select —</option>
+            <option>Initial Meeting</option><option>Follow Up</option><option>Demo</option>
+            <option>Site Survey</option><option>Negotiation</option><option>Closing</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Visit Status</label>
+          <select class="form-select" id="f-visit-status">
+            <option value="Scheduled">Scheduled</option><option value="Completed">Completed</option>
+            <option value="Postponed">Postponed</option><option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Next Follow-up Date</label><input class="form-input" type="date" id="f-visit-followup"></div>
+        <div class="form-section-title">Outcome</div>
+        <div class="form-group full"><label class="form-label">Visit Description / Outcome</label><textarea class="form-textarea" id="f-visit-desc" placeholder="What was discussed, decisions made…"></textarea></div>
+        <div class="form-group full"><label class="form-label">Action Items / Next Steps</label><textarea class="form-textarea" id="f-visit-action" placeholder="What needs to happen next…"></textarea></div>
       </div>
-      <!-- PR Form -->
+
+      <!-- ═══ PR FORM ═══ -->
       <div id="form-pr" class="form-grid" style="display:none">
+        <div class="form-section-title">Basic Info</div>
         <div class="form-group"><label class="form-label">Internal PR No *</label><input class="form-input" id="f-pr-no" placeholder="e.g. PR-2024-001"></div>
+        <div class="form-group"><label class="form-label">PR Date</label><input class="form-input" type="date" id="f-pr-date"></div>
         <div class="form-group"><label class="form-label">Customer Name *</label><input class="form-input" id="f-pr-customer" placeholder="Company name"></div>
+        <div class="form-group"><label class="form-label">Lead No Ref</label><input class="form-input" id="f-pr-leadref" placeholder="e.g. L-001"></div>
         <div class="form-group full"><label class="form-label">PR Description *</label><input class="form-input" id="f-pr-desc" placeholder="Brief description of requirement"></div>
+        <div class="form-section-title">Quotation</div>
         <div class="form-group"><label class="form-label">Quotation Status</label>
           <select class="form-select" id="f-pr-qstatus">
             <option value="Not Submitted">Not Submitted</option>
             <option value="Submitted">Submitted</option>
+            <option value="Revision Needed">Revision Needed</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
           </select>
         </div>
-        <div class="form-group"><label class="form-label">Quotation Value</label><input class="form-input" id="f-pr-value" placeholder="Amount in INR"></div>
+        <div class="form-group"><label class="form-label">Quotation Value (INR)</label><input class="form-input" id="f-pr-value" placeholder="Amount in INR"></div>
+        <div class="form-group"><label class="form-label">Quotation Date</label><input class="form-input" type="date" id="f-pr-qdate"></div>
+        <div class="form-group"><label class="form-label">Quotation Ref No</label><input class="form-input" id="f-pr-qref" placeholder="e.g. QT-2024-001"></div>
+        <div class="form-section-title">Technical Details</div>
+        <div class="form-group full"><label class="form-label">Scope of Work</label><textarea class="form-textarea" id="f-pr-scope" placeholder="Detailed scope, specifications…"></textarea></div>
+        <div class="form-group"><label class="form-label">Delivery Timeline</label><input class="form-input" id="f-pr-delivery" placeholder="e.g. 4 weeks"></div>
+        <div class="form-group"><label class="form-label">Priority</label>
+          <select class="form-select" id="f-pr-priority">
+            <option value="">— Select —</option>
+            <option>High</option><option>Medium</option><option>Low</option>
+          </select>
+        </div>
         <div class="form-group full"><label class="form-label">Remark</label><textarea class="form-textarea" id="f-pr-remark" placeholder="Additional remarks…"></textarea></div>
       </div>
-      <!-- PO Form -->
+
+      <!-- ═══ PO FORM ═══ -->
       <div id="form-po" class="form-grid" style="display:none">
+        <div class="form-section-title">Basic Info</div>
+        <div class="form-group"><label class="form-label">Work Order No *</label><input class="form-input" id="f-po-wono" placeholder="e.g. WO-001"></div>
         <div class="form-group"><label class="form-label">Date *</label><input class="form-input" type="date" id="f-po-date"></div>
         <div class="form-group"><label class="form-label">Customer Name *</label><input class="form-input" id="f-po-customer" placeholder="Company name"></div>
+        <div class="form-group"><label class="form-label">PO No</label><input class="form-input" id="f-po-pono" placeholder="e.g. VST-2026-PO01"></div>
+        <div class="form-group full"><label class="form-label">Order Description *</label><input class="form-input" id="f-po-desc" placeholder="Item / product description"></div>
         <div class="form-group"><label class="form-label">Internal PR Ref</label><input class="form-input" id="f-po-pr" placeholder="e.g. PR-2024-001"></div>
+        <div class="form-group"><label class="form-label">PO Value (INR)</label><input class="form-input" id="f-po-value" placeholder="e.g. 150000"></div>
+        <div class="form-section-title">Outsourcing</div>
+        <div class="form-group"><label class="form-label">Outsourcing Status</label>
+          <select class="form-select" id="f-po-out-status">
+            <option value="">— Select —</option>
+            <option>In-house</option><option>Outsourced</option><option>Partial Outsource</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Outsourcing No</label><input class="form-input" id="f-po-out-no" placeholder="Outsourcing reference no."></div>
+        <div class="form-group"><label class="form-label">Outsourcing Date</label><input class="form-input" type="date" id="f-po-out-date"></div>
+        <div class="form-group"><label class="form-label">Vendor / Supplier</label><input class="form-input" id="f-po-vendor" placeholder="Vendor name"></div>
+        <div class="form-section-title">Packing Dimensions &amp; Weight</div>
+        <div class="form-group"><label class="form-label">Packing H (cm)</label><input class="form-input" id="f-po-height" placeholder="Height"></div>
+        <div class="form-group"><label class="form-label">Packing W (cm)</label><input class="form-input" id="f-po-width" placeholder="Width"></div>
+        <div class="form-group"><label class="form-label">Packing L (cm)</label><input class="form-input" id="f-po-length" placeholder="Length"></div>
+        <div class="form-group"><label class="form-label">Weight (KG)</label><input class="form-input" id="f-po-weight" placeholder="Weight in KG"></div>
+        <div class="form-section-title">Production</div>
         <div class="form-group"><label class="form-label">Production Stage *</label>
           <select class="form-select" id="f-po-stage">
             <option value="YET TO START">Yet to Start</option>
@@ -1043,9 +1119,8 @@ function doGet(e) { return ContentService.createTextOutput("ok"); }</pre>
             <option value="COMPLETED">Completed</option>
           </select>
         </div>
-        <div class="form-group full"><label class="form-label">Short Description *</label><input class="form-input" id="f-po-desc" placeholder="Item / service description"></div>
-        <div class="form-group"><label class="form-label">PO Value (INR)</label><input class="form-input" id="f-po-value" placeholder="e.g. 150000"></div>
-        <div class="form-group full"><label class="form-label">Remarks</label><textarea class="form-textarea" id="f-po-remark" placeholder="Delivery date, notes…"></textarea></div>
+        <div class="form-group"><label class="form-label">Expected Delivery Date</label><input class="form-input" type="date" id="f-po-delivery"></div>
+        <div class="form-group full"><label class="form-label">Remarks</label><textarea class="form-textarea" id="f-po-remark" placeholder="Delivery notes, special instructions…"></textarea></div>
       </div>
     </div>
     <div class="modal-footer">
@@ -1384,7 +1459,7 @@ function renderVisits() {
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0">
         <span class="visit-badge" style="background:${c}28;color:${c}">${r['Lead No']||''}</span>
-        <div class="row-actions"><button class="btn-view" title="Duplicate" onclick="duplicateEntry('visit',${_vi})"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="btn-edit" title="Edit" onclick="openEditModal('visit',${_vi})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn-del" title="Delete" onclick="confirmDelete('visit',${_vi})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div>
+        <div class="row-actions"><button class="btn-edit" title="Edit" onclick="openEditModal('visit',${_vi})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn-del" title="Delete" onclick="confirmDelete('visit',${_vi})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div>
       </div>
     </div>`;
   }).join('')||'<div class="empty">No visits match</div>');
@@ -1552,7 +1627,7 @@ function renderPRs() {
   set('pr-tbody',rows.map((r,idx)=>{
     const quot=r['Quotation Status']||(r['Remark 3']?'Submitted':'Not Submitted');
     const _pidx=_data.aPRs.indexOf(r);
-    return `<tr><td class="mono">${r['Internal PR No']||'—'}</td><td class="name">${trunc(r['PR Description']||'—',40)}</td><td>${trunc(r['Customer Name']||'—',35)}</td><td><span class="pill ${pillPR(quot)}">${quot}</span></td><td><div class="row-actions"><button class="btn-view" title="Duplicate" onclick="duplicateEntry('pr',${_pidx})"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="btn-edit" title="Edit" onclick="openEditModal('pr',${_pidx})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn-del" title="Delete" onclick="confirmDelete('pr',${_pidx})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div></td></tr>`;
+    return `<tr><td class="mono">${r['Internal PR No']||'—'}</td><td class="name">${trunc(r['PR Description']||'—',40)}</td><td>${trunc(r['Customer Name']||'—',35)}</td><td><span class="pill ${pillPR(quot)}">${quot}</span></td><td><div class="row-actions"><button class="btn-edit" title="Edit" onclick="openEditModal('pr',${_pidx})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn-del" title="Delete" onclick="confirmDelete('pr',${_pidx})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div></td></tr>`;
   }).join('')||'<tr><td colspan="5" class="empty">No PR data matches</td></tr>');
   const el=document.getElementById('pr-count');
   if(el) el.textContent=rows.length!==_data.aPRs.length?`Showing ${rows.length} of ${_data.aPRs.length} records`:'';
@@ -1586,7 +1661,7 @@ function renderPOs() {
     <td class="mono">${r['Internal PR']||'—'}</td>
     <td>${trunc(r['Short Description']||'—',35)}</td>
     <td><span class="pill ${pillPO(r['Production Stage'])}">${r['Production Stage']==='YET TO START'?'Yet to Start':r['Production Stage']==='75% COMPLETED'?'75% Completed':r['Production Stage']||'—'}</span></td>
-    <td><div class="row-actions"><button class="btn-view" title="Duplicate" onclick="duplicateEntry('po',${_pidx})"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="btn-edit" title="Edit" onclick="openEditModal('po',${_pidx})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn-del" title="Delete" onclick="confirmDelete('po',${_pidx})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div></td>
+    <td><div class="row-actions"><button class="btn-edit" title="Edit" onclick="openEditModal('po',${_pidx})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn-del" title="Delete" onclick="confirmDelete('po',${_pidx})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div></td>
   </tr>`; }).join('')||'<tr><td colspan="6" class="empty">No PO data matches</td></tr>');
   const el=document.getElementById('po-count');
   if(el) el.textContent=rows.length!==_data.aPOs.length?`Showing ${rows.length} of ${_data.aPOs.length} records`:'';
@@ -1881,6 +1956,7 @@ function openAddModal(type) {
   if (type==='visit') document.getElementById('f-visit-date').value = today;
   if (type==='po')    document.getElementById('f-po-date').value   = today;
   if (type==='lead')  document.getElementById('f-lead-date').value  = today;
+  if (type==='pr')    document.getElementById('f-pr-date').value    = today;
   document.getElementById('entry-modal').classList.add('open');
 }
 
@@ -1901,35 +1977,70 @@ function openEditModal(type, idx) {
     document.getElementById('f-lead-customer').value = row['Customer Name']||'';
     document.getElementById('f-lead-plant').value    = row['Plant Name Location']||'';
     document.getElementById('f-lead-source').value   = row['Source']||'';
+    document.getElementById('f-lead-contact').value  = row['Contact Person']||'';
+    document.getElementById('f-lead-phone').value    = row['Phone']||'';
+    document.getElementById('f-lead-email').value    = row['Email']||'';
+    document.getElementById('f-lead-product').value  = row['Product Service']||'';
+    document.getElementById('f-lead-value').value    = row['Estimated Value']||'';
     document.getElementById('f-lead-remarks').value  = row['Remarks']||row['Remark']||'';
     const d = row['Created Date']||row['Date']||'';
     if (d) { try { document.getElementById('f-lead-date').value = new Date(d).toISOString().split('T')[0]; } catch(e){} }
+    const dc = row['Expected Close Date']||'';
+    if (dc) { try { document.getElementById('f-lead-closedate').value = new Date(dc).toISOString().split('T')[0]; } catch(e){} }
   } else if (type === 'visit') {
     _editKey = row['Lead No'] + '|' + (row['Schedule Date']||'');
-    document.getElementById('f-visit-lead').value   = row['Lead No']||'';
-    document.getElementById('f-visit-plant').value  = row['Plant Name Location']||'';
-    document.getElementById('f-visit-person').value = row['Meeting Person and Designation']||'';
-    document.getElementById('f-visit-desc').value   = row['VISIT Discription']||'';
+    document.getElementById('f-visit-lead').value    = row['Lead No']||'';
+    document.getElementById('f-visit-customer').value= row['Customer Name']||'';
+    document.getElementById('f-visit-plant').value   = row['Plant Name Location']||'';
+    document.getElementById('f-visit-person').value  = row['Meeting Person and Designation']||'';
+    document.getElementById('f-visit-type').value    = row['Visit Type']||'';
+    document.getElementById('f-visit-status').value  = row['Visit Status']||'Scheduled';
+    document.getElementById('f-visit-desc').value    = row['VISIT Discription']||'';
+    document.getElementById('f-visit-action').value  = row['Action Items']||'';
     const d = row['Schedule Date']||'';
     if (d) { try { document.getElementById('f-visit-date').value = new Date(d).toISOString().split('T')[0]; } catch(e){} }
+    const df = row['Next Follow-up Date']||'';
+    if (df) { try { document.getElementById('f-visit-followup').value = new Date(df).toISOString().split('T')[0]; } catch(e){} }
   } else if (type === 'pr') {
     _editKey = row['Internal PR No'];
     document.getElementById('f-pr-no').value       = row['Internal PR No']||'';
     document.getElementById('f-pr-customer').value = row['Customer Name']||'';
+    document.getElementById('f-pr-leadref').value  = row['Lead No Ref']||'';
     document.getElementById('f-pr-desc').value     = row['PR Description']||'';
     document.getElementById('f-pr-qstatus').value  = row['Quotation Status']||'Not Submitted';
     document.getElementById('f-pr-value').value    = row['Quotation Value']||row['Value']||'';
+    document.getElementById('f-pr-qref').value     = row['Quotation Ref No']||'';
+    document.getElementById('f-pr-scope').value    = row['Scope of Work']||'';
+    document.getElementById('f-pr-delivery').value = row['Delivery Timeline']||'';
+    document.getElementById('f-pr-priority').value = row['Priority']||'';
     document.getElementById('f-pr-remark').value   = row['Remark 3']||row['Remarks']||'';
+    const d = row['PR Date']||'';
+    if (d) { try { document.getElementById('f-pr-date').value = new Date(d).toISOString().split('T')[0]; } catch(e){} }
+    const dq = row['Quotation Date']||'';
+    if (dq) { try { document.getElementById('f-pr-qdate').value = new Date(dq).toISOString().split('T')[0]; } catch(e){} }
   } else if (type === 'po') {
     _editKey = row['Customer Name'] + '|' + (row['Date']||'');
-    document.getElementById('f-po-customer').value = row['Customer Name']||'';
-    document.getElementById('f-po-pr').value       = row['Internal PR']||'';
-    document.getElementById('f-po-desc').value     = row['Short Description']||'';
-    document.getElementById('f-po-stage').value    = row['Production Stage']||'YET TO START';
-    document.getElementById('f-po-value').value    = row['PO Value']||row['Value']||'';
-    document.getElementById('f-po-remark').value   = row['Remarks']||'';
+    document.getElementById('f-po-wono').value       = row['Work Order No']||'';
+    document.getElementById('f-po-customer').value   = row['Customer Name']||'';
+    document.getElementById('f-po-pono').value       = row['PO No']||'';
+    document.getElementById('f-po-pr').value         = row['Internal PR']||'';
+    document.getElementById('f-po-desc').value       = row['Short Description']||'';
+    document.getElementById('f-po-value').value      = row['PO Value']||row['Value']||'';
+    document.getElementById('f-po-out-status').value = row['Outsourcing Status']||'';
+    document.getElementById('f-po-out-no').value     = row['Outsourcing No']||'';
+    document.getElementById('f-po-vendor').value     = row['Vendor']||'';
+    document.getElementById('f-po-height').value     = row['Packing H']||'';
+    document.getElementById('f-po-width').value      = row['Packing W']||'';
+    document.getElementById('f-po-length').value     = row['Packing L']||'';
+    document.getElementById('f-po-weight').value     = row['Weight KG']||'';
+    document.getElementById('f-po-stage').value      = row['Production Stage']||'YET TO START';
+    document.getElementById('f-po-remark').value     = row['Remarks']||'';
     const d = row['Date']||'';
     if (d) { try { document.getElementById('f-po-date').value = new Date(d).toISOString().split('T')[0]; } catch(e){} }
+    const dd = row['Expected Delivery']||'';
+    if (dd) { try { document.getElementById('f-po-delivery').value = new Date(dd).toISOString().split('T')[0]; } catch(e){} }
+    const do2 = row['Outsourcing Date']||'';
+    if (do2) { try { document.getElementById('f-po-out-date').value = new Date(do2).toISOString().split('T')[0]; } catch(e){} }
   }
   document.getElementById('entry-modal').classList.add('open');
 }
@@ -1941,7 +2052,7 @@ function closeModal() {
 function resetForms() {
   ['form-lead','form-visit','form-pr','form-po'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) { el.style.display='none'; el.querySelectorAll('input,select,textarea').forEach(f=>f.value=''); }
+    if (el) { el.style.display='none'; el.querySelectorAll('input,select,textarea').forEach(f=>{ if(f.tagName==='SELECT') f.selectedIndex=0; else f.value=''; }); }
   });
 }
 
@@ -1973,6 +2084,12 @@ async function saveEntry() {
       'Plant Name Location': document.getElementById('f-lead-plant').value.trim(),
       'Created Date':        document.getElementById('f-lead-date').value,
       'Source':              document.getElementById('f-lead-source').value.trim(),
+      'Contact Person':      document.getElementById('f-lead-contact').value.trim(),
+      'Phone':               document.getElementById('f-lead-phone').value.trim(),
+      'Email':               document.getElementById('f-lead-email').value.trim(),
+      'Product Service':     document.getElementById('f-lead-product').value.trim(),
+      'Estimated Value':     document.getElementById('f-lead-value').value.trim(),
+      'Expected Close Date': document.getElementById('f-lead-closedate').value,
       'Remarks':             document.getElementById('f-lead-remarks').value.trim(),
     };
   } else if (_modalType === 'visit') {
@@ -1982,9 +2099,14 @@ async function saveEntry() {
     rowData = {
       'Lead No':                          ln,
       'Schedule Date':                    document.getElementById('f-visit-date').value,
+      'Customer Name':                    document.getElementById('f-visit-customer').value.trim(),
       'Plant Name Location':              pl,
       'Meeting Person and Designation':   document.getElementById('f-visit-person').value.trim(),
+      'Visit Type':                       document.getElementById('f-visit-type').value,
+      'Visit Status':                     document.getElementById('f-visit-status').value,
+      'Next Follow-up Date':              document.getElementById('f-visit-followup').value,
       'VISIT Discription':                document.getElementById('f-visit-desc').value.trim(),
+      'Action Items':                     document.getElementById('f-visit-action').value.trim(),
     };
   } else if (_modalType === 'pr') {
     const pno = document.getElementById('f-pr-no').value.trim();
@@ -1992,10 +2114,17 @@ async function saveEntry() {
     if (!pno || !cust) { showToast('PR No and Customer are required', 'error'); valid=false; }
     rowData = {
       'Internal PR No':   pno,
+      'PR Date':          document.getElementById('f-pr-date').value,
       'Customer Name':    cust,
+      'Lead No Ref':      document.getElementById('f-pr-leadref').value.trim(),
       'PR Description':   document.getElementById('f-pr-desc').value.trim(),
       'Quotation Status': document.getElementById('f-pr-qstatus').value,
       'Quotation Value':  document.getElementById('f-pr-value').value.trim(),
+      'Quotation Date':   document.getElementById('f-pr-qdate').value,
+      'Quotation Ref No': document.getElementById('f-pr-qref').value.trim(),
+      'Scope of Work':    document.getElementById('f-pr-scope').value.trim(),
+      'Delivery Timeline':document.getElementById('f-pr-delivery').value.trim(),
+      'Priority':         document.getElementById('f-pr-priority').value,
       'Remark 3':         document.getElementById('f-pr-remark').value.trim(),
     };
   } else if (_modalType === 'po') {
@@ -2003,12 +2132,23 @@ async function saveEntry() {
     const desc = document.getElementById('f-po-desc').value.trim();
     if (!cust || !desc) { showToast('Customer and Description are required', 'error'); valid=false; }
     rowData = {
+      'Work Order No':      document.getElementById('f-po-wono').value.trim(),
       'Date':               document.getElementById('f-po-date').value,
       'Customer Name':      cust,
-      'Internal PR':        document.getElementById('f-po-pr').value.trim(),
+      'PO No':              document.getElementById('f-po-pono').value.trim(),
       'Short Description':  desc,
-      'Production Stage':   document.getElementById('f-po-stage').value,
+      'Internal PR':        document.getElementById('f-po-pr').value.trim(),
       'PO Value':           document.getElementById('f-po-value').value.trim(),
+      'Outsourcing Status': document.getElementById('f-po-out-status').value,
+      'Outsourcing No':     document.getElementById('f-po-out-no').value.trim(),
+      'Outsourcing Date':   document.getElementById('f-po-out-date').value,
+      'Vendor':             document.getElementById('f-po-vendor').value.trim(),
+      'Packing H':          document.getElementById('f-po-height').value.trim(),
+      'Packing W':          document.getElementById('f-po-width').value.trim(),
+      'Packing L':          document.getElementById('f-po-length').value.trim(),
+      'Weight KG':          document.getElementById('f-po-weight').value.trim(),
+      'Production Stage':   document.getElementById('f-po-stage').value,
+      'Expected Delivery':  document.getElementById('f-po-delivery').value,
       'Remarks':            document.getElementById('f-po-remark').value.trim(),
     };
   }
@@ -2055,29 +2195,6 @@ async function saveEntry() {
   set('kpi-prs',   _data.aPRs.length);
   set('kpi-pos',   _data.aPOs.length);
   set('kpi-visits',_data.aVisits.length);
-}
-
-// ══════════════════════════════════════════════════════
-//  DUPLICATE
-// ══════════════════════════════════════════════════════
-function duplicateEntry(type, idx) {
-  const arr = { lead: _data.aLeads, visit: _data.aVisits, pr: _data.aPRs, po: _data.aPOs }[type];
-  const original = arr[idx];
-  // Deep copy and clear identifier fields so it's treated as a new record
-  const copy = Object.assign({}, original);
-  if (copy['Lead No'])        copy['Lead No']        = '';
-  if (copy['Internal PR No']) copy['Internal PR No'] = '';
-  // Insert copy right after the original
-  arr.splice(idx + 1, 0, copy);
-  renderPipeline(); renderVisits(); renderPRs(); renderPOs();
-  try { renderPipelineTracker(); } catch(e) {}
-  set('kpi-leads', _data.aLeads.length);
-  set('kpi-prs',   _data.aPRs.length);
-  set('kpi-pos',   _data.aPOs.length);
-  set('kpi-visits',_data.aVisits.length);
-  showToast('Entry duplicated — edit to update details', 'success');
-  // Open the edit modal for the duplicate so user can update it immediately
-  setTimeout(() => openEditModal(type, idx + 1), 220);
 }
 
 // ══════════════════════════════════════════════════════
