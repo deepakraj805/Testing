@@ -2365,12 +2365,12 @@ async function saveEntry() {
   btn.disabled = false;
   document.getElementById('save-btn-text').textContent = _modalMode==='add'?'Save Entry':'Update Entry';
   // Re-render everything
-  renderPipeline(); renderVisits(); renderPRs(); renderPOs();
-  try { renderPipelineTracker(); } catch(e) {}
-  set('kpi-leads', _data.aLeads.length);
-  set('kpi-prs',   _data.aPRs.length);
-  set('kpi-pos',   _data.aPOs.length);
-  set('kpi-visits',_data.aVisits.length);
+  renderDashboard({
+    travels: _data.aVisits,
+    leads:   _data.aLeads,
+    prs:     _data.aPRs,
+    pos:     _data.aPOs
+  });
 }
 
 // ══════════════════════════════════════════════════════
@@ -2418,12 +2418,12 @@ async function executeDelete() {
   } else {
     showToast('Record deleted locally', 'success');
   }
-  renderPipeline(); renderVisits(); renderPRs(); renderPOs();
-  try { renderPipelineTracker(); } catch(e) {}
-  set('kpi-leads', _data.aLeads.length);
-  set('kpi-prs',   _data.aPRs.length);
-  set('kpi-pos',   _data.aPOs.length);
-  set('kpi-visits',_data.aVisits.length);
+  renderDashboard({
+    travels: _data.aVisits,
+    leads:   _data.aLeads,
+    prs:     _data.aPRs,
+    pos:     _data.aPOs
+  });
 }
 
 // ══════════════════════════════════════════════════════
@@ -2633,19 +2633,87 @@ async function saveBSEntry() {
 
   if (type === 'lead') {
     if (!g('lead-no') || !g('lead-customer')) { showToast('Lead No and Customer Name are required','error'); btn.disabled=false; document.getElementById('bs-save-btn-text').textContent='Save Entry'; return; }
-    row = {'Lead No':g('lead-no'),'Lead Generated Date':g('lead-date'),'Customer Name':g('lead-customer'),'Plant Name and Location':g('lead-plant'),'Lead Status':g('lead-status'),'Source':g('lead-source'),'Contact Details':g('lead-contact'),'Mail ID':g('lead-email'),'Scope in Lead':g('lead-product'),'Expected Close Date':g('lead-closedate'),'Remarks':g('lead-remarks')};
+    row = {
+      'Lead No':g('lead-no'),
+      'Created Date':g('lead-date'),
+      'Lead Generated Date':g('lead-date'),
+      'Customer Name':g('lead-customer'),
+      'Plant Name Location':g('lead-plant'),
+      'Plant Name and Location':g('lead-plant'),
+      'Lead Status':g('lead-status'),
+      'Source':g('lead-source'),
+      'Contact Person':g('lead-contact'),
+      'Contact Details':g('lead-contact'),
+      'Email':g('lead-email'),
+      'Mail ID':g('lead-email'),
+      'Product Service':g('lead-product'),
+      'Scope in Lead':g('lead-product'),
+      'Estimated Value':g('lead-value'),
+      'Expected Close Date':g('lead-closedate'),
+      'Remarks':g('lead-remarks')
+    };
     arr = _data.aLeads; key = g('lead-no');
   } else if (type === 'visit') {
     if (!g('visit-lead') || !g('visit-date')) { showToast('Lead No and Schedule Date are required','error'); btn.disabled=false; document.getElementById('bs-save-btn-text').textContent='Save Entry'; return; }
-    row = {'Lead No':g('visit-lead'),'Schedule Date':g('visit-date'),'Customer Name':g('visit-customer'),'Plant Name & Location':g('visit-plant'),'Meeting Person and Designation':g('visit-person'),'Appointment Status':g('visit-status'),'VISIT Discription':g('visit-desc'),'Action Items':g('visit-action')};
+    row = {
+      'Lead No':g('visit-lead'),
+      'Schedule Date':g('visit-date'),
+      'Customer Name':g('visit-customer'),
+      'Plant Name Location':g('visit-plant'),
+      'Plant Name & Location':g('visit-plant'),
+      'Meeting Person and Designation':g('visit-person'),
+      'Visit Status':g('visit-status'),
+      'Appointment Status':g('visit-status'),
+      'Visit Type':g('visit-type'),
+      'VISIT Discription':g('visit-desc'),
+      'Action Items':g('visit-action'),
+      'Next Follow-up Date':g('visit-followup')
+    };
     arr = _data.aVisits; key = g('visit-lead')+'|'+g('visit-date');
   } else if (type === 'pr') {
     if (!g('pr-no') || !g('pr-customer')) { showToast('PR No and Customer Name are required','error'); btn.disabled=false; document.getElementById('bs-save-btn-text').textContent='Save Entry'; return; }
-    row = {'Internal PR No':g('pr-no'),'PR Date':g('pr-date'),'Customer Name':g('pr-customer'),'PR Description':g('pr-desc'),'Quotation Status':g('pr-qstatus'),'Quotation Number':g('pr-qref'),'Quotation Date':g('pr-qdate'),'Outsourcing Status':g('pr-scope'),'Packing H':g('po-height')};
+    row = {
+      'Internal PR No':g('pr-no'),
+      'PR Date':g('pr-date'),
+      'Customer Name':g('pr-customer'),
+      'Lead No Ref':g('pr-leadref'),
+      'PR Description':g('pr-desc'),
+      'Quotation Status':g('pr-qstatus'),
+      'Quotation Ref No':g('pr-qref'),
+      'Quotation Number':g('pr-qref'),
+      'Quotation Date':g('pr-qdate'),
+      'Scope of Work':g('pr-scope'),
+      'Delivery Timeline':g('pr-delivery'),
+      'Priority':g('pr-priority'),
+      'Remark 3':g('pr-remark'),
+      'Remarks':g('pr-remark'),
+      'Quotation Value':g('pr-value')
+    };
     arr = _data.aPRs; key = g('pr-no');
   } else if (type === 'po') {
     if (!g('po-customer')) { showToast('Customer Name is required','error'); btn.disabled=false; document.getElementById('bs-save-btn-text').textContent='Save Entry'; return; }
-    row = {'Date':g('po-date'),'Customer Name':g('po-customer'),'PO Number':g('po-pono'),'Internal PR':g('po-pr'),'Short Description':g('po-desc'),'Production Stage':g('po-stage'),'Work Order Status':g('po-stage'),'Remarks':g('po-remark')};
+    row = {
+      'Date':g('po-date'),
+      'Customer Name':g('po-customer'),
+      'PO No':g('po-pono'),
+      'PO Number':g('po-pono'),
+      'Work Order No':g('po-wono'),
+      'Internal PR':g('po-pr'),
+      'Short Description':g('po-desc'),
+      'PO Value':g('po-value'),
+      'Production Stage':g('po-stage'),
+      'Work Order Status':g('po-stage'),
+      'Outsourcing Status':g('po-out-status'),
+      'Outsourcing No':g('po-out-no'),
+      'Outsourcing Date':g('po-out-date'),
+      'Vendor':g('po-vendor'),
+      'Packing H':g('po-height'),
+      'Packing W':g('po-width'),
+      'Packing L':g('po-length'),
+      'Weight KG':g('po-weight'),
+      'Expected Delivery':g('po-delivery'),
+      'Remarks':g('po-remark')
+    };
     arr = _data.aPOs; key = g('po-customer')+'|'+g('po-date');
   }
 
@@ -2678,12 +2746,14 @@ async function saveBSEntry() {
   closeBottomSheet();
   btn.disabled = false;
   document.getElementById('bs-save-btn-text').textContent = _bsMode==='add'?'Save Entry':'Update Entry';
-  renderPipeline(); renderVisits(); renderPRs(); renderPOs();
-  try { renderPipelineTracker(); } catch(e) {}
-  set('kpi-leads', _data.aLeads.length);
-  set('kpi-prs',   _data.aPRs.length);
-  set('kpi-pos',   _data.aPOs.length);
-  set('kpi-visits',_data.aVisits.length);
+
+  // Re-render everything so newly added/edited data appears immediately
+  renderDashboard({
+    travels: _data.aVisits,
+    leads:   _data.aLeads,
+    prs:     _data.aPRs,
+    pos:     _data.aPOs
+  });
 }
 
 // Close bottom sheet on overlay click
