@@ -778,7 +778,7 @@
           <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.54"/></svg>
           Refresh
         </button>
-        <a class="hbtn" href="https://docs.google.com/spreadsheets/d/1zzvoC4KhmkeTrkmSiwBOjrEjxNKS9wnuGStaIf-dIxU/edit" target="_blank">
+        <a class="hbtn" href="https://docs.google.com/spreadsheets/d/1Yy9KtzH45YLBU3O1OYgpZydccfx7EUz_8OZf0rGMksA/edit" target="_blank">
           <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           Open Sheet
         </a>
@@ -978,7 +978,7 @@
       <details style="margin-top:1.2rem">
         <summary style="font-size:12px;color:var(--accent);cursor:pointer;font-weight:600">📋 Copy the Apps Script code to deploy</summary>
         <pre style="margin-top:0.75rem;background:var(--surface2);border:1px solid var(--border-strong);border-radius:8px;padding:1rem;font-size:11px;overflow-x:auto;color:var(--text2);line-height:1.6">function doPost(e) {
-  var ss = SpreadsheetApp.openById("1zzvoC4KhmkeTrkmSiwBOjrEjxNKS9wnuGStaIf-dIxU");
+  var ss = SpreadsheetApp.openById("1Yy9KtzH45YLBU3O1OYgpZydccfx7EUz_8OZf0rGMksA");
   var data = JSON.parse(e.postData.contents);
   var sheet = ss.getSheetByName(data.tab);
   var headers = sheet.getRange(1,1,1,sheet.getLastColumn()).getValues()[0];
@@ -1945,7 +1945,7 @@ function hide(id){const el=document.getElementById(id);if(el){el.classList.add('
 // ══════════════════════════════════════════════════════
 //  APPS SCRIPT / LOCAL STORAGE CONFIG
 // ══════════════════════════════════════════════════════
-let _scriptUrl = ''; try { _scriptUrl = localStorage.getItem('vishak_script_url') || ''; } catch(e) {}
+let _scriptUrl = 'https://script.google.com/macros/s/AKfycbx9ub-E134AXeNK4q6e8hihVqur5a6XBiiyXauf06Bnl-VMeBTgVh397pKySky1Lfl2bA/exec'; try { _scriptUrl = localStorage.getItem('vishak_script_url') || _scriptUrl; } catch(e) {}
 
 function openScriptConfig() {
   document.getElementById('script-url-input').value = _scriptUrl;
