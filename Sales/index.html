@@ -123,68 +123,68 @@
      ADD / EDIT MODAL
   ══════════════════════════════════════════════ */
   .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.55); backdrop-filter: blur(4px);
+    position: fixed; inset: 0; background: rgba(15,25,35,0.60); backdrop-filter: blur(5px);
     z-index: 200; display: none; align-items: center; justify-content: center; padding: 1rem;
   }
   .modal-overlay.open { display: flex; }
   .modal {
-    background: var(--surface); border: 1px solid var(--border-strong);
-    border-radius: var(--radius-xl); width: min(680px, 96vw);
+    background: #ffffff; border: 1px solid #e2e8f0;
+    border-radius: 16px; width: min(700px, 96vw);
     max-height: 92vh; overflow: hidden; display: flex; flex-direction: column;
-    box-shadow: 0 24px 80px rgba(0,0,0,0.45);
+    box-shadow: 0 32px 80px rgba(0,0,0,0.22), 0 4px 24px rgba(0,0,0,0.10);
     animation: modalIn 0.22s cubic-bezier(0.34,1.56,0.64,1);
   }
   @keyframes modalIn { from { transform: translateY(20px) scale(0.97); opacity: 0; } to { transform: none; opacity: 1; } }
   .modal-header {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border);
-    background: var(--surface2);
+    padding: 1.25rem 1.6rem 1.1rem; border-bottom: 1px solid #e8ecf2;
+    background: #ffffff;
   }
-  .modal-title { font-size: 15px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 9px; }
-  .modal-title svg { width: 16px; height: 16px; stroke: var(--accent); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .modal-title { font-size: 16px; font-weight: 700; color: #0f1923; display: flex; align-items: center; gap: 10px; }
+  .modal-title svg { width: 18px; height: 18px; stroke: #1a85d0; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
   .modal-close {
-    width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border-strong);
-    background: var(--surface3); cursor: pointer; display: flex; align-items: center; justify-content: center;
-    color: var(--text3); transition: all 0.16s;
+    width: 32px; height: 32px; border-radius: 8px; border: 1px solid #dde3ec;
+    background: #f5f7fa; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: #7a95af; transition: all 0.16s;
   }
-  .modal-close:hover { background: rgba(239,68,68,0.1); color: #ef4444; border-color: #ef4444; }
+  .modal-close:hover { background: rgba(239,68,68,0.08); color: #ef4444; border-color: #ef4444; }
   .modal-close svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-  .modal-body { padding: 1.4rem 1.5rem; overflow-y: auto; flex: 1; }
+  .modal-body { padding: 1.5rem 1.6rem; overflow-y: auto; flex: 1; background: #ffffff; }
   .modal-footer {
     display: flex; align-items: center; justify-content: flex-end; gap: 10px;
-    padding: 1rem 1.5rem; border-top: 1px solid var(--border); background: var(--surface2);
+    padding: 1rem 1.6rem; border-top: 1px solid #e8ecf2; background: #f8fafc;
   }
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .form-group { display: flex; flex-direction: column; gap: 5px; }
   .form-group.full { grid-column: 1 / -1; }
-  .form-label { font-size: 11px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.6px; }
+  .form-label { font-size: 11px; font-weight: 700; color: #3a5068; text-transform: uppercase; letter-spacing: 0.7px; }
   .form-input, .form-select, .form-textarea {
-    background: var(--surface2); border: 1px solid var(--border-strong);
-    color: var(--text); border-radius: 8px; padding: 0.5rem 0.75rem;
+    background: #f8fafc; border: 1.5px solid #dde3ec;
+    color: #0f1923; border-radius: 8px; padding: 0.52rem 0.8rem;
     font-size: 13px; font-family: inherit; outline: none;
     transition: border-color 0.18s, box-shadow 0.18s;
   }
+  .form-input::placeholder { color: #a0b0c0; }
   .form-input:focus, .form-select:focus, .form-textarea:focus {
-    border-color: var(--accent); box-shadow: 0 0 0 3px rgba(224,96,48,0.12);
+    border-color: #1a85d0; box-shadow: 0 0 0 3px rgba(26,133,208,0.12); background: #ffffff;
   }
   .form-textarea { resize: vertical; min-height: 72px; }
-  .form-select option { background: var(--surface); }
+  .form-select option { background: #ffffff; }
   .btn-cancel {
-    background: var(--surface3); border: 1px solid var(--border-strong); color: var(--text2);
+    background: #f0f3f7; border: 1px solid #dde3ec; color: #3a5068;
     border-radius: 8px; padding: 0.55rem 1.2rem; font-size: 13px; font-weight: 600;
     cursor: pointer; font-family: inherit; transition: all 0.16s;
   }
-  .btn-cancel:hover { background: var(--surface4); color: var(--text); }
+  .btn-cancel:hover { background: #e4e8ef; color: #0f1923; }
   .btn-save {
-    background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none;
+    background: linear-gradient(135deg, #1a85d0, #2196f3); border: none;
     color: white; border-radius: 8px; padding: 0.55rem 1.4rem; font-size: 13px; font-weight: 700;
     cursor: pointer; font-family: inherit; transition: all 0.18s;
-    box-shadow: 0 4px 16px rgba(224,96,48,0.32); display: flex; align-items: center; gap: 7px;
+    box-shadow: 0 4px 14px rgba(26,133,208,0.32); display: flex; align-items: center; gap: 7px;
   }
-  .btn-save:hover { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(224,96,48,0.45); }
+  .btn-save:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,133,208,0.42); }
   .btn-save:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
   .btn-save svg { width: 14px; height: 14px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-
   /* SAVE STATUS TOAST */
   .save-toast {
     position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 300;
@@ -235,14 +235,57 @@
 
   /* FORM SECTION HEADERS inside modal */
   .form-section-title {
-    grid-column: 1 / -1; font-size: 10px; font-weight: 800; color: var(--accent);
-    text-transform: uppercase; letter-spacing: 1.2px; padding: 0.6rem 0 0.4rem;
-    border-bottom: 1.5px dashed var(--border-accent); margin-bottom: 2px; margin-top: 6px;
+    grid-column: 1 / -1; font-size: 11px; font-weight: 800; color: #1a85d0;
+    text-transform: uppercase; letter-spacing: 1.4px; padding: 0.7rem 0 0.5rem;
+    border-bottom: 1.5px solid #e2ecf7; margin-bottom: 4px; margin-top: 8px;
   }
   .form-section-title:first-child { margin-top: 0; padding-top: 0; }
 
-  /* ADD ENTRY button in card-title */
-  .btn-add-entry {
+  /* ADD ENTRY GROUP IN FILTER BAR — single button with dropdown */
+  .filter-add-group {
+    position: relative; display: flex; align-items: center; margin-left: auto; flex-shrink: 0;
+  }
+  .filter-add-main-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 0.38rem 1rem; border-radius: 8px; font-size: 12.5px; font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white; border: none; cursor: pointer; font-family: inherit;
+    box-shadow: 0 3px 12px rgba(224,96,48,0.30); transition: all 0.18s; white-space: nowrap;
+  }
+  .filter-add-main-btn:hover { transform: translateY(-1px); box-shadow: 0 5px 18px rgba(224,96,48,0.42); }
+  .filter-add-main-btn svg { width: 12px; height: 12px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .filter-add-main-btn .add-chevron { width: 11px; height: 11px; transition: transform 0.2s; }
+  .filter-add-main-btn.open .add-chevron { transform: rotate(180deg); }
+
+  .add-dropdown {
+    position: absolute; top: calc(100% + 6px); right: 0; z-index: 300;
+    background: var(--surface); border: 1px solid var(--border-strong);
+    border-radius: 10px; box-shadow: 0 8px 28px rgba(0,0,0,0.22);
+    min-width: 140px; overflow: hidden;
+    display: none;
+    animation: dotMenuIn 0.15s cubic-bezier(0.34,1.4,0.64,1);
+  }
+  .add-dropdown.open { display: block; }
+  .add-dropdown-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0.6rem 1rem; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: background 0.13s; color: var(--text2);
+    border: none; background: none; width: 100%; font-family: inherit; text-align: left;
+  }
+  .add-dropdown-item:hover { background: var(--surface2); color: var(--text); }
+  .add-item-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .add-item-lead  .add-item-dot { background: var(--accent); box-shadow: 0 0 5px rgba(224,96,48,0.5); }
+  .add-item-visit .add-item-dot { background: var(--blue);   box-shadow: 0 0 5px rgba(26,133,208,0.5); }
+  .add-item-pr    .add-item-dot { background: var(--purple); box-shadow: 0 0 5px rgba(112,64,200,0.5); }
+  .add-item-po    .add-item-dot { background: var(--green);  box-shadow: 0 0 5px rgba(24,168,96,0.5); }
+  .add-item-lead:hover  { color: var(--accent); }
+  .add-item-visit:hover { color: var(--blue); }
+  .add-item-pr:hover    { color: var(--purple); }
+  .add-item-po:hover    { color: var(--green); }
+
+
     margin-left: auto; display: inline-flex; align-items: center; gap: 6px;
     background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white;
     border: none; border-radius: 8px; padding: 0.38rem 0.95rem; font-size: 11.5px; font-weight: 700;
@@ -930,6 +973,27 @@
     </select>
     <button class="clear-btn" onclick="clearAllFilters()">✕ Clear</button>
     <span class="filter-count" id="filter-summary"></span>
+    <div class="filter-add-group" id="filter-add-group">
+      <button class="filter-add-main-btn" id="filter-add-main-btn" onclick="toggleAddDropdown(event)">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add
+        <svg class="add-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="add-dropdown" id="add-dropdown">
+        <button class="add-dropdown-item add-item-lead" onclick="closeAddDropdown();openAddSheet('lead',this)">
+          <span class="add-item-dot"></span>Lead
+        </button>
+        <button class="add-dropdown-item add-item-visit" onclick="closeAddDropdown();openAddSheet('visit',this)">
+          <span class="add-item-dot"></span>Visit
+        </button>
+        <button class="add-dropdown-item add-item-pr" onclick="closeAddDropdown();openAddSheet('pr',this)">
+          <span class="add-item-dot"></span>PR
+        </button>
+        <button class="add-dropdown-item add-item-po" onclick="closeAddDropdown();openAddSheet('po',this)">
+          <span class="add-item-dot"></span>PO
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- PIPELINE + VISITS -->
@@ -938,9 +1002,6 @@
       <div class="card-title">
         <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         Lead pipeline
-        <button class="btn-add-entry" onclick="openAddSheet('lead',this)">
-          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Lead
-        </button>
       </div>
       <div id="pipeline-bars"></div>
       <div class="chart-wrap"><canvas id="pipeChart" role="img" aria-label="Donut chart of lead pipeline stages"></canvas></div>
@@ -949,9 +1010,6 @@
       <div class="card-title">
         <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         Site visits
-        <button class="btn-add-entry" onclick="openAddSheet('visit',this)">
-          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Visit
-        </button>
       </div>
       <div class="card-search">
         <input class="card-search-input" type="text" id="visit-search" placeholder="Search location, person…" oninput="renderVisits()">
@@ -973,9 +1031,6 @@
     <div class="card-title">
       <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       Purchase requests tracker
-      <button class="btn-add-entry" onclick="openAddSheet('pr',this)">
-        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add PR
-      </button>
     </div>
     <div class="card-search">
       <input class="card-search-input" type="text" id="pr-search" placeholder="Search PR No, description, customer…" oninput="renderPRs()">
@@ -1003,9 +1058,6 @@
     <div class="card-title">
       <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
       Purchase orders
-      <button class="btn-add-entry" onclick="openAddSheet('po',this)">
-        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add PO
-      </button>
     </div>
     <div class="card-search">
       <input class="card-search-input" type="text" id="po-search" placeholder="Search customer, PR ref, description…" oninput="renderPOs()">
@@ -2149,10 +2201,18 @@ let _editKey   = null;  // primary key value for sheet update
 
 const TAB_MAP = { lead:'LEAD', visit:'Travel', pr:'PR', po:'PO' };
 
+const MODAL_ICONS = {
+  lead:  `<svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#1a85d0;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>`,
+  visit: `<svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#1a85d0;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
+  pr:    `<svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#1a85d0;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
+  po:    `<svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#1a85d0;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>`,
+};
+const MODAL_LABELS = { lead: 'Add New Lead', visit: 'Add New Site Visit', pr: 'Add New Purchase Request', po: 'Add New Work Order' };
+
 function openAddModal(type) {
   _modalMode = 'add'; _modalType = type; _editIndex = null; _editKey = null;
   document.getElementById('modal-title-text').innerHTML =
-    `<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add ${type.charAt(0).toUpperCase()+type.slice(1)}`;
+    `${MODAL_ICONS[type] || MODAL_ICONS.lead} ${MODAL_LABELS[type] || ('Add ' + type.charAt(0).toUpperCase()+type.slice(1))}`;
   document.getElementById('save-btn-text').textContent = 'Save Entry';
   resetForms(); showForm(type);
   // Pre-fill date fields with today
@@ -2167,7 +2227,7 @@ function openAddModal(type) {
 function openEditModal(type, idx) {
   _modalMode = 'edit'; _modalType = type; _editIndex = idx;
   document.getElementById('modal-title-text').innerHTML =
-    `<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit ${type.charAt(0).toUpperCase()+type.slice(1)}`;
+    `${MODAL_ICONS[type] || MODAL_ICONS.lead} Edit ${type.charAt(0).toUpperCase()+type.slice(1)}`;
   document.getElementById('save-btn-text').textContent = 'Update Entry';
   resetForms(); showForm(type);
 
@@ -2511,22 +2571,7 @@ let _bsEditIndex = null;
 let _bsEditKey = null;
 
 function openAddSheet(type, triggerEl) {
-  _bsMode = 'add'; _bsType = type; _bsEditIndex = null; _bsEditKey = null;
-  _renderBSForm(type);
-  document.getElementById('bs-title-text').innerHTML =
-    `<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add ${type.charAt(0).toUpperCase()+type.slice(1)}`;
-  document.getElementById('bs-save-btn-text').textContent = 'Save Entry';
-  document.getElementById('bs-tab-bar').style.display = '';
-  _activateBSTab(type);
-  const today = new Date().toISOString().split('T')[0];
-  _bsTrySet('bs-f-lead-date', today); _bsTrySet('bs-f-visit-date', today);
-  _bsTrySet('bs-f-pr-date', today);   _bsTrySet('bs-f-po-date', today);
-
-  // Always open centered in viewport
-  const pop = document.getElementById('popover-form');
-  pop.style.left = ''; pop.style.top = ''; pop.style.width = ''; pop.style.transform = '';
-  pop.classList.add('open');
-  document.getElementById('popover-backdrop').classList.add('open');
+  openAddModal(type);
 }
 
 function openEditSheetFrom(type, idx, triggerEl) {
@@ -2768,6 +2813,23 @@ async function saveBSEntry() {
     pos:     _data.aPOs
   });
 }
+
+function toggleAddDropdown(e) {
+  e.stopPropagation();
+  const btn = document.getElementById('filter-add-main-btn');
+  const dd  = document.getElementById('add-dropdown');
+  const open = dd.classList.contains('open');
+  closeAddDropdown();
+  if (!open) { dd.classList.add('open'); btn.classList.add('open'); }
+}
+function closeAddDropdown() {
+  document.getElementById('add-dropdown').classList.remove('open');
+  document.getElementById('filter-add-main-btn').classList.remove('open');
+}
+// Close dropdown on outside click
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('#filter-add-group')) closeAddDropdown();
+});
 
 // Close popover on backdrop click
 window.addEventListener('DOMContentLoaded', function() {
