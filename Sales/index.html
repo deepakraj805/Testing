@@ -2036,7 +2036,7 @@ function hide(id){const el=document.getElementById(id);if(el){el.classList.add('
 // ══════════════════════════════════════════════════════
 //  APPS SCRIPT / LOCAL STORAGE CONFIG
 // ══════════════════════════════════════════════════════
-let _scriptUrl = 'https://script.google.com/macros/s/AKfycbwvgx9kUULrT9-ZQ-HWSC8CB8QJZsyGq3fFpK7Er1Eo5BckjW-fvHtasySsN7M98F0BGg/exec';
+let _scriptUrl = 'https://script.google.com/macros/s/AKfycbzJP6A5GQOFr6PL3Ul6oF0NA4RITX8T4zl5QD_BpGei27U8Gu1JnapMdvYqnckCsaqB/exec';
 try { const _saved = localStorage.getItem('vishak_script_url'); if (_saved) _scriptUrl = _saved; } catch(e) {}
 
 function openScriptConfig() {
@@ -2292,11 +2292,9 @@ async function saveEntry() {
         key:    _editKey,
         row:    rowData
       };
-      const resp = await fetch(_scriptUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+      const form = new FormData();
+      form.append('data', JSON.stringify(payload));
+      const resp = await fetch(_scriptUrl, { method: 'POST', body: form });
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       const result = await resp.json().catch(() => ({ status: 'ok' }));
       if (result.status === 'error') throw new Error(result.message);
@@ -2352,11 +2350,9 @@ async function executeDelete() {
 
   if (_scriptUrl) {
     try {
-      const resp = await fetch(_scriptUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tab: TAB_MAP[type], action: 'delete', key })
-      });
+      const form3 = new FormData();
+      form3.append('data', JSON.stringify({ tab: TAB_MAP[type], action: 'delete', key }));
+      const resp = await fetch(_scriptUrl, { method: 'POST', body: form3 });
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       const result = await resp.json().catch(() => ({ status: 'ok' }));
       if (result.status === 'error') throw new Error(result.message);
@@ -2610,11 +2606,9 @@ async function saveBSEntry() {
 
   if (_scriptUrl) {
     try {
-      const resp = await fetch(_scriptUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tab: tabName, action, row, key: _bsEditKey || key })
-      });
+      const form2 = new FormData();
+      form2.append('data', JSON.stringify({ tab: tabName, action, row, key: _bsEditKey || key }));
+      const resp = await fetch(_scriptUrl, { method: 'POST', body: form2 });
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       const result = await resp.json().catch(() => ({ status: 'ok' }));
       if (result.status === 'error') throw new Error(result.message);
