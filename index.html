@@ -1,94 +1,199 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vishak Tech Dashboard</title>
+<title>Vishak Tech | Business Portal</title>
 
 <style>
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Arial, sans-serif;
+    font-family:'Segoe UI',sans-serif;
 }
 
 body{
-    background:#f4f6f9;
+    background:linear-gradient(135deg,#003d35,#0b5d4b);
     min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    color:white;
 }
 
-.container{
+.hero{
     text-align:center;
+    padding:60px 20px 40px;
 }
 
-h1{
-    font-size:40px;
-    color:#0b5d4b;
+.logo{
+    width:500px;
+    max-width:90%;
+    margin-bottom:20px;
+}
+
+.hero h1{
+    font-size:3rem;
     margin-bottom:10px;
 }
 
-p{
-    color:#666;
-    margin-bottom:40px;
+.hero p{
+    color:#d1d5db;
+    font-size:1.1rem;
+}
+
+.dashboard-container{
+    max-width:1200px;
+    margin:auto;
+    padding:30px;
 }
 
 .cards{
-    display:flex;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
     gap:30px;
-    justify-content:center;
-    flex-wrap:wrap;
 }
 
 .card{
-    width:300px;
-    background:white;
-    padding:40px;
-    border-radius:15px;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,0.15);
+    border-radius:20px;
+    padding:35px;
     text-decoration:none;
-    color:#333;
-    box-shadow:0 5px 15px rgba(0,0,0,0.1);
-    transition:0.3s;
+    color:white;
+    transition:.3s;
 }
 
 .card:hover{
-    transform:translateY(-8px);
+    transform:translateY(-10px);
+    box-shadow:0 20px 40px rgba(0,0,0,.25);
+}
+
+.card-icon{
+    font-size:60px;
+    margin-bottom:20px;
 }
 
 .card h2{
-    margin-bottom:10px;
-    color:#0b5d4b;
+    margin-bottom:15px;
+    font-size:28px;
 }
 
 .card p{
-    margin:0;
+    color:#d1d5db;
+    line-height:1.6;
+}
+
+.features{
+    margin-top:60px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+.feature{
+    background:rgba(255,255,255,0.05);
+    padding:20px;
+    border-radius:15px;
+    text-align:center;
+}
+
+.feature h3{
+    margin-bottom:10px;
+}
+
+.footer{
+    text-align:center;
+    padding:30px;
+    color:#cbd5e1;
+    margin-top:40px;
+}
+
+.live-badge{
+    display:inline-block;
+    background:#22c55e;
+    color:white;
+    padding:8px 18px;
+    border-radius:50px;
+    margin-top:15px;
+    font-size:14px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-    <h1>Vishak Tech</h1>
-    <p>Select Dashboard</p>
+<section class="hero">
+
+    <img src="logo.jpeg" alt="Vishak Tech Logo" class="logo">
+
+    <h1>Business Management Portal</h1>
+
+    <p>
+        Centralized platform for Sales Pipeline, Work Orders,
+        Production Tracking and Business Operations.
+    </p>
+
+    <div class="live-badge">
+        ● System Online
+    </div>
+
+</section>
+
+<div class="dashboard-container">
 
     <div class="cards">
 
         <a href="Sales/" class="card">
-            <h2>📊 Sales Dashboard</h2>
-            <p>Open Sales Pipeline Dashboard</p>
+            <div class="card-icon">📈</div>
+            <h2>Sales Dashboard</h2>
+            <p>
+                Manage Leads, RFQs, Purchase Requests,
+                Purchase Orders and Site Visit Activities.
+            </p>
         </a>
 
         <a href="Work%20Order/" class="card">
-            <h2>📋 Work Order Dashboard</h2>
-            <p>Open Work Order Dashboard</p>
+            <div class="card-icon">🏭</div>
+            <h2>Work Order Dashboard</h2>
+            <p>
+                Track Production, Fabrication,
+                Casting, QC, Packing and Dispatch.
+            </p>
         </a>
 
     </div>
+
+    <div class="features">
+
+        <div class="feature">
+            <h3>📊 Live Reporting</h3>
+            <p>Real-time business insights</p>
+        </div>
+
+        <div class="feature">
+            <h3>📁 Google Sheets</h3>
+            <p>Connected cloud database</p>
+        </div>
+
+        <div class="feature">
+            <h3>⚡ Fast Access</h3>
+            <p>One-click dashboard navigation</p>
+        </div>
+
+        <div class="feature">
+            <h3>🔒 Secure Data</h3>
+            <p>Centralized business records</p>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="footer">
+    © 2026 Vishak Tech | Industrial Solutions & Engineering Services
 </div>
 
 </body>
 </html>
+```
