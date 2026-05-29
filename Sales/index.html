@@ -2036,7 +2036,8 @@ function hide(id){const el=document.getElementById(id);if(el){el.classList.add('
 // ══════════════════════════════════════════════════════
 //  APPS SCRIPT / LOCAL STORAGE CONFIG
 // ══════════════════════════════════════════════════════
-let _scriptUrl = 'https://script.google.com/macros/s/AKfycbx9ub-E134AXeNK4q6e8hihVqur5a6XBiiyXauf06Bnl-VMeBTgVh397pKySky1Lfl2bA/exec'; try { _scriptUrl = localStorage.getItem('vishak_script_url') || _scriptUrl; } catch(e) {}
+let _scriptUrl = 'https://script.google.com/macros/s/AKfycbwvgx9kUULrT9-ZQ-HWSC8CB8QJZsyGq3fFpK7Er1Eo5BckjW-fvHtasySsN7M98F0BGg/exec';
+try { const _saved = localStorage.getItem('vishak_script_url'); if (_saved) _scriptUrl = _saved; } catch(e) {}
 
 function openScriptConfig() {
   document.getElementById('script-url-input').value = _scriptUrl;
@@ -2291,14 +2292,18 @@ async function saveEntry() {
         key:    _editKey,
         row:    rowData
       };
-      await fetch(_scriptUrl, {
-        method: 'POST', mode: 'no-cors',
+      const resp = await fetch(_scriptUrl, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const result = await resp.json().catch(() => ({ status: 'ok' }));
+      if (result.status === 'error') throw new Error(result.message);
       showToast('Saved to Google Sheets ✓', 'success');
     } catch(e) {
-      showToast('Local save OK — Sheet sync failed', 'error');
+      console.error('Sheet sync failed:', e);
+      showToast('Local save OK — Sheet sync failed: ' + e.message, 'error');
     }
   } else {
     showToast('Saved locally (configure URL to sync to Sheet)', 'success');
@@ -2347,14 +2352,18 @@ async function executeDelete() {
 
   if (_scriptUrl) {
     try {
-      await fetch(_scriptUrl, {
-        method: 'POST', mode: 'no-cors',
+      const resp = await fetch(_scriptUrl, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tab: TAB_MAP[type], action: 'delete', key })
       });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const result = await resp.json().catch(() => ({ status: 'ok' }));
+      if (result.status === 'error') throw new Error(result.message);
       showToast('Record deleted from Google Sheets', 'success');
     } catch(e) {
-      showToast('Deleted locally — Sheet sync failed', 'error');
+      console.error('Sheet sync failed:', e);
+      showToast('Deleted locally — Sheet sync failed: ' + e.message, 'error');
     }
   } else {
     showToast('Record deleted locally', 'success');
@@ -2601,14 +2610,18 @@ async function saveBSEntry() {
 
   if (_scriptUrl) {
     try {
-      await fetch(_scriptUrl, {
-        method: 'POST', mode: 'no-cors',
+      const resp = await fetch(_scriptUrl, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tab: tabName, action, row, key: _bsEditKey || key })
       });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const result = await resp.json().catch(() => ({ status: 'ok' }));
+      if (result.status === 'error') throw new Error(result.message);
       showToast(_bsMode==='edit'?'Record updated in Google Sheets':'Record saved to Google Sheets','success');
     } catch(e) {
-      showToast('Saved locally — Sheet sync failed','error');
+      console.error('Sheet sync failed:', e);
+      showToast('Saved locally — Sheet sync failed: ' + e.message,'error');
     }
   } else {
     showToast('Saved locally (configure URL to sync to Sheet)','success');
