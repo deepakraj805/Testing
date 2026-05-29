@@ -1008,36 +1008,41 @@
       </div>
       <details style="margin-top:1.2rem">
         <summary style="font-size:12px;color:var(--accent);cursor:pointer;font-weight:600">📋 Copy the Apps Script code to deploy</summary>
-        <pre style="margin-top:0.75rem;background:var(--surface2);border:1px solid var(--border-strong);border-radius:8px;padding:1rem;font-size:11px;overflow-x:auto;color:var(--text2);line-height:1.6">function doPost(e) {
-  var ss = SpreadsheetApp.openById("1Yy9KtzH45YLBU3O1OYgpZydccfx7EUz_8OZf0rGMksA");
-  var data = JSON.parse(e.postData.contents);
-  var sheet = ss.getSheetByName(data.tab);
-  var headers = sheet.getRange(1,1,1,sheet.getLastColumn()).getValues()[0];
-
-  if (data.action === "append") {
-    var row = headers.map(h => data.row[h] || "");
-    sheet.appendRow(row);
-  } else if (data.action === "update") {
-    var rows = sheet.getDataRange().getValues();
-    for (var i=1; i&lt;rows.length; i++) {
-      if (String(rows[i][0]) === String(data.key)) {
-        headers.forEach((h,j) => { if(data.row[h]!==undefined) sheet.getRange(i+1,j+1).setValue(data.row[h]); });
-        break;
+        <pre style="margin-top:0.75rem;background:var(--surface2);border:1px solid var(--border-strong);border-radius:8px;padding:1rem;font-size:11px;overflow-x:auto;color:var(--text2);line-height:1.6">function doGet(e) {
+  try {
+    if (!e.parameter.data) return buildRes({status:"ok",message:"live"});
+    var data = JSON.parse(e.parameter.data);
+    var ss = SpreadsheetApp.openById("1Yy9KtzH45YLBU3O1OYgpZydccfx7EUz_8OZf0rGMksA");
+    var sheet = ss.getSheetByName(data.tab);
+    if (!sheet) throw new Error("Sheet not found: " + data.tab);
+    var headers = sheet.getRange(1,1,1,sheet.getLastColumn()).getValues()[0];
+    if (data.action === "append") {
+      sheet.appendRow(headers.map(function(h){ return data.row[h]||""; }));
+    } else if (data.action === "update" || data.action === "delete") {
+      var rows = sheet.getDataRange().getValues();
+      var keySearch = String(data.key).split("|")[0].trim();
+      for (var i=1; i&lt;rows.length; i++) {
+        if (String(rows[i][0]).trim() === keySearch) {
+          if (data.action === "update") {
+            headers.forEach(function(h,j){ if(data.row[h]!==undefined) sheet.getRange(i+1,j+1).setValue(data.row[h]); });
+          } else { sheet.deleteRow(i+1); }
+          break;
+        }
       }
     }
-  } else if (data.action === "delete") {
-    var rows = sheet.getDataRange().getValues();
-    for (var i=1; i&lt;rows.length; i++) {
-      if (String(rows[i][0]) === String(data.key)) { sheet.deleteRow(i+1); break; }
-    }
-  }
-  return ContentService.createTextOutput(JSON.stringify({status:"ok"})).setMimeType(ContentService.MimeType.JSON);
+    return buildRes({status:"ok"});
+  } catch(err) { return buildRes({status:"error",message:err.message}); }
 }
-function doGet(e) { return ContentService.createTextOutput("ok"); }</pre>
+function doPost(e) { return doGet(e); }
+function buildRes(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}</pre>
       </details>
     </div>
+    <div id="test-conn-result" style="padding:0 1.5rem 0.5rem;font-size:12px;font-weight:600;display:none"></div>
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeScriptConfig()">Cancel</button>
+      <button class="btn-cancel" onclick="testScriptConnection()" id="test-conn-btn" style="background:var(--blue-bg);color:var(--blue);border-color:var(--blue)">🔌 Test Connection</button>
       <button class="btn-save" onclick="saveScriptUrl()">
         <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Save URL
       </button>
@@ -1296,7 +1301,7 @@ function doGet(e) { return ContentService.createTextOutput("ok"); }</pre>
 // ══════════════════════════════════════════════════════
 //  CONFIG
 // ══════════════════════════════════════════════════════
-const SHEET_ID = '1a4GgbIeTKIyWsxdRdemtfewMJaD9POD6IWbExW8XUL8';
+const SHEET_ID = '1Yy9KtzH45YLBU3O1OYgpZydccfx7EUz_8OZf0rGMksA';
 const TABS = { travel:'Travel', lead:'LEAD', pr:'PR', po:'PO' };
 // ══════════════════════════════════════════════════════
 
@@ -2042,7 +2047,7 @@ function hide(id){const el=document.getElementById(id);if(el){el.classList.add('
 // ══════════════════════════════════════════════════════
 //  APPS SCRIPT / LOCAL STORAGE CONFIG
 // ══════════════════════════════════════════════════════
-let _scriptUrl = 'https://script.google.com/macros/s/AKfycbxcG-ds6RA-ZMTVXCIdAx7l1bjEJ_o3VKG3teOiKE0coCzfFn5aB_Z0-E4ViKaiucXE/exec';
+let _scriptUrl = 'https://script.google.com/macros/s/AKfycbx0H-pWi9wxuNmsRBDRgjA-Ef_6_AOdoBi8-b1CemvB_d97ehe7PP5IgzhQm06yrtcOrg/exec';
 try { localStorage.removeItem('vishak_script_url'); } catch(e) {}
 
 function openScriptConfig() {
@@ -2056,9 +2061,33 @@ function saveScriptUrl() {
   _scriptUrl = document.getElementById('script-url-input').value.trim();
   localStorage.setItem('vishak_script_url', _scriptUrl);
   closeScriptConfig();
-  if (_scriptUrl) {
-    showToast('Apps Script URL saved!', 'success');
+  if (_scriptUrl) { showToast('Apps Script URL saved!', 'success'); }
+}
+
+async function testScriptConnection() {
+  const url = (document.getElementById('script-url-input').value.trim()) || _scriptUrl;
+  const res = document.getElementById('test-conn-result');
+  const btn = document.getElementById('test-conn-btn');
+  if (!url) { res.style.display=''; res.style.color='var(--red)'; res.textContent='⚠ No URL entered.'; return; }
+  btn.textContent = '⏳ Testing…'; btn.disabled = true; res.style.display = 'none';
+  try {
+    const resp = await fetch(url + '?data=' + encodeURIComponent(JSON.stringify({ping:true})));
+    const text = await resp.text();
+    let msg = '';
+    try {
+      const json = JSON.parse(text);
+      if (json.status === 'ok') { msg = '✅ Connected! Apps Script is live.'; res.style.color='var(--green)'; }
+      else { msg = '⚠ Script error: ' + (json.message||text); res.style.color='var(--red)'; }
+    } catch(e) {
+      msg = resp.ok ? '✅ Connected.' : '❌ Bad response: ' + text.slice(0,120);
+      res.style.color = resp.ok ? 'var(--green)' : 'var(--red)';
+    }
+    res.textContent = msg;
+  } catch(e) {
+    res.style.color = 'var(--red)';
+    res.textContent = '❌ Failed to fetch — make sure deployment is set to "Anyone" (not "Anyone with Google account").';
   }
+  res.style.display = ''; btn.textContent = '🔌 Test Connection'; btn.disabled = false;
 }
 
 // ══════════════════════════════════════════════════════
