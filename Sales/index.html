@@ -1296,7 +1296,7 @@ function doGet(e) { return ContentService.createTextOutput("ok"); }</pre>
 // ══════════════════════════════════════════════════════
 //  CONFIG
 // ══════════════════════════════════════════════════════
-const SHEET_ID = '1JYHZUJdfO7KKgnnmy1_0mqQSxF8t2dd4r3KCWLEa5yE';
+const SHEET_ID = '1a4GgbIeTKIyWsxdRdemtfewMJaD9POD6IWbExW8XUL8';
 const TABS = { travel:'Travel', lead:'LEAD', pr:'PR', po:'PO' };
 // ══════════════════════════════════════════════════════
 
@@ -2036,8 +2036,8 @@ function hide(id){const el=document.getElementById(id);if(el){el.classList.add('
 // ══════════════════════════════════════════════════════
 //  APPS SCRIPT / LOCAL STORAGE CONFIG
 // ══════════════════════════════════════════════════════
-let _scriptUrl = 'https://script.google.com/macros/s/AKfycbzJP6A5GQOFr6PL3Ul6oF0NA4RITX8T4zl5QD_BpGei27U8Gu1JnapMdvYqnckCsaqB/exec';
-try { const _saved = localStorage.getItem('vishak_script_url'); if (_saved) _scriptUrl = _saved; } catch(e) {}
+let _scriptUrl = 'https://script.google.com/macros/s/AKfycbxcG-ds6RA-ZMTVXCIdAx7l1bjEJ_o3VKG3teOiKE0coCzfFn5aB_Z0-E4ViKaiucXE/exec';
+try { localStorage.removeItem('vishak_script_url'); } catch(e) {}
 
 function openScriptConfig() {
   document.getElementById('script-url-input').value = _scriptUrl;
@@ -2292,9 +2292,8 @@ async function saveEntry() {
         key:    _editKey,
         row:    rowData
       };
-      const form = new FormData();
-      form.append('data', JSON.stringify(payload));
-      const resp = await fetch(_scriptUrl, { method: 'POST', body: form });
+      const url = _scriptUrl + '?data=' + encodeURIComponent(JSON.stringify(payload));
+      const resp = await fetch(url, { method: 'GET' });
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       const result = await resp.json().catch(() => ({ status: 'ok' }));
       if (result.status === 'error') throw new Error(result.message);
@@ -2350,9 +2349,9 @@ async function executeDelete() {
 
   if (_scriptUrl) {
     try {
-      const form3 = new FormData();
-      form3.append('data', JSON.stringify({ tab: TAB_MAP[type], action: 'delete', key }));
-      const resp = await fetch(_scriptUrl, { method: 'POST', body: form3 });
+      const delPayload = { tab: TAB_MAP[type], action: 'delete', key };
+      const url = _scriptUrl + '?data=' + encodeURIComponent(JSON.stringify(delPayload));
+      const resp = await fetch(url, { method: 'GET' });
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       const result = await resp.json().catch(() => ({ status: 'ok' }));
       if (result.status === 'error') throw new Error(result.message);
@@ -2606,9 +2605,9 @@ async function saveBSEntry() {
 
   if (_scriptUrl) {
     try {
-      const form2 = new FormData();
-      form2.append('data', JSON.stringify({ tab: tabName, action, row, key: _bsEditKey || key }));
-      const resp = await fetch(_scriptUrl, { method: 'POST', body: form2 });
+      const bsPayload = { tab: tabName, action, row, key: _bsEditKey || key };
+      const url = _scriptUrl + '?data=' + encodeURIComponent(JSON.stringify(bsPayload));
+      const resp = await fetch(url, { method: 'GET' });
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       const result = await resp.json().catch(() => ({ status: 'ok' }));
       if (result.status === 'error') throw new Error(result.message);
