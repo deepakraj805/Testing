@@ -2207,5 +2207,12 @@ async function executeDelete() {
 }
 </script>
 
+<script type="module" src="../firebase-auth.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    if (typeof checkWorkOrderAccess === "function") checkWorkOrderAccess();
+    else { import("../firebase-auth.js").then(() => checkWorkOrderAccess()); }
+  });
+</script>
 </body>
 </html>
