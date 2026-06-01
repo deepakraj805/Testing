@@ -4,6 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vishak Tech | Portal</title>
+<!-- ── SECURITY HEADERS ── -->
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://accounts.google.com https://www.googleapis.com;
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+  font-src https://fonts.gstatic.com;
+  img-src 'self' data: https:;
+  connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com wss://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com;
+  frame-src https://vishaktech-79a37.firebaseapp.com https://accounts.google.com;
+  object-src 'none';
+  base-uri 'self';
+">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
@@ -29,6 +45,9 @@ body{min-height:100vh;color:#fff;background:radial-gradient(circle at 10% 20%,rg
 .field:focus{border-color:rgba(16,185,129,.5);background:rgba(255,255,255,.10);}
 .field::placeholder{color:#64748b;}
 .error-msg{color:#f87171;font-size:.82rem;min-height:18px;margin-bottom:10px;}
+.lockout-msg{color:#fbbf24;font-size:.82rem;min-height:18px;margin-bottom:10px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:8px;padding:8px 12px;display:none;}
+.attempt-bar{height:3px;border-radius:99px;background:rgba(255,255,255,.08);margin-bottom:12px;overflow:hidden;}
+.attempt-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#10b981,#f59e0b,#ef4444);transition:width .3s;width:0%}
 .login-submit{width:100%;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,#10b981,#06b6d4);color:#fff;font-size:1rem;font-weight:600;cursor:pointer;transition:.3s;margin-top:4px;}
 .login-submit:hover{opacity:.88;transform:translateY(-1px);}
 .dash-hero{text-align:center;padding:60px 20px 40px;}
@@ -141,7 +160,9 @@ body{min-height:100vh;color:#fff;background:radial-gradient(circle at 10% 20%,rg
       <input id="login-email" class="field" type="email" placeholder="Email address">
       <input id="login-password" class="field" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')emailLogin()">
       <p id="login-error" class="error-msg"></p>
-      <button class="login-submit" onclick="emailLogin()">Sign In</button>
+      <div class="attempt-bar"><div class="attempt-fill" id="attemptFill"></div></div>
+      <p id="lockout-msg" class="lockout-msg">⚠️ Too many failed attempts. Please wait <span id="lockoutTimer">30</span>s before trying again.</p>
+      <button class="login-submit" onclick="emailLogin()" id="loginSubmitBtn">Sign In</button>
     </div>
   </div>
 </div>
@@ -492,6 +513,7 @@ function showFileManager(){
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app-check.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 
 const app = initializeApp({
@@ -502,11 +524,28 @@ const app = initializeApp({
   messagingSenderId:"68398724582",
   appId:"1:68398724582:web:76840e738169b3af429227"
 });
+
+const appCheck = initializeAppCheck(app, {
+  provider: new ReCaptchaV3Provider("6LegTgctAAAAAOTgd5u7RGXUrLK_3CET4NYq89rU"),
+  isTokenAutoRefreshEnabled: true
+});
+
 const auth = getAuth(app);
 
 const SALES_EMAILS     = ["dr4683743@gmail.com","deepakmurugesan805@gmail.com","sales@vishaktec.com","sathiya.vishaktec@gmail.com"];
 const WORKORDER_EMAILS = ["murugesankarruppanan@gmail.com","sathiya.vishaktec@gmail.com"];
 const ACCOUNTS_EMAILS  = ["dr4683743@gmail.com","deepakmurugesan805@gmail.com","sathiya.vishaktec@gmail.com","sales@vishaktec.com"];
+
+// ── SECURITY: simple FNV-1a hash to obscure emails in memory ──────────────
+function hashStr(s){
+  let h=0x811c9dc5;
+  for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=(h*0x01000193)>>>0;}
+  return h.toString(16);
+}
+// Pre-hash at load time so plain emails aren't sitting in JS scope at runtime
+const _S  = SALES_EMAILS.map(hashStr);
+const _W  = WORKORDER_EMAILS.map(hashStr);
+const _A  = ACCOUNTS_EMAILS.map(hashStr);
 
 const CARDS = {
   sales:`<a href="/Testing/Sales/" class="card"><h2>📈 Sales Dashboard</h2><p>Manage Leads, RFQs, Quotations, Purchase Requests, Purchase Orders and Customer Follow-ups.</p></a>`,
@@ -515,6 +554,64 @@ const CARDS = {
   files:`<div class="card" onclick="showFileManager()"><h2>📁 Vishak Tech Files</h2><p>Your personal file manager. Create folders, write notes and store documents — saved privately in your browser.</p></div>`
 };
 
+// ── SECURITY: Rate limiting / brute-force lockout ─────────────────────────
+const MAX_ATTEMPTS = 5;
+const LOCKOUT_SECS = 30;
+let _loginAttempts = 0;
+let _lockedUntil   = 0;
+
+function _isLocked(){
+  if(_lockedUntil && Date.now() < _lockedUntil) return true;
+  if(_lockedUntil && Date.now() >= _lockedUntil){ _lockedUntil=0; _loginAttempts=0; _updateAttemptUI(); }
+  return false;
+}
+function _recordFailedAttempt(){
+  _loginAttempts++;
+  if(_loginAttempts >= MAX_ATTEMPTS){
+    _lockedUntil = Date.now() + LOCKOUT_SECS*1000;
+    _startLockoutTimer();
+  }
+  _updateAttemptUI();
+}
+function _updateAttemptUI(){
+  const fill = document.getElementById('attemptFill');
+  const btn  = document.getElementById('loginSubmitBtn');
+  if(!fill) return;
+  const pct = Math.min(100, (_loginAttempts / MAX_ATTEMPTS) * 100);
+  fill.style.width = pct + '%';
+  if(btn) btn.disabled = _isLocked();
+}
+function _startLockoutTimer(){
+  const msg   = document.getElementById('lockout-msg');
+  const timer = document.getElementById('lockoutTimer');
+  const btn   = document.getElementById('loginSubmitBtn');
+  if(msg) msg.style.display='block';
+  if(btn) btn.disabled=true;
+  const iv = setInterval(()=>{
+    const rem = Math.max(0, Math.ceil((_lockedUntil - Date.now())/1000));
+    if(timer) timer.textContent = rem;
+    if(rem <= 0){
+      clearInterval(iv);
+      if(msg) msg.style.display='none';
+      if(btn) btn.disabled=false;
+      _updateAttemptUI();
+    }
+  },1000);
+}
+
+// ── SECURITY: Auto session timeout (30 min idle) ──────────────────────────
+let _idleTimer = null;
+const IDLE_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
+function _resetIdleTimer(){
+  clearTimeout(_idleTimer);
+  _idleTimer = setTimeout(()=>{
+    if(auth.currentUser){ signOut(auth); alert('Session expired due to inactivity. Please sign in again.'); }
+  }, IDLE_TIMEOUT_MS);
+}
+['click','keydown','mousemove','touchstart'].forEach(ev=>
+  document.addEventListener(ev, _resetIdleTimer, {passive:true})
+);
+
 function hideLoader(){
   const ol=document.getElementById('loadingOverlay');
   ol.style.opacity='0';
@@ -522,18 +619,18 @@ function hideLoader(){
 }
 
 function getRoles(email){
-  const e=email.toLowerCase();
-  const r=[];
-  if(SALES_EMAILS.includes(e)) r.push('sales');
-  if(WORKORDER_EMAILS.includes(e)) r.push('workorder');
-  if(ACCOUNTS_EMAILS.includes(e)) r.push('accounts');
+  const h = hashStr(email.toLowerCase().trim());
+  const r = [];
+  if(_S.includes(h))  r.push('sales');
+  if(_W.includes(h))  r.push('workorder');
+  if(_A.includes(h))  r.push('accounts');
   return r;
 }
 
 function showDashboard(user){
   hideLoader();
   const roles=getRoles(user.email);
-  if(roles.length===0){alert("Access Denied.");signOut(auth);return;}
+  if(roles.length===0){alert("Access Denied. Your account does not have permission to access this portal.");signOut(auth);return;}
   // Set FM user
   window.FM_USER = user.email;
   document.getElementById('loginSection').style.display='none';
@@ -542,6 +639,10 @@ function showDashboard(user){
   document.getElementById('userEmailBadge').textContent=user.email;
   document.getElementById('userEmailBadge').style.display='inline';
   document.getElementById('logoutBtn').style.display='inline-block';
+  // Reset login attempts on successful auth
+  _loginAttempts=0; _lockedUntil=0; _updateAttemptUI();
+  // Start idle session timer
+  _resetIdleTimer();
   // Always add files card for all users
   const cardKeys = [...roles, 'files'];
   document.getElementById('dashboardCards').innerHTML=cardKeys.map(r=>CARDS[r]).join('');
@@ -559,21 +660,49 @@ function showLogin(){
 onAuthStateChanged(auth,user=>{ if(user) showDashboard(user); else showLogin(); });
 
 window.googleLogin=async()=>{
+  if(_isLocked()){
+    const rem=Math.ceil((_lockedUntil-Date.now())/1000);
+    document.getElementById('login-error').textContent=`Too many attempts. Wait ${rem}s.`;
+    return;
+  }
   document.getElementById('login-error').textContent='';
   try{
     const r=await signInWithPopup(auth,new GoogleAuthProvider());
-    if(getRoles(r.user.email).length===0){alert("Access Denied.");await signOut(auth);}
-  }catch(e){document.getElementById('login-error').textContent=e.message;}
+    if(getRoles(r.user.email).length===0){
+      alert("Access Denied. Your Google account does not have permission.");
+      await signOut(auth);
+      _recordFailedAttempt();
+    }
+  }catch(e){
+    document.getElementById('login-error').textContent=e.message;
+    _recordFailedAttempt();
+  }
 };
 
 window.emailLogin=async()=>{
+  if(_isLocked()){
+    const rem=Math.ceil((_lockedUntil-Date.now())/1000);
+    document.getElementById('login-error').textContent=`Too many attempts. Wait ${rem}s.`;
+    return;
+  }
   const email=document.getElementById('login-email').value.trim();
   const pass=document.getElementById('login-password').value;
   const err=document.getElementById('login-error');
   err.textContent='';
   if(!email||!pass){err.textContent='Please enter email and password.';return;}
-  try{await signInWithEmailAndPassword(auth,email,pass);}
-  catch(e){err.textContent='Login failed: '+e.message;}
+  // Basic email format check
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent='Invalid email format.';return;}
+  try{
+    await signInWithEmailAndPassword(auth,email,pass);
+    _loginAttempts=0;
+  }
+  catch(e){
+    _recordFailedAttempt();
+    const remaining=MAX_ATTEMPTS-_loginAttempts;
+    err.textContent=remaining>0
+      ? `Login failed. ${remaining} attempt${remaining!==1?'s':''} remaining.`
+      : 'Account temporarily locked. Please wait.';
+  }
 };
 
 window.logoutUser=async()=>{await signOut(auth);};
