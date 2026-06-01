@@ -388,8 +388,8 @@
 
     // ── Role map ────────────────────────────────────────────
     const ROLE_MAP = {
-      "dr4683743@gmail.com":          "Sales/",
-      "deepakmurugesan805@gmail.com": "WorkOrder/"
+      "dr4683743@gmail.com":          "/Testing/Sales/",
+      "deepakmurugesan805@gmail.com": "/Testing/WorkOrder/"
     };
     // ────────────────────────────────────────────────────────
 
@@ -453,11 +453,11 @@
     // ── Cards: open modal or redirect if already logged in ──
     document.getElementById("salesCard").addEventListener("click", (e) => {
       e.stopPropagation();
-      handleCardClick("Sales/");
+      handleCardClick("/Testing/Sales/");
     });
     document.getElementById("workCard").addEventListener("click", (e) => {
       e.stopPropagation();
-      handleCardClick("WorkOrder/");
+      handleCardClick("/Testing/WorkOrder/");
     });
 
     function handleCardClick(dest) {
