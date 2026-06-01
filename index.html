@@ -7,11 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
-<button class="login-btn" onclick="googleLogin()">
-    Sign In With Google
-</button>
 
-<script type="module" src="firebase-auth.js"></script>
 body{
 min-height:100vh;color:#fff;
 background:
@@ -141,7 +137,7 @@ border:1px solid rgba(255,255,255,.08);
 <img src="VISHAKTECH%20LOGO.jpeg" class="logo">
 </a>
 
-<button class="contact-btn" onclick="openContact()">Contact Us</button>
+<div style="display:flex;gap:10px;"><button class="contact-btn" onclick="googleLogin()">Login</button><button class="contact-btn" onclick="openContact()">Contact Us</button></div>
 </header>
 
 <section class="hero">
@@ -179,5 +175,7 @@ function openContact(){document.getElementById('contactModal').style.display='bl
 function closeContact(){document.getElementById('contactModal').style.display='none';}
 </script>
 
+
+<script type="module" src="firebase-auth.js"></script>
 </body>
 </html>
