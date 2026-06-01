@@ -479,8 +479,8 @@
       const dest = ROLE_MAP[user.email];
       if (dest) {
         const path = window.location.pathname;
-        const onLanding = path === "/" || path === "" ||
-          path.endsWith("/index.html") || path.endsWith("/index.htm");
+        // Only redirect on the exact landing page — NOT on dashboard pages
+        const onLanding = path === "/Testing/" || path === "/Testing/index.html";
         if (onLanding) window.location.replace(dest);
       } else {
         signOut(auth);
