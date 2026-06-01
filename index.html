@@ -1,315 +1,506 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vishak Tech | Premium Portal</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vishak Tech</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;800&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-body{
-  min-height:100vh;
-  color:#fff;
-  background:
-    radial-gradient(circle at 10% 20%, rgba(16,185,129,.20), transparent 25%),
-    radial-gradient(circle at 90% 10%, rgba(59,130,246,.20), transparent 25%),
-    linear-gradient(135deg,#020617,#0f172a,#111827);
-  background-size:400% 400%;
-  animation:bgMove 20s ease infinite;
-}
+    :root {
+      --bg:        #0d1117;
+      --surface:   #161b22;
+      --card:      #1c2333;
+      --border:    #30363d;
+      --teal:      #00c9a7;
+      --teal2:     #00e5c3;
+      --text:      #e6edf3;
+      --muted:     #8b949e;
+      --red:       #ff4757;
+    }
 
-@keyframes bgMove{
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
-}
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      cursor: pointer;
+      overflow-x: hidden;
+    }
 
-.navbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:18px 40px;
-  background:rgba(255,255,255,.04);
-  backdrop-filter:blur(20px);
-  border-bottom:1px solid rgba(255,255,255,.08);
-}
+    /* ── subtle grid bg ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,201,167,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,201,167,.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-.logo{
-  height:60px;
-  transition:.4s;
-}
-.logo:hover{
-  transform:scale(1.05);
-  filter:drop-shadow(0 0 10px rgba(16,185,129,.4));
-}
+    /* ══════════════ NAVBAR ══════════════ */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem;
+      height: 64px;
+      background: rgba(13,17,23,.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      display: flex; align-items: center; gap: .6rem;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.3rem; font-weight: 800;
+      letter-spacing: .05em; color: var(--text);
+      text-decoration: none;
+    }
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, #0d3b2e, #00c9a7);
+      border-radius: 8px;
+      display: grid; place-items: center;
+      font-size: 1.1rem;
+    }
+    .nav-btns { display: flex; gap: .75rem; }
+    .btn {
+      padding: .5rem 1.3rem;
+      border-radius: 8px;
+      font-family: 'Barlow', sans-serif;
+      font-weight: 600; font-size: .9rem;
+      cursor: pointer; border: none;
+      transition: all .2s;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--teal);
+      color: var(--teal);
+    }
+    .btn-outline:hover { background: var(--teal); color: #000; }
+    .btn-solid {
+      background: linear-gradient(135deg, var(--teal), #00b894);
+      color: #000;
+    }
+    .btn-solid:hover { filter: brightness(1.1); transform: translateY(-1px); }
 
-/* FIX: logo broken image fallback styling */
-.logo-fallback{
-  height:60px;
-  display:flex;
-  align-items:center;
-  font-size:1.4rem;
-  font-weight:800;
-  background:linear-gradient(90deg,#10b981,#06b6d4);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  letter-spacing:1px;
-}
+    /* ══════════════ HERO ══════════════ */
+    .hero {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      min-height: calc(100vh - 64px);
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: rgba(0,201,167,.1);
+      border: 1px solid rgba(0,201,167,.3);
+      color: var(--teal);
+      font-size: .8rem; font-weight: 600; letter-spacing: .08em;
+      padding: .3rem .9rem; border-radius: 99px;
+      margin-bottom: 1.8rem;
+      animation: fadeUp .6s ease both;
+    }
+    .hero h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(2.8rem, 6vw, 5.2rem);
+      font-weight: 800; line-height: 1.05;
+      letter-spacing: -.01em;
+      max-width: 900px;
+      animation: fadeUp .6s .1s ease both;
+    }
+    .hero h1 span { color: var(--teal); }
+    .hero p {
+      margin-top: 1.4rem;
+      color: var(--muted);
+      font-size: 1.05rem; line-height: 1.7;
+      max-width: 600px;
+      animation: fadeUp .6s .2s ease both;
+    }
 
-.contact-btn{
-  background:linear-gradient(270deg,#10b981,#06b6d4,#3b82f6,#10b981);
-  background-size:400% 400%;
-  animation:gradientMove 8s ease infinite;
-  border:none;
-  padding:12px 24px;
-  border-radius:50px;
-  color:#fff;
-  font-weight:600;
-  cursor:pointer;
-  font-size:0.95rem;
-  transition: opacity 0.2s, transform 0.2s;
-}
+    /* ── click hint ── */
+    .click-hint {
+      margin-top: 2.5rem;
+      display: flex; align-items: center; gap: .5rem;
+      color: var(--muted); font-size: .85rem;
+      animation: fadeUp .6s .3s ease both;
+    }
+    .pulse-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--teal);
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+      0%,100%{ box-shadow: 0 0 0 0 rgba(0,201,167,.5); }
+      50%    { box-shadow: 0 0 0 8px rgba(0,201,167,0); }
+    }
 
-.contact-btn:hover{
-  opacity:0.9;
-  transform:scale(1.04);
-}
+    /* ══════════════ CARDS ══════════════ */
+    .cards {
+      display: flex; gap: 1.5rem; flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 3.5rem;
+      animation: fadeUp .6s .35s ease both;
+    }
+    .card {
+      position: relative; overflow: hidden;
+      width: 320px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 2rem;
+      transition: transform .25s, border-color .25s, box-shadow .25s;
+      cursor: pointer;
+    }
+    .card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(0,201,167,.07), transparent 60%);
+      opacity: 0; transition: opacity .25s;
+    }
+    .card:hover { transform: translateY(-6px); border-color: var(--teal); box-shadow: 0 16px 48px rgba(0,201,167,.15); }
+    .card:hover::before { opacity: 1; }
+    .card-icon { font-size: 2.2rem; margin-bottom: 1rem; }
+    .card h3 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.4rem; font-weight: 700; margin-bottom: .6rem;
+    }
+    .card p { color: var(--muted); font-size: .9rem; line-height: 1.6; }
+    .card-arrow {
+      position: absolute; bottom: 1.4rem; right: 1.4rem;
+      width: 32px; height: 32px; border-radius: 8px;
+      background: rgba(0,201,167,.12);
+      display: grid; place-items: center;
+      color: var(--teal); font-size: 1rem;
+      transition: background .2s, transform .2s;
+    }
+    .card:hover .card-arrow { background: var(--teal); color: #000; transform: translate(2px,-2px); }
 
-@keyframes gradientMove{
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
-}
+    /* locked badge */
+    .lock-badge {
+      position: absolute; top: 1rem; right: 1rem;
+      background: rgba(255,71,87,.12);
+      border: 1px solid rgba(255,71,87,.3);
+      color: var(--red);
+      font-size: .7rem; font-weight: 700; letter-spacing: .05em;
+      padding: .2rem .6rem; border-radius: 99px;
+    }
 
-.hero{text-align:center;padding:100px 20px 70px}
-.hero h1{
-  font-size:4.5rem;
-  background:linear-gradient(90deg,#fff,#d1fae5,#93c5fd);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  text-shadow:0 0 30px rgba(16,185,129,.15);
-}
-.hero p{max-width:900px;margin:25px auto;color:#cbd5e1;line-height:1.9}
+    /* ══════════════ FOOTER ══════════════ */
+    footer {
+      position: relative; z-index: 1;
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted); font-size: .85rem;
+      border-top: 1px solid var(--border);
+    }
 
-.cards{
-  max-width:1100px;
-  margin:auto;
-  padding:20px;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-  gap:30px;
-}
+    /* ══════════════ LOGIN MODAL ══════════════ */
+    .overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,.7);
+      backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity .25s;
+    }
+    .overlay.open { opacity: 1; pointer-events: all; }
 
-.card{
-  position:relative;
-  overflow:hidden;
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.08);
-  padding:40px;
-  border-radius:24px;
-  text-decoration:none;
-  color:#fff;
-  transition:.4s;
-}
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.4rem 2.2rem;
+      width: 100%; max-width: 400px;
+      box-shadow: 0 32px 80px rgba(0,0,0,.6);
+      transform: scale(.94) translateY(16px);
+      transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+      position: relative;
+    }
+    .overlay.open .modal { transform: scale(1) translateY(0); }
 
-.card::before{
-  content:'';
-  position:absolute;
-  inset:-2px;
-  background:linear-gradient(135deg,#10b981,#06b6d4,#3b82f6,#8b5cf6);
-  opacity:0;
-  filter:blur(30px);
-  transition:.4s;
-  z-index:-1;
-}
+    .modal-close {
+      position: absolute; top: 1rem; right: 1rem;
+      background: rgba(255,255,255,.06); border: none;
+      color: var(--muted); width: 30px; height: 30px;
+      border-radius: 8px; cursor: pointer; font-size: 1rem;
+      display: grid; place-items: center;
+      transition: background .2s, color .2s;
+    }
+    .modal-close:hover { background: rgba(255,71,87,.15); color: var(--red); }
 
-.card:hover{
-  transform:translateY(-12px) scale(1.02);
-}
-.card:hover::before{opacity:.7}
+    .modal-logo { text-align: center; margin-bottom: 1.6rem; }
+    .modal-logo .logo-icon { margin: 0 auto .6rem; width: 48px; height: 48px; font-size: 1.4rem; }
+    .modal-logo h2 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.5rem; font-weight: 800;
+    }
+    .modal-logo p { color: var(--muted); font-size: .85rem; margin-top: .3rem; }
 
-/* Modal styles */
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.7);
-  backdrop-filter:blur(8px);
-  z-index:9999;
-  /* FIX: allow clicking backdrop to close */
-  cursor:pointer;
-}
+    .google-btn {
+      width: 100%;
+      display: flex; align-items: center; justify-content: center; gap: .8rem;
+      padding: .85rem 1rem;
+      background: #fff; color: #1f1f1f;
+      border: none; border-radius: 10px;
+      font-family: 'Barlow', sans-serif;
+      font-size: .95rem; font-weight: 600;
+      cursor: pointer;
+      transition: box-shadow .2s, transform .15s;
+      margin-top: .5rem;
+    }
+    .google-btn:hover { box-shadow: 0 6px 24px rgba(0,0,0,.35); transform: translateY(-1px); }
+    .google-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
 
-.modal-content{
-  width:90%;
-  max-width:520px;
-  margin:80px auto;
-  padding:30px;
-  border-radius:30px;
-  background:linear-gradient(135deg,rgba(2,6,23,.98),rgba(15,23,42,.98),rgba(30,41,59,.98));
-  border:1px solid rgba(255,255,255,.08);
-  /* FIX: prevent modal content clicks from closing modal */
-  cursor:default;
-}
+    .modal-note {
+      margin-top: 1.2rem;
+      text-align: center;
+      color: var(--muted); font-size: .78rem; line-height: 1.5;
+    }
+    .modal-note span {
+      display: inline-block;
+      background: rgba(0,201,167,.08);
+      border: 1px solid rgba(0,201,167,.2);
+      color: var(--teal);
+      padding: .15rem .5rem; border-radius: 6px;
+      font-size: .75rem;
+    }
 
-.modal-content h2{
-  margin-bottom:16px;
-  font-size:1.5rem;
-}
+    /* ══════════════ ACCESS DENIED TOAST ══════════════ */
+    #accessDeniedBanner {
+      position: fixed; bottom: 30px; left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg,#7f1d1d,#991b1b);
+      color: #fff; padding: 14px 24px;
+      border-radius: 14px;
+      font-size: .9rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,.4);
+      z-index: 99999;
+      display: flex; align-items: center; gap: 10px;
+      animation: slideUp .3s ease;
+    }
+    @keyframes slideUp {
+      from { opacity:0; transform: translateX(-50%) translateY(16px); }
+      to   { opacity:1; transform: translateX(-50%) translateY(0); }
+    }
+    #accessDeniedBanner button {
+      background: rgba(255,255,255,.2); border: none;
+      color: #fff; padding: 5px 10px;
+      border-radius: 6px; cursor: pointer; margin-left: 6px;
+    }
 
-/* FIX: Google login modal */
-#loginModal .modal-content{
-  text-align:center;
-}
-
-.google-btn{
-  display:inline-flex;
-  align-items:center;
-  gap:12px;
-  background:#fff;
-  color:#333;
-  border:none;
-  padding:14px 28px;
-  border-radius:50px;
-  font-size:1rem;
-  font-weight:600;
-  cursor:pointer;
-  margin-top:20px;
-  transition:.2s;
-}
-.google-btn:hover{
-  box-shadow:0 4px 20px rgba(255,255,255,.2);
-  transform:scale(1.03);
-}
-
-.google-icon{
-  width:22px;
-  height:22px;
-}
-
-.footer{text-align:center;padding:40px;color:#94a3b8}
-</style>
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(20px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
 
-<header class="navbar">
-  <!-- FIX 1: Removed %20 encoding — rename file to VISHAKTECH_LOGO.jpeg in repo -->
-  <a href="https://vishaktec.com/home" target="_blank" rel="noopener noreferrer">
-    <img
-      src="VISHAKTECH_LOGO.jpeg"
-      class="logo"
-      alt="Vishak Tech Logo"
-      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
-    >
-    <!-- FIX: Fallback text if logo image fails to load -->
-    <span class="logo-fallback" style="display:none;">VISHAK TECH</span>
-  </a>
+  <!-- ══ NAVBAR ══ -->
+  <nav>
+    <a class="logo" href="#">
+      <div class="logo-icon">⚙</div>
+      VISHAK TECH
+    </a>
+    <div class="nav-btns">
+      <button class="btn btn-outline" id="loginBtn">Login</button>
+      <button class="btn btn-solid">Contact Us</button>
+    </div>
+  </nav>
 
-  <div style="display:flex;gap:10px;">
-    <!-- FIX 2: googleLogin() now defined below -->
-    <button class="contact-btn" onclick="googleLogin()">Login</button>
-    <button class="contact-btn" onclick="openContact()">Contact Us</button>
+  <!-- ══ HERO ══ -->
+  <section class="hero">
+    <div class="hero-tag">
+      <div class="pulse-dot"></div>
+      Industrial Engineering Solutions
+    </div>
+    <h1>Engineering <span>Reliable</span><br/>Industrial Solutions</h1>
+    <p>Delivering Hydraulic Systems, Industrial Equipment, Casting Components, Fabrication Solutions and Engineering Services for Cement, Steel, Power and Process Industries.</p>
+
+    <div class="click-hint">
+      <div class="pulse-dot"></div>
+      Click anywhere or select a dashboard to login
+    </div>
+
+    <div class="cards">
+      <!-- Sales card -->
+      <div class="card" id="salesCard">
+        <span class="lock-badge">🔒 Restricted</span>
+        <div class="card-icon">📋</div>
+        <h3>Sales Dashboard</h3>
+        <p>Manage Leads, RFQs, Quotations, Purchase Requests, Purchase Orders and Customer Follow-ups.</p>
+        <div class="card-arrow">→</div>
+      </div>
+
+      <!-- Work Order card -->
+      <div class="card" id="workCard">
+        <span class="lock-badge">🔒 Restricted</span>
+        <div class="card-icon">🏭</div>
+        <h3>Work Order Dashboard</h3>
+        <p>Track Fabrication, Casting, Production Progress, Quality Control, Packing and Dispatch.</p>
+        <div class="card-arrow">→</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>Driven by Engineering. Powered by Innovation. &nbsp;·&nbsp; © 2025 Vishak Tech</footer>
+
+  <!-- ══ LOGIN MODAL ══ -->
+  <div class="overlay" id="loginOverlay">
+    <div class="modal" id="loginModal">
+      <button class="modal-close" id="closeModal">✕</button>
+      <div class="modal-logo">
+        <div class="logo-icon">⚙</div>
+        <h2>VISHAK TECH</h2>
+        <p>Sign in to access your dashboard</p>
+      </div>
+      <button class="google-btn" id="googleSignInBtn">
+        <!-- Google G icon -->
+        <svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.6 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.6-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 15.8 18.9 12 24 12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.6 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.5 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.3 5.6l6.2 5.2C37.1 39.2 44 34 44 24c0-1.3-.1-2.6-.4-3.9z"/></svg>
+        Continue with Google
+      </button>
+      <p class="modal-note">
+        Access is restricted to authorised accounts only.<br/>
+        <span>Unauthorised logins are blocked automatically.</span>
+      </p>
+    </div>
   </div>
-</header>
 
-<section class="hero">
-  <h1>Engineering Reliable Industrial Solutions</h1>
-  <p>Delivering Hydraulic Systems, Industrial Equipment, Casting Components, Fabrication Solutions and Engineering Services for Cement, Steel, Power and Process Industries.</p>
-</section>
+  <!-- ══ FIREBASE ══ -->
+  <script type="module">
+    import { initializeApp }       from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged }
+                                   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-<div class="cards">
-  <!-- FIX 3: Changed to relative paths so they work regardless of repo name -->
-  <a href="Sales/" class="card">
-    <h2>📈 Sales Dashboard</h2>
-    <p>Manage Leads, RFQs, Quotations, Purchase Requests, Purchase Orders and Customer Follow-ups.</p>
-  </a>
+    const firebaseConfig = {
+      apiKey:            "AIzaSyAETO-bfN1wORtT8cVhSZseQ05ZGmQspC0",
+      authDomain:        "vishaktech-79a37.firebaseapp.com",
+      projectId:         "vishaktech-79a37",
+      storageBucket:     "vishaktech-79a37.firebasestorage.app",
+      messagingSenderId: "68398724582",
+      appId:             "1:68398724582:web:76840e738169b3af429227"
+    };
 
-  <a href="WorkOrder/" class="card">
-    <h2>🏭 Work Order Dashboard</h2>
-    <p>Track Fabrication, Casting, Production Progress, Quality Control, Packing and Dispatch.</p>
-  </a>
-</div>
+    // ── Role map ────────────────────────────────────────────
+    const ROLE_MAP = {
+      "dr4683743@gmail.com":          "Sales/",
+      "deepakmurugesan805@gmail.com": "WorkOrder/"
+    };
+    // ────────────────────────────────────────────────────────
 
-<!-- Contact Modal -->
-<div id="contactModal" class="modal" onclick="handleModalClick(event,'contactModal')">
-  <div class="modal-content">
-    <h2>Contact Vishak Tech</h2>
-    <p><b>Phone:</b> +91 96779 74323</p><br>
-    <p><b>Email:</b> sales@vishaktec.com</p><br>
-    <p><b>Address:</b> Building No.3, Venkateshwara Nagar, Kavindapadi, Erode - 638455</p><br>
-    <p><b>Website:</b> www.vishaktec.com</p><br>
-    <button class="contact-btn" onclick="closeContact()">Close</button>
-  </div>
-</div>
+    const app      = initializeApp(firebaseConfig);
+    const auth     = getAuth(app);
+    const provider = new GoogleAuthProvider();
 
-<!-- FIX 2: Login Modal (replaces missing googleLogin function) -->
-<div id="loginModal" class="modal" onclick="handleModalClick(event,'loginModal')">
-  <div class="modal-content">
-    <h2>Sign in to Vishak Tech</h2>
-    <p style="color:#94a3b8;margin-top:8px;">Access your dashboard securely</p>
-    <button class="google-btn" onclick="triggerGoogleSignIn()">
-      <!-- Google SVG icon -->
-      <svg class="google-icon" viewBox="0 0 48 48">
-        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-        <path fill="none" d="M0 0h48v48H0z"/>
-      </svg>
-      Continue with Google
-    </button>
-    <p style="margin-top:20px;font-size:.8rem;color:#64748b;">
-      Powered by Firebase Authentication
-    </p>
-  </div>
-</div>
+    const overlay  = document.getElementById("loginOverlay");
+    const closeBtn = document.getElementById("closeModal");
+    const loginBtn = document.getElementById("loginBtn");
+    const signInBtn= document.getElementById("googleSignInBtn");
 
-<div class="footer">Driven by Engineering. Powered by Innovation.</div>
-
-<script>
-  /* Contact modal */
-  function openContact(){
-    document.getElementById('contactModal').style.display='block';
-  }
-  function closeContact(){
-    document.getElementById('contactModal').style.display='none';
-  }
-
-  /* FIX 2: Google login now opens a proper login modal
-     The actual Firebase signInWithPopup is called from firebase-auth.js via triggerGoogleSignIn() */
-  function googleLogin(){
-    document.getElementById('loginModal').style.display='block';
-  }
-  function closeLogin(){
-    document.getElementById('loginModal').style.display='none';
-  }
-
-  /* This will be overridden by firebase-auth.js if Firebase is available */
-  function triggerGoogleSignIn(){
-    if(typeof firebaseGoogleSignIn === 'function'){
-      firebaseGoogleSignIn();
-    } else {
-      alert('Firebase auth is loading. Please try again in a moment.');
+    // ── Open modal ──────────────────────────────────────────
+    function openModal() { overlay.classList.add("open"); }
+    function closeModal(e) {
+      if (e.target === overlay || e.currentTarget === closeBtn)
+        overlay.classList.remove("open");
     }
-  }
 
-  /* FIX 5: Close modal by clicking backdrop */
-  function handleModalClick(event, modalId){
-    if(event.target === document.getElementById(modalId)){
-      document.getElementById(modalId).style.display='none';
+    // Click ANYWHERE on page → open modal (if not logged in)
+    document.body.addEventListener("click", (e) => {
+      // Ignore clicks inside the modal itself
+      if (document.getElementById("loginModal").contains(e.target)) return;
+      // If overlay already open, let closeModal handle it
+      if (overlay.classList.contains("open")) return;
+
+      const user = auth.currentUser;
+      if (!user) {
+        openModal();
+      }
+    });
+
+    loginBtn.addEventListener("click", (e) => { e.stopPropagation(); openModal(); });
+    closeBtn.addEventListener("click", closeModal);
+    overlay.addEventListener("click", closeModal);
+
+    // ── Google Sign-In ──────────────────────────────────────
+    signInBtn.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const email  = result.user.email;
+        const dest   = ROLE_MAP[email];
+
+        if (!dest) {
+          await signOut(auth);
+          overlay.classList.remove("open");
+          showAccessDenied(email);
+          return;
+        }
+
+        overlay.classList.remove("open");
+        window.location.replace(dest);
+
+      } catch (err) {
+        if (err.code !== "auth/popup-closed-by-user")
+          alert("Login failed. Please try again.");
+      }
+    });
+
+    // ── Cards: open modal or redirect if already logged in ──
+    document.getElementById("salesCard").addEventListener("click", (e) => {
+      e.stopPropagation();
+      handleCardClick("Sales/");
+    });
+    document.getElementById("workCard").addEventListener("click", (e) => {
+      e.stopPropagation();
+      handleCardClick("WorkOrder/");
+    });
+
+    function handleCardClick(dest) {
+      const user = auth.currentUser;
+      if (!user) { openModal(); return; }
+
+      const allowed = ROLE_MAP[user.email];
+      if (allowed === dest) {
+        window.location.replace(dest);
+      } else {
+        showAccessDenied(user.email);
+      }
     }
-  }
 
-  /* FIX 5: Also close modals with Escape key */
-  document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape'){
-      document.getElementById('contactModal').style.display='none';
-      document.getElementById('loginModal').style.display='none';
+    // ── Auth state: auto-redirect if already signed in ──────
+    onAuthStateChanged(auth, (user) => {
+      if (!user) return;
+
+      const dest = ROLE_MAP[user.email];
+      if (dest) {
+        const path = window.location.pathname;
+        const onLanding = path === "/" || path === "" ||
+          path.endsWith("/index.html") || path.endsWith("/index.htm");
+        if (onLanding) window.location.replace(dest);
+      } else {
+        signOut(auth);
+      }
+    });
+
+    // ── Access Denied Toast ─────────────────────────────────
+    function showAccessDenied(email) {
+      const existing = document.getElementById("accessDeniedBanner");
+      if (existing) existing.remove();
+      const b = document.createElement("div");
+      b.id = "accessDeniedBanner";
+      b.innerHTML = `
+        <span>🚫</span>
+        <span><b>Access Denied</b><br/><small>${email} is not authorised.</small></span>
+        <button onclick="this.parentElement.remove()">✕</button>
+      `;
+      document.body.appendChild(b);
+      setTimeout(() => b?.remove(), 5000);
     }
-  });
-</script>
-
-<script type="module" src="firebase-auth.js"></script>
+  </script>
 </body>
 </html>
