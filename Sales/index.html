@@ -43,6 +43,15 @@
 
     --radius: 12px; --radius-lg: 16px; --radius-xl: 20px;
   }
+ <script type="module" src="../firebase-auth.js"></script>
+
+<script>
+window.onload = function() {
+   checkSalesAccess();
+}
+</script>
+
+<button onclick="logoutUser()">Logout</button>
 
   body {
     font-family: 'DM Sans', sans-serif;
