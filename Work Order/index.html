@@ -31,7 +31,15 @@
     --red:    #dc2626;
     --radius: 10px; --radius-lg: 14px; --radius-xl: 18px;
   }
+<script type="module" src="../firebase-auth.js"></script>
 
+<script>
+window.onload = function() {
+   checkWorkOrderAccess();
+}
+</script>
+
+<button onclick="logoutUser()">Logout</button>
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     background: var(--bg);
