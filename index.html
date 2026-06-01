@@ -7,13 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
-body{
-  min-height:100vh;color:#fff;
-  background:radial-gradient(circle at 10% 20%, rgba(16,185,129,.20), transparent 25%),
-    radial-gradient(circle at 90% 10%, rgba(59,130,246,.20), transparent 25%),
-    linear-gradient(135deg,#020617,#0f172a,#111827);
-  background-size:400% 400%;animation:bgMove 20s ease infinite;
-}
+body{min-height:100vh;color:#fff;background:radial-gradient(circle at 10% 20%,rgba(16,185,129,.20),transparent 25%),radial-gradient(circle at 90% 10%,rgba(59,130,246,.20),transparent 25%),linear-gradient(135deg,#020617,#0f172a,#111827);background-size:400% 400%;animation:bgMove 20s ease infinite;}
 @keyframes bgMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 .navbar{display:flex;justify-content:space-between;align-items:center;padding:18px 40px;background:rgba(255,255,255,.04);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.08);}
 .logo{height:60px;transition:.4s;}
@@ -37,17 +31,17 @@ body{
 .error-msg{color:#f87171;font-size:.82rem;min-height:18px;margin-bottom:10px;}
 .login-submit{width:100%;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,#10b981,#06b6d4);color:#fff;font-size:1rem;font-weight:600;cursor:pointer;transition:.3s;margin-top:4px;}
 .login-submit:hover{opacity:.88;transform:translateY(-1px);}
-.dash-hero{text-align:center;padding:80px 20px 50px;}
-.dash-hero h1{font-size:3.5rem;font-weight:800;background:linear-gradient(90deg,#fff,#d1fae5,#93c5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.dash-hero p{max-width:700px;margin:20px auto 0;color:#cbd5e1;line-height:1.9;}
+.dash-hero{text-align:center;padding:60px 20px 40px;}
+.dash-hero h1{font-size:3rem;font-weight:800;background:linear-gradient(90deg,#fff,#d1fae5,#93c5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.dash-hero p{max-width:700px;margin:16px auto 0;color:#cbd5e1;line-height:1.9;}
 .user-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);border-radius:50px;padding:6px 16px;font-size:.82rem;color:#6ee7b7;margin-bottom:20px;}
-.cards{max-width:900px;margin:auto;padding:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:30px;}
-.card{position:relative;overflow:hidden;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);padding:40px;border-radius:24px;text-decoration:none;color:#fff;transition:.4s;}
+.cards{max-width:1000px;margin:auto;padding:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;}
+.card{position:relative;overflow:hidden;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);padding:36px;border-radius:24px;text-decoration:none;color:#fff;transition:.4s;cursor:pointer;}
 .card::before{content:'';position:absolute;inset:-2px;background:linear-gradient(135deg,#10b981,#06b6d4,#3b82f6,#8b5cf6);opacity:0;filter:blur(30px);transition:.4s;z-index:-1;}
-.card:hover{transform:translateY(-12px) scale(1.02);}
+.card:hover{transform:translateY(-10px) scale(1.02);}
 .card:hover::before{opacity:.7;}
-.card h2{font-size:1.3rem;margin-bottom:10px;}
-.card p{color:#94a3b8;font-size:.9rem;line-height:1.7;}
+.card h2{font-size:1.2rem;margin-bottom:8px;}
+.card p{color:#94a3b8;font-size:.88rem;line-height:1.7;}
 #loadingOverlay{position:fixed;inset:0;background:#020617;display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .4s;}
 .spinner{width:40px;height:40px;border-radius:50%;border:3px solid rgba(255,255,255,.1);border-top-color:#10b981;animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -56,6 +50,61 @@ body{
 .modal-content h2{margin-bottom:16px;}
 .footer{text-align:center;padding:40px;color:#475569;font-size:.85rem;}
 .logout-btn{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);animation:none;padding:10px 20px;}
+
+/* ===== FILE MANAGER ===== */
+#fileManagerSection{display:none;max-width:1000px;margin:0 auto;padding:20px 20px 60px;}
+.fm-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+.fm-title{font-size:1.4rem;font-weight:700;background:linear-gradient(90deg,#fff,#d1fae5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.fm-breadcrumb{display:flex;align-items:center;gap:6px;font-size:.85rem;color:#94a3b8;flex-wrap:wrap;margin-bottom:16px;}
+.fm-breadcrumb span{cursor:pointer;color:#6ee7b7;transition:.2s;}
+.fm-breadcrumb span:hover{color:#fff;}
+.fm-breadcrumb .sep{color:#475569;}
+.fm-actions{display:flex;gap:10px;flex-wrap:wrap;}
+.fm-btn{display:flex;align-items:center;gap:6px;padding:9px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.07);color:#fff;font-size:.84rem;font-weight:500;cursor:pointer;transition:.3s;}
+.fm-btn:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.25);}
+.fm-btn.primary{background:linear-gradient(135deg,#10b981,#06b6d4);border:none;}
+.fm-btn.primary:hover{opacity:.88;}
+.fm-btn.danger{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.3);}
+.fm-btn.danger:hover{background:rgba(239,68,68,.25);}
+.fm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px;min-height:200px;}
+.fm-item{position:relative;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:20px 14px 14px;text-align:center;cursor:pointer;transition:.3s;user-select:none;}
+.fm-item:hover{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.2);transform:translateY(-3px);}
+.fm-item.selected{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.4);}
+.fm-item .icon{font-size:2.4rem;margin-bottom:8px;display:block;}
+.fm-item .name{font-size:.78rem;color:#cbd5e1;word-break:break-word;line-height:1.4;}
+.fm-item .meta{font-size:.7rem;color:#475569;margin-top:4px;}
+.fm-item .ctx-btn{position:absolute;top:8px;right:8px;background:none;border:none;color:#64748b;cursor:pointer;font-size:1rem;opacity:0;transition:.2s;line-height:1;padding:2px 5px;border-radius:6px;}
+.fm-item:hover .ctx-btn{opacity:1;}
+.fm-item .ctx-btn:hover{background:rgba(255,255,255,.1);color:#fff;}
+.fm-empty{grid-column:1/-1;text-align:center;padding:60px 20px;color:#475569;}
+.fm-empty .icon{font-size:3rem;display:block;margin-bottom:12px;}
+.ctx-menu{position:fixed;background:rgba(15,23,42,.97);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:6px;z-index:9998;min-width:160px;backdrop-filter:blur(20px);}
+.ctx-menu button{display:block;width:100%;text-align:left;padding:9px 14px;background:none;border:none;color:#cbd5e1;font-size:.84rem;cursor:pointer;border-radius:8px;transition:.2s;}
+.ctx-menu button:hover{background:rgba(255,255,255,.08);color:#fff;}
+.ctx-menu button.danger{color:#f87171;}
+.ctx-menu button.danger:hover{background:rgba(239,68,68,.15);}
+.ctx-menu hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:4px 0;}
+/* input modal */
+.inp-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:10000;align-items:center;justify-content:center;}
+.inp-modal.show{display:flex;}
+.inp-box{background:linear-gradient(135deg,rgba(2,6,23,.98),rgba(15,23,42,.98));border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:32px;width:90%;max-width:400px;}
+.inp-box h3{margin-bottom:16px;font-size:1.1rem;}
+.inp-box input,.inp-box textarea{width:100%;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.07);color:#fff;font-size:.9rem;outline:none;font-family:Poppins,sans-serif;}
+.inp-box textarea{resize:vertical;min-height:120px;margin-top:8px;}
+.inp-box input:focus,.inp-box textarea:focus{border-color:rgba(16,185,129,.5);}
+.inp-box input::placeholder,.inp-box textarea::placeholder{color:#64748b;}
+.inp-box .row{display:flex;gap:10px;margin-top:16px;}
+.inp-box .row button{flex:1;padding:11px;border-radius:10px;border:none;cursor:pointer;font-size:.9rem;font-weight:600;}
+.inp-box .row .ok{background:linear-gradient(135deg,#10b981,#06b6d4);color:#fff;}
+.inp-box .row .cancel{background:rgba(255,255,255,.08);color:#cbd5e1;}
+/* file viewer */
+.file-viewer{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(12px);z-index:10001;flex-direction:column;}
+.file-viewer.show{display:flex;}
+.fv-header{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid rgba(255,255,255,.08);}
+.fv-header h3{font-size:1rem;color:#e2e8f0;}
+.fv-body{flex:1;padding:24px;overflow:auto;}
+.fv-body textarea{width:100%;height:100%;min-height:calc(100vh - 140px);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;color:#e2e8f0;padding:16px;font-size:.9rem;font-family:Poppins,sans-serif;resize:none;outline:none;}
+.fv-footer{display:flex;gap:10px;padding:14px 24px;border-top:1px solid rgba(255,255,255,.08);}
 </style>
 </head>
 <body>
@@ -110,6 +159,22 @@ body{
   <div class="cards" id="dashboardCards"></div>
 </div>
 
+<!-- FILE MANAGER -->
+<div id="fileManagerSection">
+  <div class="fm-header">
+    <span class="fm-title">📁 Vishak Tech Files</span>
+    <div class="fm-actions">
+      <button class="fm-btn" onclick="fmNewFolder()">📁 New Folder</button>
+      <button class="fm-btn" onclick="fmNewFile()">📄 New File</button>
+      <button class="fm-btn" id="fmRenameBtn" onclick="fmRename()" style="display:none;">✏️ Rename</button>
+      <button class="fm-btn danger" id="fmDeleteBtn" onclick="fmDelete()" style="display:none;">🗑️ Delete</button>
+      <button class="fm-btn" onclick="showDashboardView()">← Back</button>
+    </div>
+  </div>
+  <div class="fm-breadcrumb" id="fmBreadcrumb"></div>
+  <div class="fm-grid" id="fmGrid"></div>
+</div>
+
 <!-- Contact Modal -->
 <div id="contactModal" class="modal" onclick="if(event.target===this)closeContact()">
   <div class="modal-content">
@@ -122,11 +187,307 @@ body{
   </div>
 </div>
 
+<!-- Input Modal -->
+<div class="inp-modal" id="inpModal">
+  <div class="inp-box">
+    <h3 id="inpTitle">Enter Name</h3>
+    <input type="text" id="inpField" placeholder="Name...">
+    <div class="row">
+      <button class="ok" onclick="inpConfirm()">OK</button>
+      <button class="cancel" onclick="inpCancel()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- File Viewer/Editor -->
+<div class="file-viewer" id="fileViewer">
+  <div class="fv-header">
+    <h3 id="fvTitle">File</h3>
+    <button class="fm-btn" onclick="fvClose()">✕ Close</button>
+  </div>
+  <div class="fv-body">
+    <textarea id="fvContent" placeholder="File content..."></textarea>
+  </div>
+  <div class="fv-footer">
+    <button class="fm-btn primary" onclick="fvSave()">💾 Save</button>
+    <button class="fm-btn" onclick="fvClose()">Cancel</button>
+  </div>
+</div>
+
+<!-- Context Menu -->
+<div class="ctx-menu" id="ctxMenu" style="display:none;">
+  <button onclick="ctxOpen()">📂 Open</button>
+  <button onclick="fmRename()">✏️ Rename</button>
+  <hr>
+  <button class="danger" onclick="fmDelete()">🗑️ Delete</button>
+</div>
+
 <div class="footer">Driven by Engineering. Powered by Innovation.</div>
 
 <script>
 function openContact(){document.getElementById('contactModal').style.display='block';}
 function closeContact(){document.getElementById('contactModal').style.display='none';}
+
+// ===== FILE MANAGER LOGIC =====
+let FM_USER = '';
+let FM_PATH = []; // current path as array of folder IDs
+let FM_SELECTED = null;
+let inpCallback = null;
+let fvEditingPath = null;
+
+function fmKey(){
+  return 'vtfs_' + FM_USER.replace(/[^a-z0-9]/gi,'_');
+}
+
+function fmLoad(){
+  try{ return JSON.parse(localStorage.getItem(fmKey())) || fmInitFS(); }
+  catch(e){ return fmInitFS(); }
+}
+
+function fmInitFS(){
+  const fs = {
+    root: { id:'root', name:'Vishak Tech Files', type:'folder', children:[], created: Date.now() }
+  };
+  fmSave(fs);
+  return fs;
+}
+
+function fmSave(fs){
+  localStorage.setItem(fmKey(), JSON.stringify(fs));
+}
+
+function fmGetNode(fs, id){
+  return fs[id];
+}
+
+function fmCurrentFolder(){
+  const fs = fmLoad();
+  if(FM_PATH.length === 0) return fs['root'];
+  return fs[FM_PATH[FM_PATH.length - 1]];
+}
+
+function fmRender(){
+  const fs = fmLoad();
+  const folder = FM_PATH.length === 0 ? fs['root'] : fs[FM_PATH[FM_PATH.length-1]];
+  
+  // Breadcrumb
+  const bc = document.getElementById('fmBreadcrumb');
+  let bcHtml = `<span onclick="fmGoRoot()">🏠 Vishak Tech Files</span>`;
+  let pathSoFar = [];
+  FM_PATH.forEach((id,i)=>{
+    pathSoFar.push(id);
+    const snap = [...pathSoFar];
+    const node = fs[id];
+    bcHtml += `<span class="sep">/</span><span onclick="fmGoPath(${JSON.stringify(snap)})">${node?node.name:id}</span>`;
+  });
+  bc.innerHTML = bcHtml;
+
+  // Grid
+  const grid = document.getElementById('fmGrid');
+  const children = (folder && folder.children) ? folder.children : [];
+  
+  if(children.length === 0){
+    grid.innerHTML = `<div class="fm-empty"><span class="icon">📂</span>This folder is empty.<br><small style="color:#64748b">Create a new folder or file to get started.</small></div>`;
+  } else {
+    grid.innerHTML = children.map(id => {
+      const node = fs[id];
+      if(!node) return '';
+      const icon = node.type === 'folder' ? '📁' : getFileIcon(node.name);
+      const date = new Date(node.created).toLocaleDateString();
+      const sel = FM_SELECTED === id ? 'selected' : '';
+      return `<div class="fm-item ${sel}" id="fmitem_${id}" onclick="fmSelect('${id}')" ondblclick="fmOpen('${id}')" oncontextmenu="fmCtx(event,'${id}')">
+        <button class="ctx-btn" onclick="event.stopPropagation();fmCtx(event,'${id}')">⋮</button>
+        <span class="icon">${icon}</span>
+        <div class="name">${node.name}</div>
+        <div class="meta">${date}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // Show/hide toolbar buttons
+  const hasSel = !!FM_SELECTED;
+  document.getElementById('fmRenameBtn').style.display = hasSel ? '' : 'none';
+  document.getElementById('fmDeleteBtn').style.display = hasSel ? '' : 'none';
+}
+
+function getFileIcon(name){
+  const ext = name.split('.').pop().toLowerCase();
+  const map = {txt:'📝',pdf:'📕',doc:'📘',docx:'📘',xls:'📗',xlsx:'📗',jpg:'🖼️',jpeg:'🖼️',png:'🖼️',mp4:'🎬',mp3:'🎵',zip:'📦',csv:'📊'};
+  return map[ext] || '📄';
+}
+
+function fmSelect(id){
+  FM_SELECTED = FM_SELECTED === id ? null : id;
+  fmRender();
+  hideCtxMenu();
+}
+
+function fmOpen(id){
+  hideCtxMenu();
+  const fs = fmLoad();
+  const node = fs[id];
+  if(!node) return;
+  if(node.type === 'folder'){
+    FM_PATH.push(id);
+    FM_SELECTED = null;
+    fmRender();
+  } else {
+    fvOpen(id, node);
+  }
+}
+
+function ctxOpen(){
+  if(FM_SELECTED) fmOpen(FM_SELECTED);
+  hideCtxMenu();
+}
+
+function fmGoRoot(){
+  FM_PATH = [];
+  FM_SELECTED = null;
+  fmRender();
+}
+
+function fmGoPath(path){
+  FM_PATH = path;
+  FM_SELECTED = null;
+  fmRender();
+}
+
+function fmNewFolder(){
+  showInp('📁 New Folder Name', 'Folder name...', (name)=>{
+    if(!name.trim()) return;
+    const fs = fmLoad();
+    const id = 'n_' + Date.now();
+    fs[id] = { id, name: name.trim(), type:'folder', children:[], created: Date.now() };
+    const folder = FM_PATH.length === 0 ? fs['root'] : fs[FM_PATH[FM_PATH.length-1]];
+    folder.children.push(id);
+    fmSave(fs);
+    fmRender();
+  });
+}
+
+function fmNewFile(){
+  showInp('📄 New File Name', 'e.g. notes.txt', (name)=>{
+    if(!name.trim()) return;
+    const fs = fmLoad();
+    const id = 'n_' + Date.now();
+    fs[id] = { id, name: name.trim(), type:'file', content:'', created: Date.now() };
+    const folder = FM_PATH.length === 0 ? fs['root'] : fs[FM_PATH[FM_PATH.length-1]];
+    folder.children.push(id);
+    fmSave(fs);
+    fmRender();
+    // Open for editing immediately
+    fvOpen(id, fs[id]);
+  });
+}
+
+function fmRename(){
+  if(!FM_SELECTED) return;
+  hideCtxMenu();
+  const fs = fmLoad();
+  const node = fs[FM_SELECTED];
+  if(!node) return;
+  showInp('✏️ Rename', node.name, (name)=>{
+    if(!name.trim()) return;
+    const fs2 = fmLoad();
+    fs2[FM_SELECTED].name = name.trim();
+    fmSave(fs2);
+    fmRender();
+  });
+}
+
+function fmDelete(){
+  if(!FM_SELECTED) return;
+  hideCtxMenu();
+  const fs = fmLoad();
+  const node = fs[FM_SELECTED];
+  if(!node) return;
+  if(!confirm(`Delete "${node.name}"? This cannot be undone.`)) return;
+  // Remove from parent
+  const folder = FM_PATH.length === 0 ? fs['root'] : fs[FM_PATH[FM_PATH.length-1]];
+  folder.children = folder.children.filter(c => c !== FM_SELECTED);
+  // Recursively delete children
+  function delNode(id){
+    const n = fs[id];
+    if(n && n.children) n.children.forEach(delNode);
+    delete fs[id];
+  }
+  delNode(FM_SELECTED);
+  FM_SELECTED = null;
+  fmSave(fs);
+  fmRender();
+}
+
+// Context menu
+function fmCtx(e, id){
+  e.preventDefault();
+  e.stopPropagation();
+  FM_SELECTED = id;
+  fmRender();
+  const menu = document.getElementById('ctxMenu');
+  menu.style.display = 'block';
+  const x = Math.min(e.clientX, window.innerWidth - 180);
+  const y = Math.min(e.clientY, window.innerHeight - 140);
+  menu.style.left = x + 'px';
+  menu.style.top = y + 'px';
+}
+function hideCtxMenu(){ document.getElementById('ctxMenu').style.display='none'; }
+document.addEventListener('click', hideCtxMenu);
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ hideCtxMenu(); inpCancel(); fvClose(); }});
+
+// Input modal
+function showInp(title, placeholder, cb){
+  document.getElementById('inpTitle').textContent = title;
+  document.getElementById('inpField').placeholder = placeholder;
+  document.getElementById('inpField').value = '';
+  document.getElementById('inpModal').classList.add('show');
+  setTimeout(()=>document.getElementById('inpField').focus(),100);
+  inpCallback = cb;
+  document.getElementById('inpField').onkeydown = e=>{ if(e.key==='Enter') inpConfirm(); };
+}
+function inpConfirm(){
+  const val = document.getElementById('inpField').value;
+  document.getElementById('inpModal').classList.remove('show');
+  if(inpCallback) inpCallback(val);
+  inpCallback = null;
+}
+function inpCancel(){
+  document.getElementById('inpModal').classList.remove('show');
+  inpCallback = null;
+}
+
+// File viewer / editor
+function fvOpen(id, node){
+  fvEditingPath = id;
+  document.getElementById('fvTitle').textContent = node.name;
+  document.getElementById('fvContent').value = node.content || '';
+  document.getElementById('fileViewer').classList.add('show');
+  setTimeout(()=>document.getElementById('fvContent').focus(),100);
+}
+function fvSave(){
+  if(!fvEditingPath) return;
+  const fs = fmLoad();
+  if(fs[fvEditingPath]) fs[fvEditingPath].content = document.getElementById('fvContent').value;
+  fmSave(fs);
+  fvClose();
+  fmRender();
+}
+function fvClose(){
+  document.getElementById('fileViewer').classList.remove('show');
+  fvEditingPath = null;
+}
+
+// Switch views
+function showDashboardView(){
+  document.getElementById('dashboardSection').style.display='block';
+  document.getElementById('fileManagerSection').style.display='none';
+}
+function showFileManager(){
+  document.getElementById('dashboardSection').style.display='none';
+  document.getElementById('fileManagerSection').style.display='block';
+  FM_PATH=[];FM_SELECTED=null;
+  fmRender();
+}
 </script>
 
 <script type="module">
@@ -148,7 +509,8 @@ const WORKORDER_EMAILS = ["murugesankarruppanan@gmail.com","sathiya.vishaktec@gm
 
 const CARDS = {
   sales:`<a href="/Testing/Sales/" class="card"><h2>📈 Sales Dashboard</h2><p>Manage Leads, RFQs, Quotations, Purchase Requests, Purchase Orders and Customer Follow-ups.</p></a>`,
-  workorder:`<a href="/Testing/WorkOrder/" class="card"><h2>🏭 Work Order Dashboard</h2><p>Track Fabrication, Casting, Production Progress, Quality Control, Packing and Dispatch.</p></a>`
+  workorder:`<a href="/Testing/WorkOrder/" class="card"><h2>🏭 Work Order Dashboard</h2><p>Track Fabrication, Casting, Production Progress, Quality Control, Packing and Dispatch.</p></a>`,
+  files:`<div class="card" onclick="showFileManager()"><h2>📁 Vishak Tech Files</h2><p>Your personal file manager. Create folders, write notes and store documents — saved privately in your browser.</p></div>`
 };
 
 function hideLoader(){
@@ -169,19 +531,24 @@ function showDashboard(user){
   hideLoader();
   const roles=getRoles(user.email);
   if(roles.length===0){alert("Access Denied.");signOut(auth);return;}
+  // Set FM user
+  window.FM_USER = user.email;
   document.getElementById('loginSection').style.display='none';
   document.getElementById('dashboardSection').style.display='block';
   document.getElementById('welcomeEmail').textContent=user.email;
   document.getElementById('userEmailBadge').textContent=user.email;
   document.getElementById('userEmailBadge').style.display='inline';
   document.getElementById('logoutBtn').style.display='inline-block';
-  document.getElementById('dashboardCards').innerHTML=roles.map(r=>CARDS[r]).join('');
+  // Always add files card for all users
+  const cardKeys = [...roles, 'files'];
+  document.getElementById('dashboardCards').innerHTML=cardKeys.map(r=>CARDS[r]).join('');
 }
 
 function showLogin(){
   hideLoader();
   document.getElementById('loginSection').style.display='block';
   document.getElementById('dashboardSection').style.display='none';
+  document.getElementById('fileManagerSection').style.display='none';
   document.getElementById('logoutBtn').style.display='none';
   document.getElementById('userEmailBadge').style.display='none';
 }
