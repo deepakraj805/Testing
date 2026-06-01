@@ -506,10 +506,12 @@ const auth = getAuth(app);
 
 const SALES_EMAILS     = ["dr4683743@gmail.com","deepakmurugesan805@gmail.com","sales@vishaktec.com","sathiya.vishaktec@gmail.com"];
 const WORKORDER_EMAILS = ["murugesankarruppanan@gmail.com","sathiya.vishaktec@gmail.com"];
+const ACCOUNTS_EMAILS  = ["dr4683743@gmail.com","deepakmurugesan805@gmail.com","sathiya.vishaktec@gmail.com","sales@vishaktec.com"];
 
 const CARDS = {
   sales:`<a href="/Testing/Sales/" class="card"><h2>📈 Sales Dashboard</h2><p>Manage Leads, RFQs, Quotations, Purchase Requests, Purchase Orders and Customer Follow-ups.</p></a>`,
   workorder:`<a href="/Testing/WorkOrder/" class="card"><h2>🏭 Work Order Dashboard</h2><p>Track Fabrication, Casting, Production Progress, Quality Control, Packing and Dispatch.</p></a>`,
+  accounts:`<a href="/Testing/Accounts/" class="card"><h2>🏦 Accounts Dashboard</h2><p>Track Account Balances, Credits, Debits, Transaction History and Google Drive Sync for Vishak Tech accounts.</p></a>`,
   files:`<div class="card" onclick="showFileManager()"><h2>📁 Vishak Tech Files</h2><p>Your personal file manager. Create folders, write notes and store documents — saved privately in your browser.</p></div>`
 };
 
@@ -524,6 +526,7 @@ function getRoles(email){
   const r=[];
   if(SALES_EMAILS.includes(e)) r.push('sales');
   if(WORKORDER_EMAILS.includes(e)) r.push('workorder');
+  if(ACCOUNTS_EMAILS.includes(e)) r.push('accounts');
   return r;
 }
 
