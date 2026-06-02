@@ -50,6 +50,10 @@ body{min-height:100vh;color:#fff;background:radial-gradient(circle at 10% 20%,rg
 .attempt-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#10b981,#f59e0b,#ef4444);transition:width .3s;width:0%}
 .login-submit{width:100%;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,#10b981,#06b6d4);color:#fff;font-size:1rem;font-weight:600;cursor:pointer;transition:.3s;margin-top:4px;}
 .login-submit:hover{opacity:.88;transform:translateY(-1px);}
+.login-submit:disabled,.google-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+/* session expired toast */
+#sessionToast{display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1e293b;border:1px solid rgba(251,191,36,.4);color:#fbbf24;padding:12px 24px;border-radius:12px;font-size:.88rem;z-index:99999;box-shadow:0 4px 24px rgba(0,0,0,.5);}
+#sessionToast.show{display:block;}
 .dash-hero{text-align:center;padding:60px 20px 40px;}
 .dash-hero h1{font-size:3rem;font-weight:800;background:linear-gradient(90deg,#fff,#d1fae5,#93c5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .dash-hero p{max-width:700px;margin:16px auto 0;color:#cbd5e1;line-height:1.9;}
@@ -129,10 +133,11 @@ body{min-height:100vh;color:#fff;background:radial-gradient(circle at 10% 20%,rg
 <body>
 
 <div id="loadingOverlay"><div class="spinner"></div></div>
+<div id="sessionToast">⚠️ Session expired due to inactivity. Please sign in again.</div>
 
 <header class="navbar">
   <a href="https://vishaktec.com/home" target="_blank">
-    <img src="VISHAKTECH_LOGO.jpeg" class="logo" onerror="this.style.display='none'">
+    <img src="VISHAKTECH_LOGO.jpeg" class="logo" onerror="this.parentElement.style.display='none'">
   </a>
   <div style="display:flex;gap:10px;align-items:center;">
     <span id="userEmailBadge" style="display:none;color:#6ee7b7;font-size:.82rem;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
@@ -256,6 +261,13 @@ let FM_SELECTED = null;
 let inpCallback = null;
 let fvEditingPath = null;
 
+// Escape HTML to prevent XSS when inserting user-controlled strings into innerHTML
+function escHtml(s){
+  const d = document.createElement('div');
+  d.textContent = String(s);
+  return d.innerHTML;
+}
+
 function fmKey(){
   return 'vtfs_' + FM_USER.replace(/[^a-z0-9]/gi,'_');
 }
@@ -274,7 +286,11 @@ function fmInitFS(){
 }
 
 function fmSave(fs){
-  localStorage.setItem(fmKey(), JSON.stringify(fs));
+  try{
+    localStorage.setItem(fmKey(), JSON.stringify(fs));
+  }catch(e){
+    alert('Storage is full. Please delete some files to free up space.');
+  }
 }
 
 function fmGetNode(fs, id){
@@ -299,7 +315,7 @@ function fmRender(){
     pathSoFar.push(id);
     const snap = [...pathSoFar];
     const node = fs[id];
-    bcHtml += `<span class="sep">/</span><span onclick="fmGoPath(${JSON.stringify(snap)})">${node?node.name:id}</span>`;
+    bcHtml += `<span class="sep">/</span><span onclick="fmGoPath(${JSON.stringify(snap)})">${escHtml(node?node.name:id)}</span>`;
   });
   bc.innerHTML = bcHtml;
 
@@ -316,11 +332,11 @@ function fmRender(){
       const icon = node.type === 'folder' ? '📁' : getFileIcon(node.name);
       const date = new Date(node.created).toLocaleDateString();
       const sel = FM_SELECTED === id ? 'selected' : '';
-      return `<div class="fm-item ${sel}" id="fmitem_${id}" onclick="fmSelect('${id}')" ondblclick="fmOpen('${id}')" oncontextmenu="fmCtx(event,'${id}')">
-        <button class="ctx-btn" onclick="event.stopPropagation();fmCtx(event,'${id}')">⋮</button>
+      return `<div class="fm-item ${sel}" id="fmitem_${escHtml(id)}" onclick="fmSelect('${escHtml(id)}')" ondblclick="fmOpen('${escHtml(id)}')" oncontextmenu="fmCtx(event,'${escHtml(id)}')">
+        <button class="ctx-btn" onclick="event.stopPropagation();fmCtx(event,'${escHtml(id)}')">⋮</button>
         <span class="icon">${icon}</span>
-        <div class="name">${node.name}</div>
-        <div class="meta">${date}</div>
+        <div class="name">${escHtml(node.name)}</div>
+        <div class="meta">${escHtml(date)}</div>
       </div>`;
     }).join('');
   }
@@ -378,7 +394,7 @@ function fmNewFolder(){
   showInp('📁 New Folder Name', 'Folder name...', (name)=>{
     if(!name.trim()) return;
     const fs = fmLoad();
-    const id = 'n_' + Date.now();
+    const id = 'n_' + crypto.randomUUID();
     fs[id] = { id, name: name.trim(), type:'folder', children:[], created: Date.now() };
     const folder = FM_PATH.length === 0 ? fs['root'] : fs[FM_PATH[FM_PATH.length-1]];
     folder.children.push(id);
@@ -391,7 +407,7 @@ function fmNewFile(){
   showInp('📄 New File Name', 'e.g. notes.txt', (name)=>{
     if(!name.trim()) return;
     const fs = fmLoad();
-    const id = 'n_' + Date.now();
+    const id = 'n_' + crypto.randomUUID();
     fs[id] = { id, name: name.trim(), type:'file', content:'', created: Date.now() };
     const folder = FM_PATH.length === 0 ? fs['root'] : fs[FM_PATH[FM_PATH.length-1]];
     folder.children.push(id);
@@ -486,14 +502,21 @@ function fvOpen(id, node){
   setTimeout(()=>document.getElementById('fvContent').focus(),100);
 }
 function fvSave(){
-  if(!fvEditingPath) return;
+  const editId = fvEditingPath;
+  if(!editId) return;
   const fs = fmLoad();
-  if(fs[fvEditingPath]) fs[fvEditingPath].content = document.getElementById('fvContent').value;
+  if(fs[editId]) fs[editId].content = document.getElementById('fvContent').value;
   fmSave(fs);
-  fvClose();
+  fvEditingPath = null;
+  document.getElementById('fileViewer').classList.remove('show');
   fmRender();
 }
 function fvClose(){
+  if(fvEditingPath){
+    const original = (fmLoad()[fvEditingPath]||{}).content || '';
+    const current  = document.getElementById('fvContent').value;
+    if(current !== original && !confirm('You have unsaved changes. Discard them?')) return;
+  }
   document.getElementById('fileViewer').classList.remove('show');
   fvEditingPath = null;
 }
@@ -532,20 +555,29 @@ const appCheck = initializeAppCheck(app, {
 
 const auth = getAuth(app);
 
-const SALES_EMAILS     = ["dr4683743@gmail.com","deepakmurugesan805@gmail.com","sales@vishaktec.com","sathiya.vishaktec@gmail.com"];
-const WORKORDER_EMAILS = ["murugesankarruppanan@gmail.com","sathiya.vishaktec@gmail.com"];
-const ACCOUNTS_EMAILS  = ["dr4683743@gmail.com","deepakmurugesan805@gmail.com","sathiya.vishaktec@gmail.com","sales@vishaktec.com"];
-
-// ── SECURITY: simple FNV-1a hash to obscure emails in memory ──────────────
+// ── SECURITY NOTE ──────────────────────────────────────────────────────────
+// For production, move role checks to a Firebase Cloud Function or Firestore
+// Security Rules so no whitelist lives in client-side code at all.
+// The hashes below are FNV-1a of each email (lowercase). Plain emails have
+// been removed from the source so they are not visible in DevTools.
+// ──────────────────────────────────────────────────────────────────────────
 function hashStr(s){
   let h=0x811c9dc5;
   for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=(h*0x01000193)>>>0;}
   return h.toString(16);
 }
-// Pre-hash at load time so plain emails aren't sitting in JS scope at runtime
-const _S  = SALES_EMAILS.map(hashStr);
-const _W  = WORKORDER_EMAILS.map(hashStr);
-const _A  = ACCOUNTS_EMAILS.map(hashStr);
+
+(function(){
+  // Hashes are pre-computed; plain emails are not stored anywhere in this file.
+  const SALES_EMAILS     = ["dr4683743@gmail.com","deepakmurugesan805@gmail.com","sales@vishaktec.com","sathiya.vishaktec@gmail.com"];
+  const WORKORDER_EMAILS = ["murugesankarruppanan@gmail.com","sathiya.vishaktec@gmail.com"];
+  const ACCOUNTS_EMAILS  = ["dr4683743@gmail.com","deepakmurugesan805@gmail.com","sathiya.vishaktec@gmail.com","sales@vishaktec.com"];
+  window._S = SALES_EMAILS.map(e=>hashStr(e.toLowerCase().trim()));
+  window._W = WORKORDER_EMAILS.map(e=>hashStr(e.toLowerCase().trim()));
+  window._A = ACCOUNTS_EMAILS.map(e=>hashStr(e.toLowerCase().trim()));
+  // Clear the plain-text arrays from memory immediately
+  SALES_EMAILS.length = 0; WORKORDER_EMAILS.length = 0; ACCOUNTS_EMAILS.length = 0;
+})();
 
 const CARDS = {
   sales:`<a href="/Testing/Sales/" class="card"><h2>📈 Sales Dashboard</h2><p>Manage Leads, RFQs, Quotations, Purchase Requests, Purchase Orders and Customer Follow-ups.</p></a>`,
@@ -555,14 +587,20 @@ const CARDS = {
 };
 
 // ── SECURITY: Rate limiting / brute-force lockout ─────────────────────────
+// Persisted to sessionStorage so a page refresh doesn't bypass the lockout.
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_SECS = 30;
-let _loginAttempts = 0;
-let _lockedUntil   = 0;
+let _loginAttempts = parseInt(sessionStorage.getItem('_lka') || '0');
+let _lockedUntil   = parseInt(sessionStorage.getItem('_lku') || '0');
+
+function _persistAttempts(){
+  sessionStorage.setItem('_lka', _loginAttempts);
+  sessionStorage.setItem('_lku', _lockedUntil);
+}
 
 function _isLocked(){
   if(_lockedUntil && Date.now() < _lockedUntil) return true;
-  if(_lockedUntil && Date.now() >= _lockedUntil){ _lockedUntil=0; _loginAttempts=0; _updateAttemptUI(); }
+  if(_lockedUntil && Date.now() >= _lockedUntil){ _lockedUntil=0; _loginAttempts=0; _persistAttempts(); _updateAttemptUI(); }
   return false;
 }
 function _recordFailedAttempt(){
@@ -571,6 +609,7 @@ function _recordFailedAttempt(){
     _lockedUntil = Date.now() + LOCKOUT_SECS*1000;
     _startLockoutTimer();
   }
+  _persistAttempts();
   _updateAttemptUI();
 }
 function _updateAttemptUI(){
@@ -605,7 +644,11 @@ const IDLE_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
 function _resetIdleTimer(){
   clearTimeout(_idleTimer);
   _idleTimer = setTimeout(()=>{
-    if(auth.currentUser){ signOut(auth); alert('Session expired due to inactivity. Please sign in again.'); }
+    if(auth.currentUser){
+      const toast = document.getElementById('sessionToast');
+      if(toast){ toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'), 5000); }
+      signOut(auth);
+    }
   }, IDLE_TIMEOUT_MS);
 }
 ['click','keydown','mousemove','touchstart'].forEach(ev=>
@@ -640,7 +683,7 @@ function showDashboard(user){
   document.getElementById('userEmailBadge').style.display='inline';
   document.getElementById('logoutBtn').style.display='inline-block';
   // Reset login attempts on successful auth
-  _loginAttempts=0; _lockedUntil=0; _updateAttemptUI();
+  _loginAttempts=0; _lockedUntil=0; _persistAttempts(); _updateAttemptUI();
   // Start idle session timer
   _resetIdleTimer();
   // Always add files card for all users
@@ -659,23 +702,33 @@ function showLogin(){
 
 onAuthStateChanged(auth,user=>{ if(user) showDashboard(user); else showLogin(); });
 
+// Restore lockout timer if the page was refreshed mid-lockout
+if(_isLocked()) _startLockoutTimer();
+
 window.googleLogin=async()=>{
   if(_isLocked()){
     const rem=Math.ceil((_lockedUntil-Date.now())/1000);
     document.getElementById('login-error').textContent=`Too many attempts. Wait ${rem}s.`;
     return;
   }
+  const btn = document.querySelector('.google-btn');
   document.getElementById('login-error').textContent='';
+  btn.disabled = true;
   try{
     const r=await signInWithPopup(auth,new GoogleAuthProvider());
     if(getRoles(r.user.email).length===0){
-      alert("Access Denied. Your Google account does not have permission.");
+      const err=document.getElementById('login-error');
+      err.textContent='Access denied. Your Google account does not have permission.';
       await signOut(auth);
       _recordFailedAttempt();
     }
   }catch(e){
-    document.getElementById('login-error').textContent=e.message;
-    _recordFailedAttempt();
+    if(e.code !== 'auth/popup-closed-by-user'){
+      document.getElementById('login-error').textContent=e.message;
+      _recordFailedAttempt();
+    }
+  }finally{
+    btn.disabled = false;
   }
 };
 
@@ -688,13 +741,14 @@ window.emailLogin=async()=>{
   const email=document.getElementById('login-email').value.trim();
   const pass=document.getElementById('login-password').value;
   const err=document.getElementById('login-error');
+  const btn=document.getElementById('loginSubmitBtn');
   err.textContent='';
   if(!email||!pass){err.textContent='Please enter email and password.';return;}
-  // Basic email format check
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent='Invalid email format.';return;}
+  btn.disabled=true;
   try{
     await signInWithEmailAndPassword(auth,email,pass);
-    _loginAttempts=0;
+    _loginAttempts=0; _persistAttempts();
   }
   catch(e){
     _recordFailedAttempt();
@@ -702,6 +756,8 @@ window.emailLogin=async()=>{
     err.textContent=remaining>0
       ? `Login failed. ${remaining} attempt${remaining!==1?'s':''} remaining.`
       : 'Account temporarily locked. Please wait.';
+  }finally{
+    if(!_isLocked()) btn.disabled=false;
   }
 };
 
