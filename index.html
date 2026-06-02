@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Security headers via meta (backup; real CSP should be on server) -->
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
-<meta http-equiv="X-Frame-Options" content="DENY">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <title>Vishak Tech | Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -110,7 +110,22 @@ body{min-height:100vh;color:#fff;background:radial-gradient(circle at 10% 20%,rg
 .fv-footer{display:flex;gap:10px;padding:14px 24px;border-top:1px solid rgba(255,255,255,.08);}
 </style>
 </head>
+
 <body>
+<script>
+function togglePassword() {
+    const password = document.getElementById("login-password");
+    const eye = document.getElementById("toggleEye");
+
+    if (password.type === "password") {
+        password.type = "text";
+        eye.classList.replace("fa-eye", "fa-eye-slash");
+    } else {
+        password.type = "password";
+        eye.classList.replace("fa-eye-slash", "fa-eye");
+    }
+}
+</script>
 
 <div id="loadingOverlay"><div class="spinner"></div></div>
 <div class="session-warn" id="sessionWarn">⚠️ Session expiring in 2 minutes. Save your work.</div>
@@ -135,11 +150,49 @@ body{min-height:100vh;color:#fff;background:radial-gradient(circle at 10% 20%,rg
 <div style="display:inline-block;padding:8px 18px;background:#ecfdf5;color:#10b981;border-radius:50px;margin-bottom:20px">Enterprise Portal</div>
 <h1 style="font-size:42px;color:#111827">Sign In</h1>
 <p style="color:#6b7280;margin:10px 0 25px;">Access your secure enterprise workspace.</p>
-<input id="login-email" class="input" type="email" placeholder="Email Address" style="width:100%;padding:16px;margin-bottom:14px;border:1px solid #e5e7eb;border-radius:14px;background:#f8fafc;color:#111">
-<input id="login-password" class="input" type="password" placeholder="Password" style="width:100%;padding:16px;margin-bottom:14px;border:1px solid #e5e7eb;border-radius:14px;background:#f8fafc;color:#111">
+<input id="login-email" class="field" type="email" placeholder="Email Address" autocomplete="email" style="width:100%;padding:16px;margin-bottom:14px;border:1px solid #e5e7eb;border-radius:14px;background:#f8fafc;color:#111">
+
+
+<div style="position:relative;width:100%;margin-bottom:14px;">
+
+<input
+    id="login-password"
+    type="password"
+    placeholder="Password"
+    autocomplete="current-password"
+    onkeydown="if(event.key==='Enter')emailLogin()"
+    style="
+        width:100%;
+        padding:16px;
+        padding-right:50px;
+        border:1px solid #10b981;
+        border-radius:14px;
+        background:#f8fafc;
+        color:#111827;
+        font-size:16px;
+    "
+>
+
+<i
+    id="toggleEye"
+    class="fa-solid fa-eye"
+    onclick="togglePassword()"
+    style="
+        position:absolute;
+        right:15px;
+        top:50%;
+        transform:translateY(-50%);
+        cursor:pointer;
+        color:#6b7280;
+        font-size:18px;
+    ">
+</i>
+
+</div>
+
 <p id="login-error" class="error-msg"></p>
-<button id="loginSubmitBtn" class="btn" onclick="emailLogin()">Sign In</button>
-<button class="btn google" onclick="googleLogin()" style="margin-top:12px;background:#fff;color:#111;border:1px solid #e5e7eb">Continue with Google</button>
+<button id="loginSubmitBtn" class="login-submit" onclick="emailLogin()">Sign In</button>
+<button class="btn" onclick="googleLogin()" style="margin-top:12px;background:#fff;color:#111;border:1px solid #e5e7eb">Continue with Google</button>
 </div></div>
 <div class="right" style="width:58%;position:relative;background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),url('https://images.unsplash.com/photo-1565008447742-97f6f38c985c?auto=format&fit=crop&w=1800&q=80') center/cover">
 <div style="position:absolute;bottom:70px;left:70px;color:#fff;max-width:600px">
@@ -317,12 +370,6 @@ function fmSave(fs){
   } catch(e){
     alert('Storage full or unavailable. Please free some browser storage.');
   }
-}
-
-function fmCurrentFolder(){
-  const fs = fmLoad();
-  if(FM_PATH.length === 0) return fs['root'];
-  return fs[FM_PATH[FM_PATH.length - 1]];
 }
 
 function fmRender(){
