@@ -315,42 +315,100 @@
   .btn-inline-close svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2.5; stroke-linecap:round; }
 
   /* ══════════════════════════════════════════════
-     INLINE EDIT POPUP (floats near the row)
+     ANCHORED POPOVER — shared by Edit & Delete
   ══════════════════════════════════════════════ */
-  .inline-edit-popup {
-    position: fixed; z-index: 250;
+  .anchored-popover {
+    position: fixed; z-index: 400;
     background: var(--surface);
-    border: 1.5px solid var(--border-accent);
+    border: 1.5px solid var(--border-strong);
     border-radius: var(--radius-lg);
-    width: min(680px, 96vw);
+    box-shadow: 0 12px 48px rgba(0,0,0,0.32), 0 2px 8px rgba(0,0,0,0.12);
+    animation: popoverIn 0.18s cubic-bezier(0.34,1.4,0.64,1);
+    transform-origin: top right;
+  }
+  @keyframes popoverIn {
+    from { opacity:0; transform: scale(0.88) translateY(-6px); }
+    to   { opacity:1; transform: scale(1) translateY(0); }
+  }
+
+  /* Edit form popover */
+  .anchored-popover.edit-popover {
+    width: min(620px, 94vw);
     max-height: 82vh;
-    overflow: hidden;
     display: flex; flex-direction: column;
-    box-shadow: 0 16px 56px rgba(0,0,0,0.38), 0 0 0 1px rgba(224,96,48,0.12);
-    animation: inlineEditIn 0.22s cubic-bezier(0.34,1.3,0.64,1);
+    border-color: var(--border-accent);
   }
-  @keyframes inlineEditIn {
-    from { opacity:0; transform: translateY(10px) scale(0.97); }
-    to   { opacity:1; transform: none; }
-  }
-  .inline-edit-popup .inline-form-header {
-    padding: 0.9rem 1.2rem 0.8rem;
+  .edit-popover .pop-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.85rem 1.15rem 0.8rem;
     background: linear-gradient(135deg, rgba(224,96,48,0.09), rgba(26,133,208,0.05));
     border-bottom: 1px solid var(--border-accent);
+    flex-shrink: 0;
   }
-  .inline-edit-popup .inline-form-body {
-    padding: 1rem 1.2rem; overflow-y: auto; flex: 1;
-    max-height: 60vh;
+  .edit-popover .pop-title {
+    font-size: 13px; font-weight: 700; color: var(--text);
+    display: flex; align-items: center; gap: 8px;
   }
-  .inline-edit-popup .inline-form-footer {
-    padding: 0.8rem 1.2rem;
+  .edit-popover .pop-title svg {
+    width:14px; height:14px; stroke:var(--accent); fill:none;
+    stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round;
+  }
+  .edit-popover .pop-body {
+    padding: 1rem 1.15rem; overflow-y: auto; flex: 1;
+    max-height: 58vh;
+  }
+  .edit-popover .pop-body::-webkit-scrollbar { width: 4px; }
+  .edit-popover .pop-body::-webkit-scrollbar-thumb { background: var(--surface4); border-radius: 3px; }
+  .edit-popover .pop-footer {
+    display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+    padding: 0.75rem 1.15rem;
     border-top: 1px solid var(--border);
     background: var(--surface2);
+    flex-shrink: 0;
   }
-  /* Overlay backdrop for inline edit */
-  .inline-edit-backdrop {
-    position: fixed; inset: 0; z-index: 249;
-    background: rgba(0,0,0,0.35); backdrop-filter: blur(2px);
+
+  /* Delete confirm popover */
+  .anchored-popover.delete-popover {
+    width: min(290px, 92vw);
+    padding: 1.1rem 1.2rem 1rem;
+    border-color: rgba(208,48,48,0.3);
+  }
+  .delete-popover .del-icon { font-size: 22px; margin-bottom: 0.4rem; }
+  .delete-popover .del-title {
+    font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 0.3rem;
+  }
+  .delete-popover .del-msg {
+    font-size: 12px; color: var(--text2); margin-bottom: 0.9rem; line-height: 1.5;
+  }
+  .delete-popover .del-btns {
+    display: flex; gap: 8px; justify-content: flex-end;
+  }
+  .btn-del-cancel {
+    background: var(--surface3); border: 1px solid var(--border-strong); color: var(--text2);
+    border-radius: 7px; padding: 0.42rem 0.9rem; font-size: 12.5px; font-weight: 600;
+    cursor: pointer; font-family: inherit; transition: background 0.13s;
+  }
+  .btn-del-cancel:hover { background: var(--surface4); }
+  .btn-del-confirm {
+    background: var(--red); color: white; border: none;
+    border-radius: 7px; padding: 0.42rem 0.9rem; font-size: 12.5px; font-weight: 700;
+    cursor: pointer; font-family: inherit; transition: opacity 0.13s;
+  }
+  .btn-del-confirm:hover { opacity: 0.85; }
+
+  /* Shared close button */
+  .btn-pop-close {
+    width: 26px; height: 26px; border-radius: 7px;
+    border: 1px solid var(--border-strong); background: var(--surface3);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--text3); transition: all 0.14s; flex-shrink: 0;
+  }
+  .btn-pop-close:hover { background: rgba(239,68,68,0.1); color:#ef4444; border-color:#ef4444; }
+  .btn-pop-close svg { width:12px; height:12px; stroke:currentColor; fill:none; stroke-width:2.5; stroke-linecap:round; }
+
+  /* Transparent backdrop to catch outside clicks */
+  .popover-backdrop {
+    position: fixed; inset: 0; z-index: 399; background: transparent;
   }
 
   /* APPS SCRIPT CONFIG banner */
@@ -1861,7 +1919,7 @@ function renderVisits() {
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0">
         <span class="visit-badge" style="background:${c}28;color:${c}">${r['Lead No']||''}</span>
-        <div class="row-actions"><button class="btn-dots" title="Actions" onclick="toggleDotMenu(event,'dmv${_vi}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button><div class="dot-menu" id="dmv${_vi}"><button class="dot-menu-item" onclick="closeDotMenus();openInlineEdit('visit',${_vi},this)"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button><div class="dot-menu-divider"></div><button class="dot-menu-item danger" onclick="closeDotMenus();confirmDelete('visit',${_vi})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete</button></div></div>
+        <div class="row-actions"><button class="btn-dots" title="Actions" onclick="toggleDotMenu(event,'dmv${_vi}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button><div class="dot-menu" id="dmv${_vi}"><button class="dot-menu-item" onclick="closeDotMenus();openInlineEdit('visit',${_vi},this)"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button><div class="dot-menu-divider"></div><button class="dot-menu-item danger" onclick="closeDotMenus();confirmDelete('visit',${_vi},this)"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete</button></div></div>
       </div>
     </div>`;
   }).join('')||'<div class="empty">No visits match</div>');
@@ -2002,7 +2060,7 @@ function renderDrawerVisits() {
 }
 
 // Close drawer on Escape key
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeVisitsDrawer(); closeInlineEditPopup(); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeVisitsDrawer(); _closePopover(); } });
 
 
 
@@ -2038,7 +2096,7 @@ function renderPRs() {
         <div class="list-item-title">${trunc(r['PR Description']||'—',60)}</div>
         <div class="list-item-sub">${trunc(r['Customer Name']||'—',45)}</div>
       </div>
-      <div class="row-actions"><button class="btn-dots" title="Actions" onclick="toggleDotMenu(event,'dmp${_pidx}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button><div class="dot-menu" id="dmp${_pidx}"><button class="dot-menu-item" onclick="closeDotMenus();openInlineEdit('pr',${_pidx},this)"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button><div class="dot-menu-divider"></div><button class="dot-menu-item danger" onclick="closeDotMenus();confirmDelete('pr',${_pidx})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete</button></div></div>
+      <div class="row-actions"><button class="btn-dots" title="Actions" onclick="toggleDotMenu(event,'dmp${_pidx}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button><div class="dot-menu" id="dmp${_pidx}"><button class="dot-menu-item" onclick="closeDotMenus();openInlineEdit('pr',${_pidx},this)"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button><div class="dot-menu-divider"></div><button class="dot-menu-item danger" onclick="closeDotMenus();confirmDelete('pr',${_pidx},this)"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete</button></div></div>
       </div>
     </div>`;
   }).join('')||'<div class="empty" style="padding:1.5rem;text-align:center">No PR data matches</div>');
@@ -2080,7 +2138,7 @@ function renderPOs() {
         <div class="list-item-title">${trunc(r['Customer Name']||'—',40)}</div>
         <div class="list-item-sub">${trunc(r['Short Description']||'—',55)}</div>
       </div>
-      <div class="row-actions"><button class="btn-dots" title="Actions" onclick="toggleDotMenu(event,'dmpo${_pidx}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button><div class="dot-menu" id="dmpo${_pidx}"><button class="dot-menu-item" onclick="closeDotMenus();openInlineEdit('po',${_pidx},this)"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button><div class="dot-menu-divider"></div><button class="dot-menu-item danger" onclick="closeDotMenus();confirmDelete('po',${_pidx})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete</button></div></div>
+      <div class="row-actions"><button class="btn-dots" title="Actions" onclick="toggleDotMenu(event,'dmpo${_pidx}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button><div class="dot-menu" id="dmpo${_pidx}"><button class="dot-menu-item" onclick="closeDotMenus();openInlineEdit('po',${_pidx},this)"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button><div class="dot-menu-divider"></div><button class="dot-menu-item danger" onclick="closeDotMenus();confirmDelete('po',${_pidx},this)"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete</button></div></div>
       </div>
     </div>`; }).join('')||'<div class="empty" style="padding:1.5rem;text-align:center">No PO data matches</div>');
   const el=document.getElementById('po-count');
@@ -2633,25 +2691,74 @@ async function saveEntry() {
 // ══════════════════════════════════════════════════════
 //  DELETE
 // ══════════════════════════════════════════════════════
+//  ANCHORED POPOVER — shared engine for Edit & Delete
+// ══════════════════════════════════════════════════════
+let _popoverEl = null;
+let _popoverBackdropEl = null;
+
+function _openPopover(html, anchorEl, extraClass) {
+  _closePopover();
+  _popoverBackdropEl = document.createElement('div');
+  _popoverBackdropEl.className = 'popover-backdrop';
+  _popoverBackdropEl.addEventListener('mousedown', _closePopover);
+  document.body.appendChild(_popoverBackdropEl);
+
+  _popoverEl = document.createElement('div');
+  _popoverEl.className = 'anchored-popover ' + (extraClass || '');
+  _popoverEl.innerHTML = html;
+  document.body.appendChild(_popoverEl);
+  _positionPopover(anchorEl);
+}
+
+function _positionPopover(anchorEl) {
+  if (!_popoverEl || !anchorEl) return;
+  const pop = _popoverEl;
+  pop.style.top = '-9999px'; pop.style.left = '-9999px';
+  requestAnimationFrame(() => {
+    const rect = anchorEl.getBoundingClientRect();
+    const pw = pop.offsetWidth, ph = pop.offsetHeight;
+    const vw = window.innerWidth, vh = window.innerHeight, pad = 10;
+    let top = rect.bottom + 6;
+    if (top + ph > vh - pad) top = rect.top - ph - 6;
+    if (top < pad) top = pad;
+    let left = rect.right - pw;
+    if (left < pad) left = pad;
+    if (left + pw > vw - pad) left = vw - pw - pad;
+    pop.style.top = top + 'px';
+    pop.style.left = left + 'px';
+  });
+}
+
+function _closePopover() {
+  if (_popoverEl) { _popoverEl.remove(); _popoverEl = null; }
+  if (_popoverBackdropEl) { _popoverBackdropEl.remove(); _popoverBackdropEl = null; }
+}
+
+// ── DELETE ──
 let _pendingDelete = null;
 
-function confirmDelete(type, idx) {
+function confirmDelete(type, idx, anchorEl) {
   const arr = { lead: _data.aLeads, visit: _data.aVisits, pr: _data.aPRs, po: _data.aPOs }[type];
   const row = arr[idx];
   const label = row['Lead No'] || row['Internal PR No'] || row['Customer Name'] || 'this record';
-  document.getElementById('confirm-del-msg').textContent = `Delete "${label}"? This cannot be undone.`;
   _pendingDelete = { type, idx };
-  document.getElementById('confirm-del').classList.add('open');
-  document.getElementById('confirm-del-btn').onclick = executeDelete;
+
+  const html = `
+    <div class="del-icon">🗑️</div>
+    <div class="del-title">Delete record?</div>
+    <div class="del-msg">"${label}" will be permanently removed.</div>
+    <div class="del-btns">
+      <button class="btn-del-cancel" onclick="_closePopover()">Cancel</button>
+      <button class="btn-del-confirm" onclick="executeDelete()">Delete</button>
+    </div>`;
+
+  _openPopover(html, anchorEl, 'delete-popover');
 }
 
-function closeConfirmDel() {
-  document.getElementById('confirm-del').classList.remove('open');
-  _pendingDelete = null;
-}
+function closeConfirmDel() { _closePopover(); _pendingDelete = null; }
 
 async function executeDelete() {
-  closeConfirmDel();
+  _closePopover();
   if (!_pendingDelete) return;
   const { type, idx } = _pendingDelete;
   const arr = { lead: _data.aLeads, visit: _data.aVisits, pr: _data.aPRs, po: _data.aPOs }[type];
@@ -2913,104 +3020,43 @@ function closeBottomSheet() {
   try { closeAllInlineForms(); } catch(e) {}
 }
 
-// ── INLINE EDIT POPUP ──
-let _inlineEditPopupEl = null;
-let _inlineEditBackdropEl = null;
-
+// ── EDIT POPOVER ──
 function openInlineEdit(type, idx, anchorEl) {
-  closeInlineEditPopup();
   closeAllInlineForms();
-
-  _bsMode = 'edit'; _bsType = type; _bsEditIndex = idx; _inlineMode = 'edit';
-
-  // Create backdrop
-  _inlineEditBackdropEl = document.createElement('div');
-  _inlineEditBackdropEl.className = 'inline-edit-backdrop';
-  _inlineEditBackdropEl.addEventListener('click', closeInlineEditPopup);
-  document.body.appendChild(_inlineEditBackdropEl);
-
-  // Create popup
-  _inlineEditPopupEl = document.createElement('div');
-  _inlineEditPopupEl.className = 'inline-edit-popup';
+  _bsMode = 'edit'; _bsType = type; _bsEditIndex = idx;
 
   const typeLabel = type.charAt(0).toUpperCase() + type.slice(1);
-  const iconEdit = `<svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:var(--accent);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+  const iconEdit = `<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
 
-  _inlineEditPopupEl.innerHTML = `
-    <div class="inline-form-header">
-      <div class="inline-form-title">${iconEdit} Edit ${typeLabel}</div>
-      <button class="btn-inline-close" onclick="closeInlineEditPopup()" title="Cancel">
+  const html = `
+    <div class="pop-header">
+      <div class="pop-title">${iconEdit} Edit ${typeLabel}</div>
+      <button class="btn-pop-close" onclick="_closePopover()" title="Close">
         <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
-    <div class="inline-form-body"></div>
-    <div class="inline-form-footer" style="display:flex;align-items:center;justify-content:flex-end;gap:10px;">
-      <button class="btn-cancel" onclick="closeInlineEditPopup()">Cancel</button>
-      <button class="btn-save" id="inline-edit-save-btn" onclick="saveInlineEditEntry()">
+    <div class="pop-body" id="edit-pop-body"></div>
+    <div class="pop-footer">
+      <button class="btn-cancel" onclick="_closePopover()">Cancel</button>
+      <button class="btn-save" id="edit-pop-save-btn" onclick="saveEditPopover()">
         <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-        <span id="inline-edit-save-btn-text">Update Entry</span>
+        <span id="edit-pop-save-text">Update Entry</span>
       </button>
-    </div>
-  `;
-  document.body.appendChild(_inlineEditPopupEl);
+    </div>`;
 
-  // Inject form fields
-  _renderInlineForm(type, _inlineEditPopupEl.querySelector('.inline-form-body'));
-
-  // Fill with row data
+  _openPopover(html, anchorEl, 'edit-popover');
+  _renderInlineForm(type, document.getElementById('edit-pop-body'));
   const arr = { lead: _data.aLeads, visit: _data.aVisits, pr: _data.aPRs, po: _data.aPOs }[type];
   _fillBSForm(type, arr[idx]);
-
-  // Position popup near anchor element or center
-  _positionInlineEditPopup(anchorEl);
 }
 
-function _positionInlineEditPopup(anchorEl) {
-  if (!_inlineEditPopupEl) return;
-  const popup = _inlineEditPopupEl;
-  // Start centered for measurement
-  popup.style.top = '50%';
-  popup.style.left = '50%';
-  popup.style.transform = 'translate(-50%, -50%)';
-
-  if (!anchorEl) return;
-
-  requestAnimationFrame(() => {
-    const anchor = anchorEl.getBoundingClientRect();
-    const pw = popup.offsetWidth;
-    const ph = popup.offsetHeight;
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const pad = 12;
-
-    // Try to place below anchor, then above
-    let top = anchor.bottom + pad;
-    if (top + ph > vh - pad) top = anchor.top - ph - pad;
-    if (top < pad) top = pad;
-
-    // Align right edge with anchor right, but stay in viewport
-    let left = anchor.right - pw;
-    if (left < pad) left = pad;
-    if (left + pw > vw - pad) left = vw - pw - pad;
-
-    popup.style.transform = 'none';
-    popup.style.top = top + 'px';
-    popup.style.left = left + 'px';
-  });
-}
-
-function closeInlineEditPopup() {
-  if (_inlineEditPopupEl) { _inlineEditPopupEl.remove(); _inlineEditPopupEl = null; }
-  if (_inlineEditBackdropEl) { _inlineEditBackdropEl.remove(); _inlineEditBackdropEl = null; }
-}
-
-async function saveInlineEditEntry() {
-  const btn = document.getElementById('inline-edit-save-btn');
-  const btnText = document.getElementById('inline-edit-save-btn-text');
+async function saveEditPopover() {
+  const btn = document.getElementById('edit-pop-save-btn');
+  const txt = document.getElementById('edit-pop-save-text');
   if (btn) btn.disabled = true;
-  if (btnText) btnText.textContent = 'Saving…';
+  if (txt) txt.textContent = 'Saving…';
   await saveBSEntry();
-  closeInlineEditPopup();
+  _closePopover();
 }
 
 function switchBSTab(type) {
@@ -3106,11 +3152,11 @@ function _fillBSForm(type, row) {
 }
 
 async function saveBSEntry() {
-  // Support bottom-sheet, inline-add, and inline-edit save buttons
-  const btn = document.getElementById('inline-edit-save-btn') ||
+  // Support bottom-sheet, inline-add, and edit-popover save buttons
+  const btn = document.getElementById('edit-pop-save-btn') ||
               document.getElementById('inline-save-btn') ||
               document.getElementById('bs-save-btn');
-  const btnTextEl = document.getElementById('inline-edit-save-btn-text') ||
+  const btnTextEl = document.getElementById('edit-pop-save-text') ||
                     document.getElementById('inline-save-btn-text') ||
                     document.getElementById('bs-save-btn-text');
   if (btn) btn.disabled = true;
@@ -3169,8 +3215,8 @@ async function saveBSEntry() {
   closeBottomSheet();
   if(btn) btn.disabled = false;
   if(btnTextEl) btnTextEl.textContent = _bsMode==='add'?'Save Entry':'Update Entry';
-  // Also close inline edit popup if open
-  try { closeInlineEditPopup(); } catch(e) {}
+  // Also close any open popover
+  try { _closePopover(); } catch(e) {}
   renderPipeline(); renderVisits(); renderPRs(); renderPOs();
   try { renderPipelineTracker(); } catch(e) {}
   set('kpi-leads', _data.aLeads.length);
