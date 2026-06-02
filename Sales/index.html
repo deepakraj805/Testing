@@ -262,6 +262,58 @@
   .btn-confirm-del { background: var(--red); color: white; border: none; border-radius: 8px; padding: 0.5rem 1.2rem; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; transition: opacity 0.15s; }
   .btn-confirm-del:hover { opacity: 0.88; }
 
+  /* ══════════════════════════════════════════════
+     INLINE FORM (replaces card content on Add click)
+  ══════════════════════════════════════════════ */
+  .inline-form-wrap {
+    background: var(--surface2);
+    border: 1.5px solid var(--border-accent);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    animation: inlineFormIn 0.25s cubic-bezier(0.34,1.2,0.64,1);
+  }
+  @keyframes inlineFormIn {
+    from { opacity:0; transform: translateY(-12px) scale(0.98); }
+    to   { opacity:1; transform: none; }
+  }
+  .inline-form-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.85rem 1.1rem 0.75rem;
+    background: linear-gradient(135deg, rgba(224,96,48,0.08), rgba(26,133,208,0.05));
+    border-bottom: 1px solid var(--border-accent);
+  }
+  .inline-form-title {
+    font-size: 13px; font-weight: 700; color: var(--text);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .inline-form-title svg {
+    width:14px; height:14px; stroke:var(--accent); fill:none;
+    stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round;
+  }
+  .inline-form-tabs {
+    display: flex; gap: 4px; padding: 0.55rem 1.1rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2); overflow-x: auto;
+  }
+  .inline-form-body {
+    padding: 1rem 1.1rem; max-height: 520px; overflow-y: auto;
+  }
+  .inline-form-body::-webkit-scrollbar { width: 4px; }
+  .inline-form-body::-webkit-scrollbar-thumb { background: var(--surface4); border-radius: 3px; }
+  .inline-form-footer {
+    display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+    padding: 0.75rem 1.1rem; border-top: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  .btn-inline-close {
+    width: 28px; height: 28px; border-radius: 7px;
+    border: 1px solid var(--border-strong); background: var(--surface3);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--text3); transition: all 0.15s;
+  }
+  .btn-inline-close:hover { background: rgba(239,68,68,0.1); color:#ef4444; border-color:#ef4444; }
+  .btn-inline-close svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2.5; stroke-linecap:round; }
+
   /* APPS SCRIPT CONFIG banner */
   .apps-script-banner {
     background: linear-gradient(135deg, rgba(224,96,48,0.08), rgba(26,133,208,0.06));
@@ -893,8 +945,11 @@
           <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Lead
         </button>
       </div>
-      <div id="pipeline-bars"></div>
-      <div class="chart-wrap"><canvas id="pipeChart" role="img" aria-label="Donut chart of lead pipeline stages"></canvas></div>
+      <div id="lead-inline-form-wrap" style="display:none;margin-bottom:12px;"></div>
+      <div id="lead-card-content">
+        <div id="pipeline-bars"></div>
+        <div class="chart-wrap"><canvas id="pipeChart" role="img" aria-label="Donut chart of lead pipeline stages"></canvas></div>
+      </div>
     </div>
     <div class="card">
       <div class="card-title">
@@ -911,6 +966,7 @@
         <span class="slicer-label">Quick Filter</span>
         <div class="slicer-bar" id="visit-status-slicers"></div>
       </div>
+      <div id="visit-inline-form-wrap" style="display:none;margin-bottom:12px;"></div>
       <div id="visits-list"></div>
       <button class="view-all-btn" id="view-all-visits-btn" onclick="openVisitsDrawer()" style="display:none">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
@@ -934,6 +990,7 @@
         <option value="">All Status</option>
       </select>
     </div>
+    <div id="pr-inline-form-wrap" style="display:none;margin-bottom:12px;"></div>
     <table class="data-table">
       <thead><tr>
         <th onclick="sortTable('pr','Internal PR No',this)">PR No <span class="sort-icon">↕</span></th>
@@ -962,6 +1019,7 @@
         <option value="">All Stage</option>
       </select>
     </div>
+    <div id="po-inline-form-wrap" style="display:none;margin-bottom:12px;"></div>
     <table class="data-table">
       <thead><tr>
         <th onclick="sortTable('po','Date',this)">Date <span class="sort-icon">↕</span></th>
@@ -1109,9 +1167,11 @@ function buildRes(obj) {
         <div class="form-group"><label class="form-label">Plant Name / Location</label><input class="form-input" id="f-lead-plant" placeholder="Plant or city"></div>
         <div class="form-group"><label class="form-label">Lead Status *</label>
           <select class="form-select" id="f-lead-status">
-            <option>New</option><option>Contacted</option><option>Follow Up</option><option>Qualified</option>
-            <option>Proposal Sent</option><option>Negotiation</option><option>PR Received</option>
-            <option>PR Processed</option><option>Accepted</option><option>Closed Won</option><option>Closed Lost</option><option>Rejected</option>
+            <option value="">— Select Status —</option>
+            <option value="PR Received">PR Received</option>
+            <option value="PR Processed">PR Processed</option>
+            <option value="Accepted">Accepted</option>
+            <option value="Rejected">Rejected</option>
           </select>
         </div>
         <div class="form-group"><label class="form-label">Source</label><input class="form-input" id="f-lead-source" placeholder="Referral, Website…"></div>
@@ -1135,17 +1195,17 @@ function buildRes(obj) {
         <div class="form-group"><label class="form-label">Plant Name / Location *</label><input class="form-input" id="f-visit-plant" placeholder="Location"></div>
         <div class="form-section-title">Meeting Details</div>
         <div class="form-group"><label class="form-label">Meeting Person & Designation</label><input class="form-input" id="f-visit-person" placeholder="Name, Title"></div>
-        <div class="form-group"><label class="form-label">Visit Type</label>
+        <div class="form-group"><label class="form-label">Appointment Status</label>
           <select class="form-select" id="f-visit-type">
             <option value="">— Select —</option>
-            <option>Initial Meeting</option><option>Follow Up</option><option>Demo</option>
-            <option>Site Survey</option><option>Negotiation</option><option>Closing</option>
+            <option value="Fixed">Fixed</option>
+            <option value="Direct Visit">Direct Visit</option>
           </select>
         </div>
-        <div class="form-group"><label class="form-label">Visit Status</label>
+        <div class="form-group"><label class="form-label">Q Form Status</label>
           <select class="form-select" id="f-visit-status">
-            <option value="Scheduled">Scheduled</option><option value="Completed">Completed</option>
-            <option value="Postponed">Postponed</option><option value="Cancelled">Cancelled</option>
+            <option value="Not Prepared">Not Prepared</option>
+            <option value="Submitted">Submitted</option>
           </select>
         </div>
         <div class="form-group"><label class="form-label">Next Follow-up Date</label><input class="form-input" type="date" id="f-visit-followup"></div>
@@ -1165,25 +1225,46 @@ function buildRes(obj) {
         <div class="form-section-title">Quotation</div>
         <div class="form-group"><label class="form-label">Quotation Status</label>
           <select class="form-select" id="f-pr-qstatus">
-            <option value="Not Submitted">Not Submitted</option>
-            <option value="Submitted">Submitted</option>
-            <option value="Revision Needed">Revision Needed</option>
-            <option value="Approved">Approved</option>
-            <option value="Rejected">Rejected</option>
+            <option value="">— Select —</option>
+            <option value="SUBMITTED">Submitted</option>
+            <option value="NOT SUBMITTED">Not Submitted</option>
           </select>
         </div>
         <div class="form-group"><label class="form-label">Quotation Value (INR)</label><input class="form-input" id="f-pr-value" placeholder="Amount in INR"></div>
         <div class="form-group"><label class="form-label">Quotation Date</label><input class="form-input" type="date" id="f-pr-qdate"></div>
         <div class="form-group"><label class="form-label">Quotation Ref No</label><input class="form-input" id="f-pr-qref" placeholder="e.g. QT-2024-001"></div>
-        <div class="form-section-title">Technical Details</div>
-        <div class="form-group full"><label class="form-label">Scope of Work</label><textarea class="form-textarea" id="f-pr-scope" placeholder="Detailed scope, specifications…"></textarea></div>
-        <div class="form-group"><label class="form-label">Delivery Timeline</label><input class="form-input" id="f-pr-delivery" placeholder="e.g. 4 weeks"></div>
-        <div class="form-group"><label class="form-label">Priority</label>
+        <div class="form-section-title">Design &amp; Logistics</div>
+        <div class="form-group"><label class="form-label">Transfer to Design Team</label>
           <select class="form-select" id="f-pr-priority">
             <option value="">— Select —</option>
-            <option>High</option><option>Medium</option><option>Low</option>
+            <option value="TRANSFERRED">Transferred</option>
+            <option value="NOT TRANSFERRED">Not Transferred</option>
+            <option value="NOT IN SCOPE">Not In Scope</option>
           </select>
         </div>
+        <div class="form-group"><label class="form-label">Acknowledge by Design Team</label>
+          <select class="form-select" id="f-pr-ack">
+            <option value="">— Select —</option>
+            <option value="IN REVIEW">In Review</option>
+            <option value="NOT IN SCOPE">Not In Scope</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Outsourcing Status</label>
+          <select class="form-select" id="f-pr-outsource">
+            <option value="">— Select —</option>
+            <option value="NO NEED">No Need</option>
+            <option value="PR RAISED">PR Raised</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Box / Packing Type</label>
+          <select class="form-select" id="f-pr-box">
+            <option value="">— Select —</option>
+            <option value="CARD BOARD">Card Board</option>
+            <option value="WOODEN BOARD">Wooden Board</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Customer PR No</label><input class="form-input" id="f-pr-delivery" placeholder="e.g. RF NO:36"></div>
+        <div class="form-group"><label class="form-label">Contact Person</label><input class="form-input" id="f-pr-scope" placeholder="Name / designation"></div>
         <div class="form-group full"><label class="form-label">Remark</label><textarea class="form-textarea" id="f-pr-remark" placeholder="Additional remarks…"></textarea></div>
       </div>
 
@@ -1197,16 +1278,43 @@ function buildRes(obj) {
         <div class="form-group full"><label class="form-label">Order Description *</label><input class="form-input" id="f-po-desc" placeholder="Item / product description"></div>
         <div class="form-group"><label class="form-label">Internal PR Ref</label><input class="form-input" id="f-po-pr" placeholder="e.g. PR-2024-001"></div>
         <div class="form-group"><label class="form-label">PO Value (INR)</label><input class="form-input" id="f-po-value" placeholder="e.g. 150000"></div>
-        <div class="form-section-title">Outsourcing</div>
-        <div class="form-group"><label class="form-label">Outsourcing Status</label>
+        <div class="form-section-title">Origin &amp; Certificates</div>
+        <div class="form-group"><label class="form-label">Origin Certificate</label>
           <select class="form-select" id="f-po-out-status">
             <option value="">— Select —</option>
-            <option>In-house</option><option>Outsourced</option><option>Partial Outsource</option>
+            <option value="GOING TO PROCESS">Going to Process</option>
+            <option value="RECEIVED">Received</option>
           </select>
         </div>
-        <div class="form-group"><label class="form-label">Outsourcing No</label><input class="form-input" id="f-po-out-no" placeholder="Outsourcing reference no."></div>
-        <div class="form-group"><label class="form-label">Outsourcing Date</label><input class="form-input" type="date" id="f-po-out-date"></div>
-        <div class="form-group"><label class="form-label">Vendor / Supplier</label><input class="form-input" id="f-po-vendor" placeholder="Vendor name"></div>
+        <div class="form-group"><label class="form-label">QC Certificate</label>
+          <select class="form-select" id="f-po-qc">
+            <option value="">— Select —</option>
+            <option value="SUBMITTED">Submitted</option>
+            <option value="NOT SUBMITTED">Not Submitted</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Re Cargo Quote</label>
+          <select class="form-select" id="f-po-cargo">
+            <option value="">— Select —</option>
+            <option value="RECEIVED">Received</option>
+            <option value="NOT RECEIVED">Not Received</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Re Packing Details</label>
+          <select class="form-select" id="f-po-packing-details">
+            <option value="">— Select —</option>
+            <option value="RECEIVED">Received</option>
+            <option value="NOT RECEIVED">Not Received</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Contact Person</label><input class="form-input" id="f-po-out-no" placeholder="Contact name / email"></div>
+        <div class="form-group"><label class="form-label">Work Order Status</label>
+          <select class="form-select" id="f-po-out-date-sel">
+            <option value="">— Select —</option>
+            <option value="RELEASED">Released</option>
+            <option value="NOT RELEASED">Not Released</option>
+          </select>
+        </div>
         <div class="form-section-title">Packing Dimensions &amp; Weight</div>
         <div class="form-group"><label class="form-label">Packing H (cm)</label><input class="form-input" id="f-po-height" placeholder="Height"></div>
         <div class="form-group"><label class="form-label">Packing W (cm)</label><input class="form-input" id="f-po-width" placeholder="Width"></div>
@@ -1215,12 +1323,12 @@ function buildRes(obj) {
         <div class="form-section-title">Production</div>
         <div class="form-group"><label class="form-label">Production Stage *</label>
           <select class="form-select" id="f-po-stage">
+            <option value="">— Select —</option>
             <option value="YET TO START">Yet to Start</option>
             <option value="PROCESSING">Processing</option>
             <option value="25% COMPLETED">25% Completed</option>
             <option value="50% COMPLETED">50% Completed</option>
             <option value="75% COMPLETED">75% Completed</option>
-            <option value="COMPLETED">Completed</option>
           </select>
         </div>
         <div class="form-group"><label class="form-label">Expected Delivery Date</label><input class="form-input" type="date" id="f-po-delivery"></div>
@@ -2165,9 +2273,12 @@ function openEditModal(type, idx) {
     document.getElementById('f-pr-qstatus').value  = row['Quotation Status']||'Not Submitted';
     document.getElementById('f-pr-value').value    = row['Quotation Value']||row['Value']||'';
     document.getElementById('f-pr-qref').value     = row['Quotation Ref No']||'';
-    document.getElementById('f-pr-scope').value    = row['Scope of Work']||'';
-    document.getElementById('f-pr-delivery').value = row['Delivery Timeline']||'';
-    document.getElementById('f-pr-priority').value = row['Priority']||'';
+    document.getElementById('f-pr-priority').value = row['Transfer to Design Team']||'';
+    _trySet('f-pr-ack', row['Acknowledge by Design Team']||'');
+    _trySet('f-pr-outsource', row['Outsourcing Status']||'');
+    _trySet('f-pr-box', row['Box']||'');
+    document.getElementById('f-pr-delivery').value = row['Customer PR No']||'';
+    document.getElementById('f-pr-scope').value    = row['Contact Person']||'';
     document.getElementById('f-pr-remark').value   = row['Remark 3']||row['Remarks']||'';
     const d = row['PR Date']||'';
     if (d) { try { document.getElementById('f-pr-date').value = new Date(d).toISOString().split('T')[0]; } catch(e){} }
@@ -2181,27 +2292,33 @@ function openEditModal(type, idx) {
     document.getElementById('f-po-pr').value         = row['Internal PR']||'';
     document.getElementById('f-po-desc').value       = row['Short Description']||'';
     document.getElementById('f-po-value').value      = row['PO Value']||row['Value']||'';
-    document.getElementById('f-po-out-status').value = row['Outsourcing Status']||'';
-    document.getElementById('f-po-out-no').value     = row['Outsourcing No']||'';
-    document.getElementById('f-po-vendor').value     = row['Vendor']||'';
-    document.getElementById('f-po-height').value     = row['Packing H']||'';
-    document.getElementById('f-po-width').value      = row['Packing W']||'';
-    document.getElementById('f-po-length').value     = row['Packing L']||'';
-    document.getElementById('f-po-weight').value     = row['Weight KG']||'';
-    document.getElementById('f-po-stage').value      = row['Production Stage']||'YET TO START';
-    document.getElementById('f-po-remark').value     = row['Remarks']||'';
+    document.getElementById('f-po-out-status').value = row['Origin Certificate']||'';
+    _trySet('f-po-qc', row['QC Certificate']||'');
+    _trySet('f-po-cargo', row['Re Cargo Quote']||'');
+    _trySet('f-po-packing-details', row['Re Packing Details']||'');
+    document.getElementById('f-po-out-no').value = row['Contact Person']||'';
+    _trySet('f-po-out-date-sel', row['Work Order Status']||'');
+    document.getElementById('f-po-height').value = row['Packing H']||'';
+    document.getElementById('f-po-width').value  = row['Packing W']||'';
+    document.getElementById('f-po-length').value = row['Packing L']||'';
+    document.getElementById('f-po-weight').value = row['Weight KG']||'';
+    document.getElementById('f-po-stage').value  = row['Production Stage']||'';
+    document.getElementById('f-po-remark').value = row['Remarks']||'';
     const d = row['Date']||'';
     if (d) { try { document.getElementById('f-po-date').value = new Date(d).toISOString().split('T')[0]; } catch(e){} }
     const dd = row['Expected Delivery']||'';
     if (dd) { try { document.getElementById('f-po-delivery').value = new Date(dd).toISOString().split('T')[0]; } catch(e){} }
-    const do2 = row['Outsourcing Date']||'';
-    if (do2) { try { document.getElementById('f-po-out-date').value = new Date(do2).toISOString().split('T')[0]; } catch(e){} }
   }
   document.getElementById('entry-modal').classList.add('open');
 }
 
 function closeModal() {
   document.getElementById('entry-modal').classList.remove('open');
+}
+
+function _trySet(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.value = val;
 }
 
 function resetForms() {
@@ -2461,20 +2578,136 @@ let _bsType = '';
 let _bsEditIndex = null;
 let _bsEditKey = null;
 
+// ── INLINE FORM CONFIG ──
+const INLINE_WRAP_IDS = { lead:'lead-inline-form-wrap', visit:'visit-inline-form-wrap', pr:'pr-inline-form-wrap', po:'po-inline-form-wrap' };
+const INLINE_CONTENT_IDS = { lead:'lead-card-content', visit:null, pr:null, po:null };
+
+let _inlineType = null;
+let _inlineMode = 'add';
+
 function openAddSheet(type) {
-  _bsMode = 'add'; _bsType = type; _bsEditIndex = null; _bsEditKey = null;
-  _renderBSForm(type);
-  document.getElementById('bs-title-text').innerHTML =
-    `<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add ${type.charAt(0).toUpperCase()+type.slice(1)}`;
-  document.getElementById('bs-save-btn-text').textContent = 'Save Entry';
-  document.getElementById('bs-tab-bar').style.display = '';
-  _activateBSTab(type);
+  // Close any existing inline form first
+  closeAllInlineForms();
+  _bsMode = 'add'; _bsType = type; _inlineType = type; _inlineMode = 'add';
+  _bsEditIndex = null; _bsEditKey = null;
+
+  const wrapId = INLINE_WRAP_IDS[type];
+  const wrap = document.getElementById(wrapId);
+  if (!wrap) return;
+
+  // Hide card content if applicable
+  const contentId = INLINE_CONTENT_IDS[type];
+  if (contentId) {
+    const contentEl = document.getElementById(contentId);
+    if (contentEl) contentEl.style.display = 'none';
+  }
+
+  // Build the inline form HTML
+  wrap.innerHTML = _buildInlineFormHTML(type, 'add');
+  wrap.style.display = 'block';
+
+  // Inject form fields
+  _renderInlineForm(type, wrap.querySelector('.inline-form-body'));
+
   // Pre-fill today
   const today = new Date().toISOString().split('T')[0];
-  _bsTrySet('bs-f-lead-date', today); _bsTrySet('bs-f-visit-date', today);
-  _bsTrySet('bs-f-pr-date', today);   _bsTrySet('bs-f-po-date', today);
-  document.getElementById('add-sheet').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  const prefix = 'bs-f-';
+  _bsTrySet(prefix+'lead-date', today); _bsTrySet(prefix+'visit-date', today);
+  _bsTrySet(prefix+'pr-date', today);   _bsTrySet(prefix+'po-date', today);
+
+  // Scroll into view smoothly
+  wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function _buildInlineFormHTML(type, mode) {
+  const label = mode === 'edit' ? 'Edit' : 'Add';
+  const typeLabel = type.charAt(0).toUpperCase() + type.slice(1);
+  const iconPlus = `<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`;
+  const iconEdit = `<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+  const icon = mode === 'edit' ? iconEdit : iconPlus;
+
+  // Tab bar only in add mode
+  let tabBar = '';
+  if (mode === 'add') {
+    const tabs = [
+      { id:'lead', label:'Lead', icon:'<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>' },
+      { id:'visit', label:'Visit', icon:'<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' },
+      { id:'pr', label:'PR', icon:'<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' },
+      { id:'po', label:'PO', icon:'<svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/></svg>' },
+    ];
+    tabBar = `<div class="inline-form-tabs">` +
+      tabs.map(t => `<button class="bs-tab${t.id===type?' active':''}" id="inline-tab-${t.id}" onclick="switchInlineTab('${t.id}')">${t.icon}${t.label}</button>`).join('') +
+      `</div>`;
+  }
+
+  const saveLabel = mode === 'edit' ? 'Update Entry' : 'Save Entry';
+  return `
+    <div class="inline-form-wrap">
+      <div class="inline-form-header">
+        <div class="inline-form-title">${icon} ${label} ${typeLabel}</div>
+        <button class="btn-inline-close" onclick="closeAllInlineForms()" title="Cancel">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      ${tabBar}
+      <div class="inline-form-body"></div>
+      <div class="inline-form-footer">
+        <button class="btn-cancel" onclick="closeAllInlineForms()">Cancel</button>
+        <button class="btn-save" id="inline-save-btn" onclick="saveInlineEntry()">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          <span id="inline-save-btn-text">${saveLabel}</span>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function _renderInlineForm(type, bodyEl) {
+  if (!bodyEl) return;
+  const srcId = 'form-' + type;
+  const src = document.getElementById(srcId);
+  if (!src) return;
+  const clone = src.cloneNode(true);
+  clone.id = 'bs-form-' + type;
+  clone.style.display = 'grid';
+  clone.querySelectorAll('[id]').forEach(el => { el.id = 'bs-' + el.id; });
+  clone.querySelectorAll('[for]').forEach(el => { el.setAttribute('for', 'bs-' + el.getAttribute('for')); });
+  bodyEl.innerHTML = '';
+  bodyEl.appendChild(clone);
+}
+
+function switchInlineTab(type) {
+  _bsType = type; _inlineType = type;
+  // Build new form in the correct section
+  closeAllInlineForms(false); // close without restoring content
+  openAddSheet(type);
+}
+
+function closeAllInlineForms(restoreContent) {
+  if (restoreContent === undefined) restoreContent = true;
+  ['lead','visit','pr','po'].forEach(t => {
+    const w = document.getElementById(INLINE_WRAP_IDS[t]);
+    if (w) { w.innerHTML = ''; w.style.display = 'none'; }
+    if (restoreContent) {
+      const cid = INLINE_CONTENT_IDS[t];
+      if (cid) {
+        const c = document.getElementById(cid);
+        if (c) c.style.display = '';
+      }
+    }
+  });
+  _inlineType = null;
+}
+
+async function saveInlineEntry() {
+  // Delegate to existing saveBSEntry which reads bs-f- prefixed fields
+  const btn = document.getElementById('inline-save-btn');
+  const btnText = document.getElementById('inline-save-btn-text');
+  if (btn) btn.disabled = true;
+  if (btnText) btnText.textContent = 'Saving…';
+  await saveBSEntry();
+  // saveBSEntry calls closeBottomSheet — also close inline
+  closeAllInlineForms();
 }
 
 function openEditSheetFrom(type, idx) {
@@ -2495,6 +2728,8 @@ function openEditSheetFrom(type, idx) {
 function closeBottomSheet() {
   document.getElementById('add-sheet').classList.remove('open');
   document.body.style.overflow = '';
+  // Also close any inline form
+  try { closeAllInlineForms(); } catch(e) {}
 }
 
 function switchBSTab(type) {
@@ -2562,27 +2797,39 @@ function _fillBSForm(type, row) {
     s('pr-leadref', row['Lead No Ref']); s('pr-desc', row['PR Description']);
     s('pr-qstatus', row['Quotation Status']||'Not Submitted');
     s('pr-value', row['Quotation Value']||row['Value']); s('pr-qref', row['Quotation Ref No']);
-    s('pr-scope', row['Scope of Work']); s('pr-delivery', row['Delivery Timeline']);
-    s('pr-priority', row['Priority']); s('pr-remark', row['Remark 3']||row['Remarks']);
+    s('pr-priority', row['Transfer to Design Team']||'');
+    s('pr-ack', row['Acknowledge by Design Team']||'');
+    s('pr-outsource', row['Outsourcing Status']||'');
+    s('pr-box', row['Box']||'');
+    s('pr-delivery', row['Customer PR No']||'');
+    s('pr-scope', row['Contact Person']||'');
+    s('pr-remark', row['Remark 3']||row['Remarks']||'');
     d('pr-date', row['PR Date']); d('pr-qdate', row['Quotation Date']);
   } else if (type === 'po') {
     _bsEditKey = (row['Customer Name']||'') + '|' + (row['Date']||'');
     s('po-wono', row['Work Order No']); s('po-customer', row['Customer Name']);
     s('po-pono', row['PO No']); s('po-pr', row['Internal PR']);
     s('po-desc', row['Short Description']); s('po-value', row['PO Value']||row['Value']);
-    s('po-out-status', row['Outsourcing Status']); s('po-out-no', row['Outsourcing No']);
-    s('po-vendor', row['Vendor']); s('po-height', row['Packing H']);
-    s('po-width', row['Packing W']); s('po-length', row['Packing L']);
-    s('po-weight', row['Weight KG']); s('po-stage', row['Production Stage']||'YET TO START');
-    s('po-remark', row['Remarks']);
-    d('po-date', row['Date']); d('po-delivery', row['Expected Delivery']); d('po-out-date', row['Outsourcing Date']);
+    s('po-out-status', row['Origin Certificate']||'');
+    s('po-qc', row['QC Certificate']||'');
+    s('po-cargo', row['Re Cargo Quote']||'');
+    s('po-packing-details', row['Re Packing Details']||'');
+    s('po-out-no', row['Contact Person']||'');
+    s('po-out-date-sel', row['Work Order Status']||'');
+    s('po-height', row['Packing H']||''); s('po-width', row['Packing W']||'');
+    s('po-length', row['Packing L']||''); s('po-weight', row['Weight KG']||'');
+    s('po-stage', row['Production Stage']||'');
+    s('po-remark', row['Remarks']||'');
+    d('po-date', row['Date']); d('po-delivery', row['Expected Delivery']);
   }
 }
 
 async function saveBSEntry() {
-  const btn = document.getElementById('bs-save-btn');
-  btn.disabled = true;
-  document.getElementById('bs-save-btn-text').textContent = 'Saving…';
+  // Support both bottom-sheet and inline save buttons
+  const btn = document.getElementById('inline-save-btn') || document.getElementById('bs-save-btn');
+  const btnTextEl = document.getElementById('inline-save-btn-text') || document.getElementById('bs-save-btn-text');
+  if (btn) btn.disabled = true;
+  if (btnTextEl) btnTextEl.textContent = 'Saving…';
   const type = _bsType;
 
   function g(id) { const el = document.getElementById('bs-f-'+id); return el ? el.value.trim() : ''; }
@@ -2591,20 +2838,20 @@ async function saveBSEntry() {
   let arr, key;
 
   if (type === 'lead') {
-    if (!g('lead-no') || !g('lead-customer')) { showToast('Lead No and Customer Name are required','error'); btn.disabled=false; document.getElementById('bs-save-btn-text').textContent='Save Entry'; return; }
+    if (!g('lead-no') || !g('lead-customer')) { showToast('Lead No and Customer Name are required','error'); if(btn)btn.disabled=false; if(btnTextEl)btnTextEl.textContent='Save Entry'; return; }
     row = {'Lead No':g('lead-no'),'Lead Generated Date':g('lead-date'),'Customer Name':g('lead-customer'),'Plant Name and Location':g('lead-plant'),'Lead Status':g('lead-status'),'Source':g('lead-source'),'Contact Details':g('lead-contact'),'Mail ID':g('lead-email'),'Scope in Lead':g('lead-product'),'Expected Close Date':g('lead-closedate'),'Remarks':g('lead-remarks')};
     arr = _data.aLeads; key = g('lead-no');
   } else if (type === 'visit') {
-    if (!g('visit-lead') || !g('visit-date')) { showToast('Lead No and Schedule Date are required','error'); btn.disabled=false; document.getElementById('bs-save-btn-text').textContent='Save Entry'; return; }
-    row = {'Lead No':g('visit-lead'),'Schedule Date':g('visit-date'),'Customer Name':g('visit-customer'),'Plant Name & Location':g('visit-plant'),'Meeting Person and Designation':g('visit-person'),'Appointment Status':g('visit-status'),'VISIT Discription':g('visit-desc'),'Action Items':g('visit-action')};
+    if (!g('visit-lead') || !g('visit-date')) { showToast('Lead No and Schedule Date are required','error'); if(btn)btn.disabled=false; if(btnTextEl)btnTextEl.textContent='Save Entry'; return; }
+    row = {'Lead No':g('visit-lead'),'Schedule Date':g('visit-date'),'Customer Name':g('visit-customer'),'Plant Name & Location':g('visit-plant'),'Meeting Person and Designation':g('visit-person'),'Appointment Status':g('visit-type'),'Q Form Status':g('visit-status'),'VISIT Discription':g('visit-desc'),'Action Items':g('visit-action')};
     arr = _data.aVisits; key = g('visit-lead')+'|'+g('visit-date');
   } else if (type === 'pr') {
-    if (!g('pr-no') || !g('pr-customer')) { showToast('PR No and Customer Name are required','error'); btn.disabled=false; document.getElementById('bs-save-btn-text').textContent='Save Entry'; return; }
-    row = {'Internal PR No':g('pr-no'),'PR Date':g('pr-date'),'Customer Name':g('pr-customer'),'PR Description':g('pr-desc'),'Quotation Status':g('pr-qstatus'),'Quotation Number':g('pr-qref'),'Quotation Date':g('pr-qdate'),'Outsourcing Status':g('pr-scope'),'Packing H':g('po-height')};
+    if (!g('pr-no') || !g('pr-customer')) { showToast('PR No and Customer Name are required','error'); if(btn)btn.disabled=false; if(btnTextEl)btnTextEl.textContent='Save Entry'; return; }
+    row = {'Internal PR No':g('pr-no'),'PR Date':g('pr-date'),'Customer Name':g('pr-customer'),'PR Description':g('pr-desc'),'Contact Person':g('pr-scope'),'Customer PR No':g('pr-delivery'),'Transfer to Design Team':g('pr-priority'),'Acknowledge by Design Team':g('pr-ack'),'Outsourcing Status':g('pr-outsource'),'Box':g('pr-box'),'Quotation Status':g('pr-qstatus'),'Quotation Number':g('pr-qref'),'Quotation Date':g('pr-qdate'),'Remark':g('pr-remark')};
     arr = _data.aPRs; key = g('pr-no');
   } else if (type === 'po') {
-    if (!g('po-customer')) { showToast('Customer Name is required','error'); btn.disabled=false; document.getElementById('bs-save-btn-text').textContent='Save Entry'; return; }
-    row = {'Date':g('po-date'),'Customer Name':g('po-customer'),'PO Number':g('po-pono'),'Internal PR':g('po-pr'),'Short Description':g('po-desc'),'Production Stage':g('po-stage'),'Work Order Status':g('po-stage'),'Remarks':g('po-remark')};
+    if (!g('po-customer')) { showToast('Customer Name is required','error'); if(btn)btn.disabled=false; if(btnTextEl)btnTextEl.textContent='Save Entry'; return; }
+    row = {'Date':g('po-date'),'Customer Name':g('po-customer'),'PO Number':g('po-pono'),'Internal PR':g('po-pr'),'Short Description':g('po-desc'),'Contact Person':g('po-out-no'),'Origin Certificate':g('po-out-status'),'QC Certificate':g('po-qc'),'Re Cargo Quote':g('po-cargo'),'Re Packing Details':g('po-packing-details'),'Work Order Status':g('po-out-date-sel'),'Production Stage':g('po-stage'),'Packing H':g('po-height'),'Packing W':g('po-width'),'Packing L':g('po-length'),'Weight KG':g('po-weight'),'Remarks':g('po-remark')};
     arr = _data.aPOs; key = g('po-customer')+'|'+g('po-date');
   }
 
@@ -2635,8 +2882,8 @@ async function saveBSEntry() {
   }
 
   closeBottomSheet();
-  btn.disabled = false;
-  document.getElementById('bs-save-btn-text').textContent = _bsMode==='add'?'Save Entry':'Update Entry';
+  if(btn) btn.disabled = false;
+  if(btnTextEl) btnTextEl.textContent = _bsMode==='add'?'Save Entry':'Update Entry';
   renderPipeline(); renderVisits(); renderPRs(); renderPOs();
   try { renderPipelineTracker(); } catch(e) {}
   set('kpi-leads', _data.aLeads.length);
