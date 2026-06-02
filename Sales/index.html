@@ -330,6 +330,82 @@
 
 
 
+
+  /* ══════════════════════════════════════════════
+     SCROLL TABLE CONTAINERS (5-row visible)
+  ══════════════════════════════════════════════ */
+  .table-scroll-wrap {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .table-scroll-body {
+    overflow-y: auto;
+    max-height: 288px; /* 5 rows × ~57px + 3px border */
+    scrollbar-width: thin;
+    scrollbar-color: var(--surface4) var(--surface2);
+  }
+  .table-scroll-body::-webkit-scrollbar { width: 6px; }
+  .table-scroll-body::-webkit-scrollbar-track { background: var(--surface2); }
+  .table-scroll-body::-webkit-scrollbar-thumb { background: var(--surface4); border-radius: 3px; }
+  .table-scroll-body::-webkit-scrollbar-thumb:hover { background: var(--border-accent); }
+  /* Sticky header inside scrollable div */
+  .table-scroll-body .data-table { width: 100%; border-collapse: collapse; }
+  .table-scroll-body .data-table thead { position: sticky; top: 0; z-index: 2; }
+  .table-scroll-body .data-table thead th {
+    background: var(--surface2);
+    border-bottom: 2px solid var(--border-strong) !important;
+    white-space: nowrap;
+  }
+  .table-scroll-body .data-table td { border-bottom: 1px solid var(--border); }
+  .table-scroll-body .data-table tr:last-child td { border-bottom: none; }
+  /* scroll count badge */
+  .scroll-info {
+    display: flex; align-items: center; justify-content: flex-end;
+    padding: 5px 6px 2px;
+    font-size: 10.5px; color: var(--text3); font-family: 'DM Mono', monospace; font-weight: 600;
+    border-top: 1px solid var(--border);
+    background: var(--surface2);
+    border-radius: 0 0 var(--radius) var(--radius);
+  }
+  .scroll-info .row-count { margin: 0; }
+
+  /* ── Visits scroll list ── */
+  .visits-scroll-body {
+    overflow-y: auto;
+    max-height: 370px; /* ~5 visit items */
+    scrollbar-width: thin;
+    scrollbar-color: var(--surface4) var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0 6px 4px;
+    background: var(--surface);
+  }
+  .visits-scroll-body::-webkit-scrollbar { width: 5px; }
+  .visits-scroll-body::-webkit-scrollbar-track { background: var(--surface2); }
+  .visits-scroll-body::-webkit-scrollbar-thumb { background: var(--surface4); border-radius: 3px; }
+  .visits-scroll-body::-webkit-scrollbar-thumb:hover { background: var(--border-accent); }
+
+  /* ── Pipeline tracker scroll ── */
+  .pt-list-scroll {
+    overflow-y: auto;
+    max-height: 560px; /* ~5 pipeline cards */
+    scrollbar-width: thin;
+    scrollbar-color: var(--surface4) var(--surface2);
+    padding-right: 2px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface2);
+    padding: 4px;
+  }
+  .pt-list-scroll::-webkit-scrollbar { width: 5px; }
+  .pt-list-scroll::-webkit-scrollbar-track { background: var(--surface2); }
+  .pt-list-scroll::-webkit-scrollbar-thumb { background: var(--surface4); border-radius: 3px; }
+  .pt-list-scroll::-webkit-scrollbar-thumb:hover { background: var(--border-accent); }
+  /* Remove old table-sticky-head class (no longer needed) */
+  .table-sticky-head { background: var(--surface2); }
+
   /* LOADING */
   #loading-screen {
     position: fixed; inset: 0; display: flex; flex-direction: column;
@@ -967,7 +1043,7 @@
         <div class="slicer-bar" id="visit-status-slicers"></div>
       </div>
       <div id="visit-inline-form-wrap" style="display:none;margin-bottom:12px;"></div>
-      <div id="visits-list"></div>
+      <div class="visits-scroll-body" id="visits-list"></div>
       <button class="view-all-btn" id="view-all-visits-btn" onclick="openVisitsDrawer()" style="display:none">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
         <span id="view-all-label">View all visits</span>
@@ -991,17 +1067,21 @@
       </select>
     </div>
     <div id="pr-inline-form-wrap" style="display:none;margin-bottom:12px;"></div>
-    <table class="data-table">
-      <thead><tr>
-        <th onclick="sortTable('pr','Internal PR No',this)">PR No <span class="sort-icon">↕</span></th>
-        <th onclick="sortTable('pr','PR Description',this)">Description <span class="sort-icon">↕</span></th>
-        <th onclick="sortTable('pr','Customer Name',this)">Customer <span class="sort-icon">↕</span></th>
-        <th>Status</th>
-        <th style="width:64px">Actions</th>
-      </tr></thead>
-      <tbody id="pr-tbody"></tbody>
-    </table>
-    <span class="row-count" id="pr-count"></span>
+    <div class="table-scroll-wrap">
+      <div class="table-scroll-body">
+        <table class="data-table">
+          <thead class="table-sticky-head"><tr>
+            <th onclick="sortTable('pr','Internal PR No',this)">PR No <span class="sort-icon">↕</span></th>
+            <th onclick="sortTable('pr','PR Description',this)">Description <span class="sort-icon">↕</span></th>
+            <th onclick="sortTable('pr','Customer Name',this)">Customer <span class="sort-icon">↕</span></th>
+            <th>Status</th>
+            <th style="width:64px">Actions</th>
+          </tr></thead>
+          <tbody id="pr-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="scroll-info"><span class="row-count" id="pr-count"></span></div>
   </div>
 
   <!-- PO TRACKER -->
@@ -1020,18 +1100,22 @@
       </select>
     </div>
     <div id="po-inline-form-wrap" style="display:none;margin-bottom:12px;"></div>
-    <table class="data-table">
-      <thead><tr>
-        <th onclick="sortTable('po','Date',this)">Date <span class="sort-icon">↕</span></th>
-        <th onclick="sortTable('po','Customer Name',this)">Customer <span class="sort-icon">↕</span></th>
-        <th>PR ref</th>
-        <th onclick="sortTable('po','Short Description',this)">Description <span class="sort-icon">↕</span></th>
-        <th>Stage</th>
-        <th style="width:64px">Actions</th>
-      </tr></thead>
-      <tbody id="po-tbody"></tbody>
-    </table>
-    <span class="row-count" id="po-count"></span>
+    <div class="table-scroll-wrap">
+      <div class="table-scroll-body">
+        <table class="data-table">
+          <thead class="table-sticky-head"><tr>
+            <th onclick="sortTable('po','Date',this)">Date <span class="sort-icon">↕</span></th>
+            <th onclick="sortTable('po','Customer Name',this)">Customer <span class="sort-icon">↕</span></th>
+            <th>PR ref</th>
+            <th onclick="sortTable('po','Short Description',this)">Description <span class="sort-icon">↕</span></th>
+            <th>Stage</th>
+            <th style="width:64px">Actions</th>
+          </tr></thead>
+          <tbody id="po-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="scroll-info"><span class="row-count" id="po-count"></span></div>
   </div>
 
 
@@ -1045,7 +1129,7 @@
     <div class="pt-search">
       <input class="pt-search-input" type="text" id="pt-search" placeholder="Search Lead No / Customer…" oninput="renderPipelineTracker()">
     </div>
-    <div class="pt-list" id="pt-list"></div>
+    <div class="pt-list-scroll"><div class="pt-list" id="pt-list"></div></div>
   </div>
 
 <!-- SCRIPT CONFIG MODAL -->
@@ -1869,7 +1953,7 @@ function renderPRs() {
     return `<tr><td class="mono">${r['Internal PR No']||'—'}</td><td class="name">${trunc(r['PR Description']||'—',40)}</td><td>${trunc(r['Customer Name']||'—',35)}</td><td><span class="pill ${pillPR(quot)}">${quot}</span></td><td><div class="row-actions"><button class="btn-dots" title="Actions" onclick="toggleDotMenu(event,'dmp${_pidx}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button><div class="dot-menu" id="dmp${_pidx}"><button class="dot-menu-item" onclick="closeDotMenus();openEditSheetFrom('pr',${_pidx})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button><div class="dot-menu-divider"></div><button class="dot-menu-item danger" onclick="closeDotMenus();confirmDelete('pr',${_pidx})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete</button></div></div></td></tr>`;
   }).join('')||'<tr><td colspan="5" class="empty">No PR data matches</td></tr>');
   const el=document.getElementById('pr-count');
-  if(el) el.textContent=rows.length!==_data.aPRs.length?`Showing ${rows.length} of ${_data.aPRs.length} records`:'';
+  if(el) el.textContent = rows.length > 0 ? (rows.length !== _data.aPRs.length ? `${rows.length} of ${_data.aPRs.length} records` : `${rows.length} record${rows.length!==1?'s':''}`) : '';
 }
 
 function renderPOs() {
@@ -1903,7 +1987,7 @@ function renderPOs() {
     <td><div class="row-actions"><button class="btn-dots" title="Actions" onclick="toggleDotMenu(event,'dmpo${_pidx}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button><div class="dot-menu" id="dmpo${_pidx}"><button class="dot-menu-item" onclick="closeDotMenus();openEditSheetFrom('po',${_pidx})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button><div class="dot-menu-divider"></div><button class="dot-menu-item danger" onclick="closeDotMenus();confirmDelete('po',${_pidx})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete</button></div></div></td>
   </tr>`; }).join('')||'<tr><td colspan="6" class="empty">No PO data matches</td></tr>');
   const el=document.getElementById('po-count');
-  if(el) el.textContent=rows.length!==_data.aPOs.length?`Showing ${rows.length} of ${_data.aPOs.length} records`:'';
+  if(el) el.textContent = rows.length > 0 ? (rows.length !== _data.aPOs.length ? `${rows.length} of ${_data.aPOs.length} records` : `${rows.length} record${rows.length!==1?'s':''}`) : '';
 }
 
 function applyAllFilters() {
