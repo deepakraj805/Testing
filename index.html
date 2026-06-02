@@ -119,15 +119,21 @@ function togglePassword() {
     const password = document.getElementById("login-password");
     const eye = document.getElementById("toggleEye");
     if (!password || !eye) return;
-    const isHidden = password.type === "password";
-    password.type = isHidden ? "text" : "password";
-    eye.className = isHidden ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
+    if (password.type === "password") {
+        password.type = "text";
+        eye.classList.remove("fa-eye");
+        eye.classList.add("fa-eye-slash");
+    } else {
+        password.type = "password";
+        eye.classList.remove("fa-eye-slash");
+        eye.classList.add("fa-eye");
+    }
 }
 document.addEventListener("DOMContentLoaded", function() {
     const p = document.getElementById("login-password");
     const e = document.getElementById("toggleEye");
     if (p) p.type = "password";
-    if (e) e.className = "fa-solid fa-eye";
+    if (e) { e.classList.remove("fa-eye-slash"); e.classList.add("fa-eye"); }
 });
 </script>
 
@@ -164,6 +170,7 @@ document.addEventListener("DOMContentLoaded", function() {
     type="password"
     placeholder="Password"
     autocomplete="current-password"
+    data-type="password"
     onkeydown="if(event.key==='Enter')emailLogin()"
     style="
         width:100%;
