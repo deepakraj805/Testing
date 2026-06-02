@@ -360,8 +360,71 @@
   }
   .table-scroll-body .data-table td { border-bottom: 1px solid var(--border); }
   .table-scroll-body .data-table tr:last-child td { border-bottom: none; }
-  /* scroll count badge */
-  .scroll-info {
+  /* ══════════════════════════════════════════════
+     CARD LIST (replaces tables for PR & PO)
+  ══════════════════════════════════════════════ */
+  .list-scroll-wrap {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--surface);
+    max-height: 340px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--surface4) var(--surface2);
+  }
+  .list-scroll-wrap::-webkit-scrollbar { width: 6px; }
+  .list-scroll-wrap::-webkit-scrollbar-track { background: var(--surface2); }
+  .list-scroll-wrap::-webkit-scrollbar-thumb { background: var(--surface4); border-radius: 3px; }
+  .list-item {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  .list-item:last-child { border-bottom: none; }
+  .list-item:hover { background: var(--surface2); }
+  .list-item-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  .list-item-top {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .list-item-id {
+    font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 600;
+    color: var(--text3); letter-spacing: 0.2px; white-space: nowrap;
+  }
+  .list-item-ref {
+    font-family: 'DM Mono', monospace; font-size: 10.5px; font-weight: 600;
+    color: var(--blue); background: var(--blue-bg);
+    padding: 2px 8px; border-radius: 12px; white-space: nowrap;
+  }
+  .list-item-title {
+    font-size: 13.5px; font-weight: 700; color: var(--text); line-height: 1.35;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .list-item-sub {
+    font-size: 12px; font-weight: 500; color: var(--text2); line-height: 1.3;
+  }
+
+  /* ══════════════════════════════════════════════
+     FONT CLARITY IMPROVEMENTS
+  ══════════════════════════════════════════════ */
+  body { font-size: 14px; font-weight: 450; -webkit-font-smoothing: antialiased; }
+  .kpi-label { font-size: 11px; letter-spacing: 0.8px; }
+  .kpi-val { font-size: 42px; letter-spacing: -2px; }
+  .kpi-sub { font-size: 12px; font-weight: 500; }
+  .card-title { font-size: 11px; letter-spacing: 1px; font-weight: 800; }
+  .visit-name { font-size: 13.5px; font-weight: 650; }
+  .visit-meta { font-size: 11.5px; }
+  .visit-note { font-size: 12px; }
+  .brand-name { font-size: 17px; font-weight: 800; letter-spacing: -0.5px; }
+  .brand-sub { font-size: 11.5px; letter-spacing: 0.2px; }
+  .filter-label { font-size: 11px; }
+  .form-label { font-size: 11.5px; font-weight: 700; }
+  .form-input, .form-select, .form-textarea { font-size: 13.5px; }
+  .pill { font-size: 11px; font-weight: 700; padding: 3px 11px; }
+  .slicer-chip { font-size: 11.5px; padding: 4px 12px; }
+
+
     display: flex; align-items: center; justify-content: flex-end;
     padding: 5px 6px 2px;
     font-size: 10.5px; color: var(--text3); font-family: 'DM Mono', monospace; font-weight: 600;
@@ -1067,19 +1130,8 @@
       </select>
     </div>
     <div id="pr-inline-form-wrap" style="display:none;margin-bottom:12px;"></div>
-    <div class="table-scroll-wrap">
-      <div class="table-scroll-body">
-        <table class="data-table">
-          <thead class="table-sticky-head"><tr>
-            <th onclick="sortTable('pr','Internal PR No',this)">PR No <span class="sort-icon">↕</span></th>
-            <th onclick="sortTable('pr','PR Description',this)">Description <span class="sort-icon">↕</span></th>
-            <th onclick="sortTable('pr','Customer Name',this)">Customer <span class="sort-icon">↕</span></th>
-            <th>Status</th>
-            <th style="width:64px">Actions</th>
-          </tr></thead>
-          <tbody id="pr-tbody"></tbody>
-        </table>
-      </div>
+    <div class="list-scroll-wrap">
+      <div id="pr-tbody"></div>
     </div>
     <div class="scroll-info"><span class="row-count" id="pr-count"></span></div>
   </div>
@@ -1100,20 +1152,8 @@
       </select>
     </div>
     <div id="po-inline-form-wrap" style="display:none;margin-bottom:12px;"></div>
-    <div class="table-scroll-wrap">
-      <div class="table-scroll-body">
-        <table class="data-table">
-          <thead class="table-sticky-head"><tr>
-            <th onclick="sortTable('po','Date',this)">Date <span class="sort-icon">↕</span></th>
-            <th onclick="sortTable('po','Customer Name',this)">Customer <span class="sort-icon">↕</span></th>
-            <th>PR ref</th>
-            <th onclick="sortTable('po','Short Description',this)">Description <span class="sort-icon">↕</span></th>
-            <th>Stage</th>
-            <th style="width:64px">Actions</th>
-          </tr></thead>
-          <tbody id="po-tbody"></tbody>
-        </table>
-      </div>
+    <div class="list-scroll-wrap">
+      <div id="po-tbody"></div>
     </div>
     <div class="scroll-info"><span class="row-count" id="po-count"></span></div>
   </div>
@@ -1950,8 +1990,19 @@ function renderPRs() {
   set('pr-tbody',rows.map((r,idx)=>{
     const quot=r['Quotation Status']||(r['Remark 3']?'Submitted':'Not Submitted');
     const _pidx=_data.aPRs.indexOf(r);
-    return `<tr><td class="mono">${r['Internal PR No']||'—'}</td><td class="name">${trunc(r['PR Description']||'—',40)}</td><td>${trunc(r['Customer Name']||'—',35)}</td><td><span class="pill ${pillPR(quot)}">${quot}</span></td><td><div class="row-actions"><button class="btn-dots" title="Actions" onclick="toggleDotMenu(event,'dmp${_pidx}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button><div class="dot-menu" id="dmp${_pidx}"><button class="dot-menu-item" onclick="closeDotMenus();openEditSheetFrom('pr',${_pidx})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button><div class="dot-menu-divider"></div><button class="dot-menu-item danger" onclick="closeDotMenus();confirmDelete('pr',${_pidx})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete</button></div></div></td></tr>`;
-  }).join('')||'<tr><td colspan="5" class="empty">No PR data matches</td></tr>');
+    return `<div class="list-item">
+      <div class="list-item-main">
+        <div class="list-item-top">
+          <span class="list-item-id">${r['Internal PR No']||'—'}</span>
+          <span class="pill ${pillPR(quot)}">${quot}</span>
+        </div>
+        <div class="list-item-title">${trunc(r['PR Description']||'—',60)}</div>
+        <div class="list-item-sub">${trunc(r['Customer Name']||'—',45)}</div>
+      </div>
+      <div class="row-actions"><button class="btn-dots" title="Actions" onclick="toggleDotMenu(event,'dmp${_pidx}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button><div class="dot-menu" id="dmp${_pidx}"><button class="dot-menu-item" onclick="closeDotMenus();openEditSheetFrom('pr',${_pidx})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button><div class="dot-menu-divider"></div><button class="dot-menu-item danger" onclick="closeDotMenus();confirmDelete('pr',${_pidx})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete</button></div></div>
+      </div>
+    </div>`;
+  }).join('')||'<div class="empty" style="padding:1.5rem;text-align:center">No PR data matches</div>');
   const el=document.getElementById('pr-count');
   if(el) el.textContent = rows.length > 0 ? (rows.length !== _data.aPRs.length ? `${rows.length} of ${_data.aPRs.length} records` : `${rows.length} record${rows.length!==1?'s':''}`) : '';
 }
@@ -1978,14 +2029,21 @@ function renderPOs() {
   // Apply customer slicer
   if (_poSlicer) rows = rows.filter(r => r['Customer Name'] === _poSlicer);
 
-  set('po-tbody',rows.map((r,idx)=>{const _pidx=_data.aPOs.indexOf(r);return `<tr>
-    <td class="mono">${fmtDate(r['Date'])}</td>
-    <td class="name">${trunc(r['Customer Name']||'—',28)}</td>
-    <td class="mono">${r['Internal PR']||'—'}</td>
-    <td>${trunc(r['Short Description']||'—',35)}</td>
-    <td><span class="pill ${pillPO(r['Production Stage'])}">${r['Production Stage']==='YET TO START'?'Yet to Start':r['Production Stage']==='75% COMPLETED'?'75% Completed':r['Production Stage']||'—'}</span></td>
-    <td><div class="row-actions"><button class="btn-dots" title="Actions" onclick="toggleDotMenu(event,'dmpo${_pidx}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button><div class="dot-menu" id="dmpo${_pidx}"><button class="dot-menu-item" onclick="closeDotMenus();openEditSheetFrom('po',${_pidx})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button><div class="dot-menu-divider"></div><button class="dot-menu-item danger" onclick="closeDotMenus();confirmDelete('po',${_pidx})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete</button></div></div></td>
-  </tr>`; }).join('')||'<tr><td colspan="6" class="empty">No PO data matches</td></tr>');
+  set('po-tbody',rows.map((r,idx)=>{const _pidx=_data.aPOs.indexOf(r);
+    const stage=r['Production Stage']==='YET TO START'?'Yet to Start':r['Production Stage']==='75% COMPLETED'?'75% Completed':r['Production Stage']||'—';
+    return `<div class="list-item">
+      <div class="list-item-main">
+        <div class="list-item-top">
+          <span class="list-item-id">${fmtDate(r['Date'])}</span>
+          ${r['Internal PR']?`<span class="list-item-ref">${r['Internal PR']}</span>`:''}
+          <span class="pill ${pillPO(r['Production Stage'])}">${stage}</span>
+        </div>
+        <div class="list-item-title">${trunc(r['Customer Name']||'—',40)}</div>
+        <div class="list-item-sub">${trunc(r['Short Description']||'—',55)}</div>
+      </div>
+      <div class="row-actions"><button class="btn-dots" title="Actions" onclick="toggleDotMenu(event,'dmpo${_pidx}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button><div class="dot-menu" id="dmpo${_pidx}"><button class="dot-menu-item" onclick="closeDotMenus();openEditSheetFrom('po',${_pidx})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button><div class="dot-menu-divider"></div><button class="dot-menu-item danger" onclick="closeDotMenus();confirmDelete('po',${_pidx})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete</button></div></div>
+      </div>
+    </div>`; }).join('')||'<div class="empty" style="padding:1.5rem;text-align:center">No PO data matches</div>');
   const el=document.getElementById('po-count');
   if(el) el.textContent = rows.length > 0 ? (rows.length !== _data.aPOs.length ? `${rows.length} of ${_data.aPOs.length} records` : `${rows.length} record${rows.length!==1?'s':''}`) : '';
 }
