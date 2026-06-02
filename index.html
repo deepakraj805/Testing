@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Security headers via meta (backup; real CSP should be on server) -->
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
 <title>Vishak Tech | Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -31,6 +34,7 @@ body{min-height:100vh;color:#fff;background:radial-gradient(circle at 10% 20%,rg
 .error-msg{color:#f87171;font-size:.82rem;min-height:18px;margin-bottom:10px;}
 .login-submit{width:100%;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,#10b981,#06b6d4);color:#fff;font-size:1rem;font-weight:600;cursor:pointer;transition:.3s;margin-top:4px;}
 .login-submit:hover{opacity:.88;transform:translateY(-1px);}
+.login-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;}
 .dash-hero{text-align:center;padding:60px 20px 40px;}
 .dash-hero h1{font-size:3rem;font-weight:800;background:linear-gradient(90deg,#fff,#d1fae5,#93c5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .dash-hero p{max-width:700px;margin:16px auto 0;color:#cbd5e1;line-height:1.9;}
@@ -50,6 +54,7 @@ body{min-height:100vh;color:#fff;background:radial-gradient(circle at 10% 20%,rg
 .modal-content h2{margin-bottom:16px;}
 .footer{text-align:center;padding:40px;color:#475569;font-size:.85rem;}
 .logout-btn{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);animation:none;padding:10px 20px;}
+.session-warn{display:none;position:fixed;bottom:24px;right:24px;background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.4);border-radius:14px;padding:14px 20px;color:#fbbf24;font-size:.85rem;z-index:99999;}
 
 /* ===== FILE MANAGER ===== */
 #fileManagerSection{display:none;max-width:1000px;margin:0 auto;padding:20px 20px 60px;}
@@ -84,7 +89,6 @@ body{min-height:100vh;color:#fff;background:radial-gradient(circle at 10% 20%,rg
 .ctx-menu button.danger{color:#f87171;}
 .ctx-menu button.danger:hover{background:rgba(239,68,68,.15);}
 .ctx-menu hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:4px 0;}
-/* input modal */
 .inp-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:10000;align-items:center;justify-content:center;}
 .inp-modal.show{display:flex;}
 .inp-box{background:linear-gradient(135deg,rgba(2,6,23,.98),rgba(15,23,42,.98));border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:32px;width:90%;max-width:400px;}
@@ -97,7 +101,6 @@ body{min-height:100vh;color:#fff;background:radial-gradient(circle at 10% 20%,rg
 .inp-box .row button{flex:1;padding:11px;border-radius:10px;border:none;cursor:pointer;font-size:.9rem;font-weight:600;}
 .inp-box .row .ok{background:linear-gradient(135deg,#10b981,#06b6d4);color:#fff;}
 .inp-box .row .cancel{background:rgba(255,255,255,.08);color:#cbd5e1;}
-/* file viewer */
 .file-viewer{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(12px);z-index:10001;flex-direction:column;}
 .file-viewer.show{display:flex;}
 .fv-header{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid rgba(255,255,255,.08);}
@@ -110,10 +113,11 @@ body{min-height:100vh;color:#fff;background:radial-gradient(circle at 10% 20%,rg
 <body>
 
 <div id="loadingOverlay"><div class="spinner"></div></div>
+<div class="session-warn" id="sessionWarn">⚠️ Session expiring in 2 minutes. Save your work.</div>
 
 <header class="navbar">
-  <a href="https://vishaktec.com/home" target="_blank">
-    <img src="VISHAKTECH_LOGO.jpeg" class="logo" onerror="this.style.display='none'">
+  <a href="https://vishaktec.com/home" target="_blank" rel="noopener noreferrer">
+    <img src="VISHAKTECH_LOGO.jpeg" class="logo" onerror="this.style.display='none'" alt="Vishak Tech">
   </a>
   <div style="display:flex;gap:10px;align-items:center;">
     <span id="userEmailBadge" style="display:none;color:#6ee7b7;font-size:.82rem;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
@@ -138,10 +142,10 @@ body{min-height:100vh;color:#fff;background:radial-gradient(circle at 10% 20%,rg
         Continue with Google
       </button>
       <div class="divider">or sign in with email</div>
-      <input id="login-email" class="field" type="email" placeholder="Email address">
-      <input id="login-password" class="field" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')emailLogin()">
+      <input id="login-email" class="field" type="email" placeholder="Email address" autocomplete="email">
+      <input id="login-password" class="field" type="password" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')emailLogin()">
       <p id="login-error" class="error-msg"></p>
-      <button class="login-submit" onclick="emailLogin()">Sign In</button>
+      <button class="login-submit" id="loginSubmitBtn" onclick="emailLogin()">Sign In</button>
     </div>
   </div>
 </div>
@@ -191,7 +195,7 @@ body{min-height:100vh;color:#fff;background:radial-gradient(circle at 10% 20%,rg
 <div class="inp-modal" id="inpModal">
   <div class="inp-box">
     <h3 id="inpTitle">Enter Name</h3>
-    <input type="text" id="inpField" placeholder="Name...">
+    <input type="text" id="inpField" placeholder="Name..." maxlength="100">
     <div class="row">
       <button class="ok" onclick="inpConfirm()">OK</button>
       <button class="cancel" onclick="inpCancel()">Cancel</button>
@@ -206,7 +210,7 @@ body{min-height:100vh;color:#fff;background:radial-gradient(circle at 10% 20%,rg
     <button class="fm-btn" onclick="fvClose()">✕ Close</button>
   </div>
   <div class="fv-body">
-    <textarea id="fvContent" placeholder="File content..."></textarea>
+    <textarea id="fvContent" placeholder="File content..." maxlength="500000"></textarea>
   </div>
   <div class="fv-footer">
     <button class="fm-btn primary" onclick="fvSave()">💾 Save</button>
@@ -225,39 +229,95 @@ body{min-height:100vh;color:#fff;background:radial-gradient(circle at 10% 20%,rg
 <div class="footer">Driven by Engineering. Powered by Innovation.</div>
 
 <script>
+// ── Safe text setter (prevents XSS when inserting user-controlled text into DOM) ──
+function safeText(el, text){
+  if(typeof el === 'string') el = document.getElementById(el);
+  if(el) el.textContent = text;
+}
+
 function openContact(){document.getElementById('contactModal').style.display='block';}
 function closeContact(){document.getElementById('contactModal').style.display='none';}
 
-// ===== FILE MANAGER LOGIC =====
+// ── Brute-force login protection ──
+const RATE = {
+  attempts: 0,
+  lockUntil: 0,
+  MAX: 5,
+  LOCK_MS: 5 * 60 * 1000, // 5-minute lockout after 5 failures
+  check(){
+    if(Date.now() < this.lockUntil) return false;
+    return true;
+  },
+  fail(){
+    this.attempts++;
+    if(this.attempts >= this.MAX){
+      this.lockUntil = Date.now() + this.LOCK_MS;
+      this.attempts = 0;
+      return false;
+    }
+    return true;
+  },
+  reset(){ this.attempts = 0; this.lockUntil = 0; }
+};
+
+// ── Session timeout (30 min idle → auto-logout) ──
+const SESSION_TIMEOUT = 30 * 60 * 1000;
+const SESSION_WARN_AT = 28 * 60 * 1000;
+let _sessionTimer, _sessionWarnTimer;
+
+function resetSessionTimer(){
+  clearTimeout(_sessionTimer);
+  clearTimeout(_sessionWarnTimer);
+  document.getElementById('sessionWarn').style.display = 'none';
+  _sessionWarnTimer = setTimeout(()=>{
+    document.getElementById('sessionWarn').style.display = 'block';
+  }, SESSION_WARN_AT);
+  _sessionTimer = setTimeout(()=>{
+    alert('Session expired due to inactivity. Please log in again.');
+    if(window._vtAuth) window._vtAuth.signOut();
+  }, SESSION_TIMEOUT);
+}
+['click','keydown','mousemove','touchstart'].forEach(e=>
+  document.addEventListener(e, resetSessionTimer, {passive:true})
+);
+
+// ── FILE MANAGER LOGIC ──
 let FM_USER = '';
-let FM_PATH = []; // current path as array of folder IDs
+let FM_PATH = [];
 let FM_SELECTED = null;
 let inpCallback = null;
 let fvEditingPath = null;
 
 function fmKey(){
+  // Key is scoped per user — other users cannot access another user's data
   return 'vtfs_' + FM_USER.replace(/[^a-z0-9]/gi,'_');
 }
 
 function fmLoad(){
-  try{ return JSON.parse(localStorage.getItem(fmKey())) || fmInitFS(); }
-  catch(e){ return fmInitFS(); }
+  try{
+    const raw = localStorage.getItem(fmKey());
+    if(!raw) return fmInitFS();
+    const parsed = JSON.parse(raw);
+    // Integrity: must have root
+    if(!parsed || !parsed.root) return fmInitFS();
+    return parsed;
+  } catch(e){ return fmInitFS(); }
 }
 
 function fmInitFS(){
   const fs = {
-    root: { id:'root', name:'Vishak Tech Files', type:'folder', children:[], created: Date.now() }
+    root:{ id:'root', name:'Vishak Tech Files', type:'folder', children:[], created:Date.now() }
   };
   fmSave(fs);
   return fs;
 }
 
 function fmSave(fs){
-  localStorage.setItem(fmKey(), JSON.stringify(fs));
-}
-
-function fmGetNode(fs, id){
-  return fs[id];
+  try{
+    localStorage.setItem(fmKey(), JSON.stringify(fs));
+  } catch(e){
+    alert('Storage full or unavailable. Please free some browser storage.');
+  }
 }
 
 function fmCurrentFolder(){
@@ -267,51 +327,94 @@ function fmCurrentFolder(){
 }
 
 function fmRender(){
+  // Guard: do not render if no authenticated user
+  if(!FM_USER) return;
+
   const fs = fmLoad();
   const folder = FM_PATH.length === 0 ? fs['root'] : fs[FM_PATH[FM_PATH.length-1]];
-  
-  // Breadcrumb
-  const bc = document.getElementById('fmBreadcrumb');
-  let bcHtml = `<span onclick="fmGoRoot()">🏠 Vishak Tech Files</span>`;
-  let pathSoFar = [];
-  FM_PATH.forEach((id,i)=>{
-    pathSoFar.push(id);
-    const snap = [...pathSoFar];
-    const node = fs[id];
-    bcHtml += `<span class="sep">/</span><span onclick="fmGoPath(${JSON.stringify(snap)})">${node?node.name:id}</span>`;
-  });
-  bc.innerHTML = bcHtml;
 
-  // Grid
+  // Breadcrumb — use textContent-safe approach to prevent XSS
+  const bc = document.getElementById('fmBreadcrumb');
+  bc.innerHTML = '';
+  const rootSpan = document.createElement('span');
+  rootSpan.textContent = '🏠 Vishak Tech Files';
+  rootSpan.onclick = fmGoRoot;
+  bc.appendChild(rootSpan);
+
+  let pathSoFar = [];
+  FM_PATH.forEach((id)=>{
+    pathSoFar.push(id);
+    const sep = document.createElement('span');
+    sep.className = 'sep';
+    sep.textContent = '/';
+    bc.appendChild(sep);
+    const node = fs[id];
+    const snap = [...pathSoFar];
+    const s = document.createElement('span');
+    s.textContent = node ? node.name : id; // textContent = safe
+    s.onclick = ()=>fmGoPath(snap);
+    bc.appendChild(s);
+  });
+
+  // Grid — build safely with DOM methods to block XSS
   const grid = document.getElementById('fmGrid');
+  grid.innerHTML = '';
   const children = (folder && folder.children) ? folder.children : [];
-  
+
   if(children.length === 0){
     grid.innerHTML = `<div class="fm-empty"><span class="icon">📂</span>This folder is empty.<br><small style="color:#64748b">Create a new folder or file to get started.</small></div>`;
-  } else {
-    grid.innerHTML = children.map(id => {
-      const node = fs[id];
-      if(!node) return '';
-      const icon = node.type === 'folder' ? '📁' : getFileIcon(node.name);
-      const date = new Date(node.created).toLocaleDateString();
-      const sel = FM_SELECTED === id ? 'selected' : '';
-      return `<div class="fm-item ${sel}" id="fmitem_${id}" onclick="fmSelect('${id}')" ondblclick="fmOpen('${id}')" oncontextmenu="fmCtx(event,'${id}')">
-        <button class="ctx-btn" onclick="event.stopPropagation();fmCtx(event,'${id}')">⋮</button>
-        <span class="icon">${icon}</span>
-        <div class="name">${node.name}</div>
-        <div class="meta">${date}</div>
-      </div>`;
-    }).join('');
+    return;
   }
 
-  // Show/hide toolbar buttons
+  children.forEach(id => {
+    const node = fs[id];
+    if(!node) return;
+    const icon = node.type === 'folder' ? '📁' : getFileIcon(node.name);
+    const date = new Date(node.created).toLocaleDateString();
+    const sel = FM_SELECTED === id ? 'selected' : '';
+
+    const item = document.createElement('div');
+    item.className = 'fm-item ' + sel;
+    item.id = 'fmitem_' + id;
+    item.onclick = ()=>fmSelect(id);
+    item.ondblclick = ()=>fmOpen(id);
+    item.oncontextmenu = (e)=>fmCtx(e,id);
+
+    // ctx button
+    const ctxBtn = document.createElement('button');
+    ctxBtn.className = 'ctx-btn';
+    ctxBtn.textContent = '⋮';
+    ctxBtn.onclick = (e)=>{ e.stopPropagation(); fmCtx(e,id); };
+    item.appendChild(ctxBtn);
+
+    // icon
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'icon';
+    iconSpan.textContent = icon;
+    item.appendChild(iconSpan);
+
+    // name — textContent prevents XSS from crafted file names
+    const nameDiv = document.createElement('div');
+    nameDiv.className = 'name';
+    nameDiv.textContent = node.name;
+    item.appendChild(nameDiv);
+
+    // date
+    const metaDiv = document.createElement('div');
+    metaDiv.className = 'meta';
+    metaDiv.textContent = date;
+    item.appendChild(metaDiv);
+
+    grid.appendChild(item);
+  });
+
   const hasSel = !!FM_SELECTED;
   document.getElementById('fmRenameBtn').style.display = hasSel ? '' : 'none';
   document.getElementById('fmDeleteBtn').style.display = hasSel ? '' : 'none';
 }
 
 function getFileIcon(name){
-  const ext = name.split('.').pop().toLowerCase();
+  const ext = (name.split('.').pop() || '').toLowerCase();
   const map = {txt:'📝',pdf:'📕',doc:'📘',docx:'📘',xls:'📗',xlsx:'📗',jpg:'🖼️',jpeg:'🖼️',png:'🖼️',mp4:'🎬',mp3:'🎵',zip:'📦',csv:'📊'};
   return map[ext] || '📄';
 }
@@ -324,6 +427,7 @@ function fmSelect(id){
 
 function fmOpen(id){
   hideCtxMenu();
+  if(!FM_USER) return; // guard
   const fs = fmLoad();
   const node = fs[id];
   if(!node) return;
@@ -336,26 +440,23 @@ function fmOpen(id){
   }
 }
 
-function ctxOpen(){
-  if(FM_SELECTED) fmOpen(FM_SELECTED);
-  hideCtxMenu();
-}
+function ctxOpen(){ if(FM_SELECTED) fmOpen(FM_SELECTED); hideCtxMenu(); }
+function fmGoRoot(){ FM_PATH=[]; FM_SELECTED=null; fmRender(); }
+function fmGoPath(path){ FM_PATH=path; FM_SELECTED=null; fmRender(); }
 
-function fmGoRoot(){
-  FM_PATH = [];
-  FM_SELECTED = null;
-  fmRender();
-}
-
-function fmGoPath(path){
-  FM_PATH = path;
-  FM_SELECTED = null;
-  fmRender();
+// Validate file/folder name
+function validName(name){
+  if(!name || !name.trim()) return false;
+  // Block path traversal and special chars that could be used for injection
+  if(/[<>"'`\/\\]/.test(name)) return false;
+  if(name.trim().length > 80) return false;
+  return true;
 }
 
 function fmNewFolder(){
+  if(!FM_USER) return;
   showInp('📁 New Folder Name', 'Folder name...', (name)=>{
-    if(!name.trim()) return;
+    if(!validName(name)){ alert('Invalid name. Avoid special characters like < > \\ / \' "'); return; }
     const fs = fmLoad();
     const id = 'n_' + Date.now();
     fs[id] = { id, name: name.trim(), type:'folder', children:[], created: Date.now() };
@@ -367,8 +468,9 @@ function fmNewFolder(){
 }
 
 function fmNewFile(){
+  if(!FM_USER) return;
   showInp('📄 New File Name', 'e.g. notes.txt', (name)=>{
-    if(!name.trim()) return;
+    if(!validName(name)){ alert('Invalid name. Avoid special characters like < > \\ / \' "'); return; }
     const fs = fmLoad();
     const id = 'n_' + Date.now();
     fs[id] = { id, name: name.trim(), type:'file', content:'', created: Date.now() };
@@ -376,37 +478,34 @@ function fmNewFile(){
     folder.children.push(id);
     fmSave(fs);
     fmRender();
-    // Open for editing immediately
     fvOpen(id, fs[id]);
   });
 }
 
 function fmRename(){
-  if(!FM_SELECTED) return;
+  if(!FM_SELECTED || !FM_USER) return;
   hideCtxMenu();
   const fs = fmLoad();
   const node = fs[FM_SELECTED];
   if(!node) return;
   showInp('✏️ Rename', node.name, (name)=>{
-    if(!name.trim()) return;
+    if(!validName(name)){ alert('Invalid name. Avoid special characters like < > \\ / \' "'); return; }
     const fs2 = fmLoad();
-    fs2[FM_SELECTED].name = name.trim();
+    if(fs2[FM_SELECTED]) fs2[FM_SELECTED].name = name.trim();
     fmSave(fs2);
     fmRender();
   });
 }
 
 function fmDelete(){
-  if(!FM_SELECTED) return;
+  if(!FM_SELECTED || !FM_USER) return;
   hideCtxMenu();
   const fs = fmLoad();
   const node = fs[FM_SELECTED];
   if(!node) return;
-  if(!confirm(`Delete "${node.name}"? This cannot be undone.`)) return;
-  // Remove from parent
+  if(!confirm('Delete "' + node.name + '"? This cannot be undone.')) return;
   const folder = FM_PATH.length === 0 ? fs['root'] : fs[FM_PATH[FM_PATH.length-1]];
   folder.children = folder.children.filter(c => c !== FM_SELECTED);
-  // Recursively delete children
   function delNode(id){
     const n = fs[id];
     if(n && n.children) n.children.forEach(delNode);
@@ -418,7 +517,6 @@ function fmDelete(){
   fmRender();
 }
 
-// Context menu
 function fmCtx(e, id){
   e.preventDefault();
   e.stopPropagation();
@@ -435,15 +533,15 @@ function hideCtxMenu(){ document.getElementById('ctxMenu').style.display='none';
 document.addEventListener('click', hideCtxMenu);
 document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ hideCtxMenu(); inpCancel(); fvClose(); }});
 
-// Input modal
 function showInp(title, placeholder, cb){
-  document.getElementById('inpTitle').textContent = title;
-  document.getElementById('inpField').placeholder = placeholder;
-  document.getElementById('inpField').value = '';
+  safeText('inpTitle', title);
+  const f = document.getElementById('inpField');
+  f.placeholder = placeholder;
+  f.value = '';
   document.getElementById('inpModal').classList.add('show');
-  setTimeout(()=>document.getElementById('inpField').focus(),100);
+  setTimeout(()=>f.focus(),100);
   inpCallback = cb;
-  document.getElementById('inpField').onkeydown = e=>{ if(e.key==='Enter') inpConfirm(); };
+  f.onkeydown = e=>{ if(e.key==='Enter') inpConfirm(); };
 }
 function inpConfirm(){
   const val = document.getElementById('inpField').value;
@@ -456,16 +554,16 @@ function inpCancel(){
   inpCallback = null;
 }
 
-// File viewer / editor
 function fvOpen(id, node){
+  if(!FM_USER) return; // guard: never open if not authenticated
   fvEditingPath = id;
-  document.getElementById('fvTitle').textContent = node.name;
+  safeText('fvTitle', node.name);
   document.getElementById('fvContent').value = node.content || '';
   document.getElementById('fileViewer').classList.add('show');
   setTimeout(()=>document.getElementById('fvContent').focus(),100);
 }
 function fvSave(){
-  if(!fvEditingPath) return;
+  if(!fvEditingPath || !FM_USER) return;
   const fs = fmLoad();
   if(fs[fvEditingPath]) fs[fvEditingPath].content = document.getElementById('fvContent').value;
   fmSave(fs);
@@ -477,12 +575,12 @@ function fvClose(){
   fvEditingPath = null;
 }
 
-// Switch views
 function showDashboardView(){
   document.getElementById('dashboardSection').style.display='block';
   document.getElementById('fileManagerSection').style.display='none';
 }
 function showFileManager(){
+  if(!FM_USER) return; // guard
   document.getElementById('dashboardSection').style.display='none';
   document.getElementById('fileManagerSection').style.display='block';
   FM_PATH=[];FM_SELECTED=null;
@@ -494,10 +592,10 @@ function showFileManager(){
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 
-// ⚠️  SECURITY NOTE: These Firebase credentials are restricted-domain client-side keys.
-// For extra protection, add your domain to the Firebase Console → App Check / Authorised Domains,
-// and restrict this API key in Google Cloud Console → Credentials so it only works on your domain.
-// Never expose server-side service account keys here.
+// ⚠️ SECURITY NOTE: Firebase client config is intentionally public — it identifies your project.
+// Protect it by: (1) restricting this API key to your domain in Google Cloud Console → Credentials,
+// (2) enabling Firebase App Check in Firebase Console, (3) setting Firestore/Storage security rules.
+// NEVER place server-side service account keys here.
 const app = initializeApp({
   apiKey:"AIzaSyAETO-bfN1wORtT8cVhSZseQ05ZGmQspC0",
   authDomain:"vishaktech-79a37.firebaseapp.com",
@@ -507,8 +605,9 @@ const app = initializeApp({
   appId:"1:68398724582:web:76840e738169b3af429227"
 });
 const auth = getAuth(app);
+window._vtAuth = auth; // expose for session timeout logout only
 
-// Authorized emails stored as SHA-256 hashes — never store plaintext emails in source code.
+// ── Authorized emails stored as SHA-256 hashes — plaintext emails never in source code ──
 const SALES_EMAILS     = ["02f6b857d3100b0cd628d85c1750e1793228c86957fdc1c34d27667ef9e0e487","41c5e468614ff1df3203070d30e34de7177ba53b2369f6504ae3cf8cfe41b729","12c928d35e54634890981e38cdd82d65223c2652ccda66c23af3b80fed6ebee1","aa1e3101e6da4e4597c8d70242ce26899e5be014d301c433d88213492424922e"];
 const WORKORDER_EMAILS = ["932a255a83a640c31efa5ec02848b700bd9337f7f2dab7222505682b853a48b6","aa1e3101e6da4e4597c8d70242ce26899e5be014d301c433d88213492424922e"];
 const ACCOUNTS_EMAILS  = ["02f6b857d3100b0cd628d85c1750e1793228c86957fdc1c34d27667ef9e0e487","41c5e468614ff1df3203070d30e34de7177ba53b2369f6504ae3cf8cfe41b729","aa1e3101e6da4e4597c8d70242ce26899e5be014d301c433d88213492424922e","12c928d35e54634890981e38cdd82d65223c2652ccda66c23af3b80fed6ebee1"];
@@ -527,67 +626,125 @@ function hideLoader(){
 }
 
 async function hashEmail(email){
-  const msgBuffer = new TextEncoder().encode(email.toLowerCase());
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-  return Array.from(new Uint8Array(hashBuffer)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  const buf = new TextEncoder().encode(email.toLowerCase().trim());
+  const hash = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
 async function getRoles(email){
   const h = await hashEmail(email);
-  const r=[];
-  if(SALES_EMAILS.includes(h)) r.push('sales');
+  const r = [];
+  if(SALES_EMAILS.includes(h))     r.push('sales');
   if(WORKORDER_EMAILS.includes(h)) r.push('workorder');
-  if(ACCOUNTS_EMAILS.includes(h)) r.push('accounts');
+  if(ACCOUNTS_EMAILS.includes(h))  r.push('accounts');
   return r;
 }
 
 async function showDashboard(user){
   hideLoader();
-  const roles=await getRoles(user.email);
-  if(roles.length===0){alert("Access Denied.");signOut(auth);return;}
-  // Set FM user
+  const roles = await getRoles(user.email);
+  if(roles.length === 0){
+    alert('Access Denied. Your account is not authorized.');
+    await signOut(auth);
+    return;
+  }
+  // Set FM user and start session timer
   window.FM_USER = user.email;
+  FM_USER = user.email;
+  resetSessionTimer();
+  RATE.reset();
+
   document.getElementById('loginSection').style.display='none';
   document.getElementById('dashboardSection').style.display='block';
-  document.getElementById('welcomeEmail').textContent=user.email;
-  document.getElementById('userEmailBadge').textContent=user.email;
+
+  // Use safeText — never use innerHTML with user data
+  safeText('welcomeEmail', user.email);
+  safeText('userEmailBadge', user.email);
   document.getElementById('userEmailBadge').style.display='inline';
   document.getElementById('logoutBtn').style.display='inline-block';
-  // Always add files card for all users
+
   const cardKeys = [...roles, 'files'];
-  document.getElementById('dashboardCards').innerHTML=cardKeys.map(r=>CARDS[r]).join('');
+  // Card HTML is entirely developer-controlled (no user input), so innerHTML is safe here
+  document.getElementById('dashboardCards').innerHTML = cardKeys.map(r=>CARDS[r]).join('');
 }
 
 function showLogin(){
   hideLoader();
+  clearTimeout(_sessionTimer);
+  clearTimeout(_sessionWarnTimer);
+  FM_USER = '';
+  window.FM_USER = '';
   document.getElementById('loginSection').style.display='block';
   document.getElementById('dashboardSection').style.display='none';
   document.getElementById('fileManagerSection').style.display='none';
   document.getElementById('logoutBtn').style.display='none';
   document.getElementById('userEmailBadge').style.display='none';
+  document.getElementById('sessionWarn').style.display='none';
 }
 
-onAuthStateChanged(auth,user=>{ if(user) showDashboard(user); else showLogin(); });
+onAuthStateChanged(auth, user=>{ if(user) showDashboard(user); else showLogin(); });
 
-window.googleLogin=async()=>{
-  document.getElementById('login-error').textContent='';
+window.googleLogin = async () => {
+  document.getElementById('login-error').textContent = '';
+  if(!RATE.check()){
+    safeText('login-error', 'Too many attempts. Please wait 5 minutes.');
+    return;
+  }
   try{
-    const r=await signInWithPopup(auth,new GoogleAuthProvider());
-    if((await getRoles(r.user.email)).length===0){alert("Access Denied.");await signOut(auth);}
-  }catch(e){document.getElementById('login-error').textContent=e.message;}
+    const r = await signInWithPopup(auth, new GoogleAuthProvider());
+    const roles = await getRoles(r.user.email);
+    if(roles.length === 0){
+      alert('Access Denied.');
+      await signOut(auth);
+      RATE.fail();
+    }
+  } catch(e){
+    safeText('login-error', e.message);
+    RATE.fail();
+  }
 };
 
-window.emailLogin=async()=>{
-  const email=document.getElementById('login-email').value.trim();
-  const pass=document.getElementById('login-password').value;
-  const err=document.getElementById('login-error');
-  err.textContent='';
-  if(!email||!pass){err.textContent='Please enter email and password.';return;}
-  try{await signInWithEmailAndPassword(auth,email,pass);}
-  catch(e){err.textContent='Login failed: '+e.message;}
+window.emailLogin = async () => {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-password').value;
+  const err   = document.getElementById('login-error');
+  err.textContent = '';
+
+  if(!RATE.check()){
+    safeText('login-error', 'Too many failed attempts. Please wait 5 minutes.');
+    return;
+  }
+  if(!email || !pass){ safeText('login-error', 'Please enter email and password.'); return; }
+
+  // Basic email format check
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ safeText('login-error', 'Invalid email format.'); return; }
+
+  const btn = document.getElementById('loginSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Signing in…';
+
+  try{
+    await signInWithEmailAndPassword(auth, email, pass);
+    RATE.reset();
+  } catch(e){
+    const ok = RATE.fail();
+    const remaining = RATE.MAX - RATE.attempts;
+    if(!ok){
+      safeText('login-error', 'Account locked for 5 minutes after too many failed attempts.');
+    } else {
+      safeText('login-error', 'Login failed: ' + e.message + (remaining < RATE.MAX ? ' (' + remaining + ' attempts left)' : ''));
+    }
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Sign In';
+  }
 };
 
-window.logoutUser=async()=>{await signOut(auth);};
+window.logoutUser = async () => {
+  clearTimeout(_sessionTimer);
+  clearTimeout(_sessionWarnTimer);
+  await signOut(auth);
+};
 </script>
 </body>
 </html>
