@@ -116,15 +116,17 @@ body{min-height:100vh;color:#fff;background:radial-gradient(circle at 10% 20%,rg
 function togglePassword() {
     const password = document.getElementById("login-password");
     const eye = document.getElementById("toggleEye");
-
-    if (password.type === "password") {
-        password.type = "text";
-        eye.classList.replace("fa-eye", "fa-eye-slash");
-    } else {
-        password.type = "password";
-        eye.classList.replace("fa-eye-slash", "fa-eye");
-    }
+    if (!password || !eye) return;
+    const isHidden = password.type === "password";
+    password.type = isHidden ? "text" : "password";
+    eye.className = isHidden ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
 }
+document.addEventListener("DOMContentLoaded", function() {
+    const p = document.getElementById("login-password");
+    const e = document.getElementById("toggleEye");
+    if (p) p.type = "password";
+    if (e) e.className = "fa-solid fa-eye";
+});
 </script>
 
 <div id="loadingOverlay"><div class="spinner"></div></div>
@@ -173,20 +175,9 @@ function togglePassword() {
     "
 >
 
-<i
-    id="toggleEye"
-    class="fa-solid fa-eye"
-    onclick="togglePassword()"
-    style="
-        position:absolute;
-        right:15px;
-        top:50%;
-        transform:translateY(-50%);
-        cursor:pointer;
-        color:#6b7280;
-        font-size:18px;
-    ">
-</i>
+<span style="position:absolute;right:15px;top:50%;transform:translateY(-50%);cursor:pointer;" onclick="togglePassword()">
+    <i id="toggleEye" class="fa-solid fa-eye" style="color:#6b7280;font-size:18px;"></i>
+</span>
 
 </div>
 
