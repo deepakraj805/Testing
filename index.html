@@ -548,10 +548,18 @@ const app = initializeApp({
   appId:"1:68398724582:web:76840e738169b3af429227"
 });
 
-const appCheck = initializeAppCheck(app, {
-  provider: new ReCaptchaV3Provider("6LegTgctAAAAAOTgd5u7RGXUrLK_3CET4NYq89rU"),
-  isTokenAutoRefreshEnabled: true
-});
+// App Check — wrapped so a misconfigured reCAPTCHA key never silently
+// blocks auth. Remove the debug token line before deploying to production.
+try {
+  // Uncomment the line below ONLY for local testing, never in production:
+  // self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+  initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider("6LegTgctAAAAAOTgd5u7RGXUrLK_3CET4NYq89rU"),
+    isTokenAutoRefreshEnabled: true
+  });
+} catch(e) {
+  console.warn('App Check init failed (auth still works):', e.message);
+}
 
 const auth = getAuth(app);
 
@@ -712,19 +720,27 @@ window.googleLogin=async()=>{
     return;
   }
   const btn = document.querySelector('.google-btn');
-  document.getElementById('login-error').textContent='';
+  const errEl = document.getElementById('login-error');
+  errEl.textContent='';
   btn.disabled = true;
   try{
     const r=await signInWithPopup(auth,new GoogleAuthProvider());
     if(getRoles(r.user.email).length===0){
-      const err=document.getElementById('login-error');
-      err.textContent='Access denied. Your Google account does not have permission.';
+      errEl.textContent='Access denied. Your account does not have permission.';
       await signOut(auth);
       _recordFailedAttempt();
     }
   }catch(e){
-    if(e.code !== 'auth/popup-closed-by-user'){
-      document.getElementById('login-error').textContent=e.message;
+    if(e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request'){
+      // User closed the popup — not an error, do nothing
+    } else if(e.code === 'auth/popup-blocked'){
+      errEl.textContent='Popup was blocked by your browser. Please allow popups for this site and try again.';
+    } else if(e.code && e.code.includes('app-check')){
+      errEl.textContent='Security check failed. Please refresh the page and try again.';
+      console.error('App Check error:', e);
+    } else {
+      errEl.textContent = e.message || 'Sign-in failed. Please try again.';
+      console.error('Google sign-in error:', e.code, e.message);
       _recordFailedAttempt();
     }
   }finally{
