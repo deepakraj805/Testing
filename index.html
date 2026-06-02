@@ -494,6 +494,10 @@ function showFileManager(){
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 
+// ⚠️  SECURITY NOTE: These Firebase credentials are restricted-domain client-side keys.
+// For extra protection, add your domain to the Firebase Console → App Check / Authorised Domains,
+// and restrict this API key in Google Cloud Console → Credentials so it only works on your domain.
+// Never expose server-side service account keys here.
 const app = initializeApp({
   apiKey:"AIzaSyAETO-bfN1wORtT8cVhSZseQ05ZGmQspC0",
   authDomain:"vishaktech-79a37.firebaseapp.com",
@@ -504,9 +508,10 @@ const app = initializeApp({
 });
 const auth = getAuth(app);
 
-const SALES_EMAILS     = ["dr4683743@gmail.com","deepakmurugesan805@gmail.com","sales@vishaktec.com","sathiya.vishaktec@gmail.com"];
-const WORKORDER_EMAILS = ["murugesankarruppanan@gmail.com","sathiya.vishaktec@gmail.com"];
-const ACCOUNTS_EMAILS  = ["dr4683743@gmail.com","deepakmurugesan805@gmail.com","sathiya.vishaktec@gmail.com","sales@vishaktec.com"];
+// Authorized emails stored as SHA-256 hashes — never store plaintext emails in source code.
+const SALES_EMAILS     = ["02f6b857d3100b0cd628d85c1750e1793228c86957fdc1c34d27667ef9e0e487","41c5e468614ff1df3203070d30e34de7177ba53b2369f6504ae3cf8cfe41b729","12c928d35e54634890981e38cdd82d65223c2652ccda66c23af3b80fed6ebee1","aa1e3101e6da4e4597c8d70242ce26899e5be014d301c433d88213492424922e"];
+const WORKORDER_EMAILS = ["932a255a83a640c31efa5ec02848b700bd9337f7f2dab7222505682b853a48b6","aa1e3101e6da4e4597c8d70242ce26899e5be014d301c433d88213492424922e"];
+const ACCOUNTS_EMAILS  = ["02f6b857d3100b0cd628d85c1750e1793228c86957fdc1c34d27667ef9e0e487","41c5e468614ff1df3203070d30e34de7177ba53b2369f6504ae3cf8cfe41b729","aa1e3101e6da4e4597c8d70242ce26899e5be014d301c433d88213492424922e","12c928d35e54634890981e38cdd82d65223c2652ccda66c23af3b80fed6ebee1"];
 
 const CARDS = {
   sales:`<a href="/Testing/Sales/" class="card"><h2>📈 Sales Dashboard</h2><p>Manage Leads, RFQs, Quotations, Purchase Requests, Purchase Orders and Customer Follow-ups.</p></a>`,
@@ -521,18 +526,24 @@ function hideLoader(){
   setTimeout(()=>ol.style.display='none',400);
 }
 
-function getRoles(email){
-  const e=email.toLowerCase();
+async function hashEmail(email){
+  const msgBuffer = new TextEncoder().encode(email.toLowerCase());
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  return Array.from(new Uint8Array(hashBuffer)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+async function getRoles(email){
+  const h = await hashEmail(email);
   const r=[];
-  if(SALES_EMAILS.includes(e)) r.push('sales');
-  if(WORKORDER_EMAILS.includes(e)) r.push('workorder');
-  if(ACCOUNTS_EMAILS.includes(e)) r.push('accounts');
+  if(SALES_EMAILS.includes(h)) r.push('sales');
+  if(WORKORDER_EMAILS.includes(h)) r.push('workorder');
+  if(ACCOUNTS_EMAILS.includes(h)) r.push('accounts');
   return r;
 }
 
-function showDashboard(user){
+async function showDashboard(user){
   hideLoader();
-  const roles=getRoles(user.email);
+  const roles=await getRoles(user.email);
   if(roles.length===0){alert("Access Denied.");signOut(auth);return;}
   // Set FM user
   window.FM_USER = user.email;
@@ -562,7 +573,7 @@ window.googleLogin=async()=>{
   document.getElementById('login-error').textContent='';
   try{
     const r=await signInWithPopup(auth,new GoogleAuthProvider());
-    if(getRoles(r.user.email).length===0){alert("Access Denied.");await signOut(auth);}
+    if((await getRoles(r.user.email)).length===0){alert("Access Denied.");await signOut(auth);}
   }catch(e){document.getElementById('login-error').textContent=e.message;}
 };
 
