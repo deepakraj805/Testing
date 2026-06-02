@@ -1,295 +1,73 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vishak Tech | Premium Enterprise Portal</title>
+<title>Vishak Tech Enterprise Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
-
-body{
-min-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-background:#07111f;
-overflow:hidden;
-}
-
-body::before{
-content:'';
-position:fixed;
-width:900px;
-height:900px;
-background:linear-gradient(135deg,#10b981,#06b6d4,#3b82f6);
-filter:blur(250px);
-opacity:.18;
-top:-300px;
-left:-250px;
-}
-
-body::after{
-content:'';
-position:fixed;
-width:700px;
-height:700px;
-background:linear-gradient(135deg,#3b82f6,#8b5cf6);
-filter:blur(220px);
-opacity:.12;
-bottom:-250px;
-right:-250px;
-}
-
-.container{
-width:1300px;
-height:760px;
-max-width:95%;
-background:rgba(255,255,255,.08);
-backdrop-filter:blur(30px);
-border:1px solid rgba(255,255,255,.12);
-border-radius:32px;
-overflow:hidden;
-display:flex;
-box-shadow:0 40px 120px rgba(0,0,0,.45);
-}
-
-.left{
-width:42%;
-background:rgba(255,255,255,.92);
-display:flex;
-align-items:center;
-justify-content:center;
-padding:60px;
-}
-
-.login-box{
-width:100%;
-max-width:380px;
-}
-
-.logo{
-display:flex;
-align-items:center;
-gap:12px;
-margin-bottom:25px;
-}
-
-.logo-icon{
-width:48px;
-height:48px;
-border-radius:14px;
-background:linear-gradient(135deg,#10b981,#06b6d4);
-}
-
-.logo h2{
-font-size:24px;
-color:#111827;
-}
-
-.badge{
-display:inline-block;
-padding:8px 18px;
-background:#ecfdf5;
-color:#10b981;
-border-radius:50px;
-font-weight:600;
-margin-bottom:20px;
-}
-
-h1{
-font-size:42px;
-color:#111827;
-margin-bottom:10px;
-}
-
-.sub{
-color:#6b7280;
-line-height:1.8;
-margin-bottom:30px;
-}
-
-.input{
-width:100%;
-padding:16px;
-margin-bottom:15px;
-border-radius:14px;
-border:1px solid #e5e7eb;
-background:#f8fafc;
-font-size:15px;
-}
-
-.input:focus{
-outline:none;
-border-color:#06b6d4;
-box-shadow:0 0 0 5px rgba(6,182,212,.15);
-}
-
-.btn{
-width:100%;
-padding:16px;
-border:none;
-border-radius:14px;
-font-weight:700;
-font-size:15px;
-cursor:pointer;
-color:#fff;
-background:linear-gradient(135deg,#10b981,#06b6d4,#3b82f6);
-background-size:300% 300%;
-animation:gradient 5s infinite;
-}
-
-@keyframes gradient{
-50%{background-position:100% 50%;}
-}
-
-.google{
-margin-top:12px;
-background:#fff;
-color:#111827;
-border:1px solid #e5e7eb;
-}
-
-.footer{
-margin-top:25px;
-text-align:center;
-font-size:12px;
-color:#94a3b8;
-}
-
-.right{
-width:58%;
-position:relative;
-background:
-linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
-url('https://images.unsplash.com/photo-1565008447742-97f6f38c985c?auto=format&fit=crop&w=1800&q=80');
-background-size:cover;
-background-position:center;
-}
-
-.content{
-position:absolute;
-bottom:80px;
-left:70px;
-max-width:600px;
-color:#fff;
-}
-
-.tag{
-display:inline-block;
-padding:10px 18px;
-border-radius:50px;
-border:1px solid rgba(255,255,255,.2);
-background:rgba(255,255,255,.08);
-backdrop-filter:blur(12px);
-margin-bottom:25px;
-}
-
-.content h2{
-font-size:64px;
-line-height:1.05;
-margin-bottom:20px;
-font-weight:800;
-}
-
-.content p{
-font-size:16px;
-line-height:2;
-opacity:.95;
-}
-
-.glass{
-position:absolute;
-top:40px;
-right:40px;
-padding:18px 22px;
-background:rgba(255,255,255,.08);
-border:1px solid rgba(255,255,255,.12);
-backdrop-filter:blur(15px);
-border-radius:18px;
-color:#fff;
-}
-
-.glass h3{
-font-size:18px;
-margin-bottom:6px;
-}
-
-.glass p{
-font-size:13px;
-opacity:.8;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#07111f;overflow:hidden}
+body:before{content:'';position:fixed;width:900px;height:900px;background:linear-gradient(135deg,#10b981,#06b6d4,#3b82f6);filter:blur(240px);opacity:.18;top:-250px;left:-250px}
+.container{width:1250px;max-width:95%;height:720px;display:flex;border-radius:30px;overflow:hidden;background:rgba(255,255,255,.08);backdrop-filter:blur(20px);box-shadow:0 40px 120px rgba(0,0,0,.45)}
+.left{width:42%;background:#fff;padding:60px;display:flex;align-items:center;justify-content:center}
+.login-box{width:100%;max-width:380px}
+.logo{font-size:28px;font-weight:700;color:#111827;margin-bottom:20px}
+.badge{display:inline-block;padding:8px 18px;background:#ecfdf5;color:#10b981;border-radius:50px;margin-bottom:20px}
+h1{font-size:42px;color:#111827}
+.sub{color:#6b7280;margin:10px 0 25px;line-height:1.8}
+.input{width:100%;padding:16px;margin-bottom:14px;border:1px solid #e5e7eb;border-radius:14px;background:#f8fafc}
+.btn{width:100%;padding:16px;border:none;border-radius:14px;cursor:pointer;font-weight:700;color:#fff;background:linear-gradient(135deg,#10b981,#06b6d4,#3b82f6)}
+.google{margin-top:12px;background:#fff;color:#111827;border:1px solid #e5e7eb}
+#error{color:#ef4444;font-size:13px;margin-bottom:10px}
+.right{width:58%;position:relative;background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),url('https://images.unsplash.com/photo-1565008447742-97f6f38c985c?auto=format&fit=crop&w=1800&q=80') center/cover}
+.content{position:absolute;bottom:70px;left:70px;color:#fff;max-width:600px}
+.content h2{font-size:60px;line-height:1.1;margin-bottom:15px}
+.content p{line-height:2}
+.tag{display:inline-block;padding:10px 18px;border-radius:50px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);margin-bottom:20px}
 </style>
 </head>
 <body>
-
 <div class="container">
-
 <div class="left">
-
 <div class="login-box">
-
-<div class="logo">
-<div class="logo-icon"></div>
-<h2>Vishak Tech</h2>
-</div>
-
+<div class="logo">Vishak Tech</div>
 <div class="badge">Enterprise Portal</div>
-
 <h1>Sign In</h1>
+<p class="sub">Access your secure enterprise workspace.</p>
 
-<p class="sub">
-Access your secure enterprise workspace and continue
-to Vishak Tech internal systems.
-</p>
+<input id="login-email" class="input" type="email" placeholder="Email Address">
+<input id="login-password" class="input" type="password" placeholder="Password">
+<p id="error"></p>
 
-<input class="input" type="email" placeholder="Email Address">
-
-<input class="input" type="password" placeholder="Password">
-
-<button class="btn">Sign In</button>
-
-<button class="btn google">
-Continue with Google
-</button>
-
-<div class="footer">
-© 2026 Vishak Tech • Authorized Personnel Only
-</div>
-
+<button class="btn" onclick="emailLogin()">Sign In</button>
+<button class="btn google" onclick="googleLogin()">Continue with Google</button>
 </div>
 </div>
 
 <div class="right">
-
-<div class="glass">
-<h3>Secure Access</h3>
-<p>Enterprise Grade Authentication</p>
-</div>
-
 <div class="content">
-
-<div class="tag">
-Engineering • Manufacturing • Innovation
+<div class="tag">Engineering • Manufacturing • Innovation</div>
+<h2>Building The Future Of Industry</h2>
+<p>Delivering fabrication, casting, hydraulic systems and industrial engineering solutions.</p>
+</div>
+</div>
 </div>
 
-<h2>
-Building The Future<br>
-Of Industry
-</h2>
+<script>
+function emailLogin(){
+ const email=document.getElementById('login-email').value;
+ const pass=document.getElementById('login-password').value;
+ if(!email || !pass){
+   document.getElementById('error').innerText='Please enter email and password';
+   return;
+ }
+ alert('Connect this button to your existing Firebase emailLogin() function.');
+}
 
-<p>
-Delivering fabrication, casting, hydraulic systems,
-industrial manufacturing and engineering solutions
-with precision, reliability and innovation.
-</p>
-
-</div>
-
-</div>
-
-</div>
-
+function googleLogin(){
+ alert('Connect this button to your existing Firebase googleLogin() function.');
+}
+</script>
 </body>
 </html>
