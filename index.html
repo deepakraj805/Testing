@@ -218,10 +218,11 @@ document.addEventListener("DOMContentLoaded", function() {
 <!-- FILE MANAGER -->
 <div id="fileManagerSection">
   <div class="fm-header">
-    <span class="fm-title">📁 Vishak Tech Files</span>
+    <span class="fm-title">📁 Vishak Tech Files <span style="font-size:.7rem;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);border-radius:50px;padding:3px 10px;color:#6ee7b7;vertical-align:middle;">☁️ Google Drive</span></span>
     <div class="fm-actions">
       <button class="fm-btn" onclick="fmNewFolder()">📁 New Folder</button>
       <button class="fm-btn" onclick="fmNewFile()">📄 New File</button>
+      <button class="fm-btn primary" onclick="fmUpload()">⬆️ Upload Files</button>
       <button class="fm-btn" id="fmRenameBtn" onclick="fmRename()" style="display:none;">✏️ Rename</button>
       <button class="fm-btn danger" id="fmDeleteBtn" onclick="fmDelete()" style="display:none;">🗑️ Delete</button>
       <button class="fm-btn" onclick="showDashboardView()">← Back</button>
@@ -333,305 +334,307 @@ function resetSessionTimer(){
   document.addEventListener(e, resetSessionTimer, {passive:true})
 );
 
-// ── FILE MANAGER LOGIC ──
+// ── FILE MANAGER LOGIC (Google Drive backend) ──
 let FM_USER = '';
-let FM_PATH = [];
-let FM_SELECTED = null;
+let FM_PATH = []; // array of {id, name}
+let FM_SELECTED = null; // {id, name, mimeType}
 let inpCallback = null;
 let fvEditingPath = null;
+let GD_TOKEN = null;
 
-function fmKey(){
-  // Key is scoped per user — other users cannot access another user's data
-  return 'vtfs_' + FM_USER.replace(/[^a-z0-9]/gi,'_');
+const GD_FOLDER_MIME = 'application/vnd.google-apps.folder';
+const GD_API = 'https://www.googleapis.com/drive/v3';
+const GD_UPLOAD = 'https://www.googleapis.com/upload/drive/v3';
+
+async function gdReq(url, opts={}){
+  if(!GD_TOKEN) throw new Error('Not authenticated with Google');
+  const headers = { 'Authorization':'Bearer '+GD_TOKEN, ...(opts.headers||{}) };
+  if(!opts.rawBody) headers['Content-Type'] = 'application/json';
+  const r = await fetch(url, { ...opts, headers });
+  if(!r.ok){ const e=await r.json().catch(()=>({error:{message:r.statusText}})); throw new Error(e.error?.message||r.statusText); }
+  if(r.status===204) return {};
+  return r.json();
 }
 
-function fmLoad(){
-  try{
-    const raw = localStorage.getItem(fmKey());
-    if(!raw) return fmInitFS();
-    const parsed = JSON.parse(raw);
-    // Integrity: must have root
-    if(!parsed || !parsed.root) return fmInitFS();
-    return parsed;
-  } catch(e){ return fmInitFS(); }
+async function gdGetRootFolder(){
+  const cached = sessionStorage.getItem('vt_drive_root');
+  if(cached) return cached;
+  const q = encodeURIComponent(`name='Vishak Tech Files' and mimeType='${GD_FOLDER_MIME}' and trashed=false`);
+  const res = await gdReq(`${GD_API}/files?q=${q}&fields=files(id,name)`);
+  if(res.files?.length){ sessionStorage.setItem('vt_drive_root',res.files[0].id); return res.files[0].id; }
+  const created = await gdReq(`${GD_API}/files`,{ method:'POST', body:JSON.stringify({name:'Vishak Tech Files',mimeType:GD_FOLDER_MIME}) });
+  sessionStorage.setItem('vt_drive_root',created.id);
+  return created.id;
 }
 
-function fmInitFS(){
-  const fs = {
-    root:{ id:'root', name:'Vishak Tech Files', type:'folder', children:[], created:Date.now() }
-  };
-  fmSave(fs);
-  return fs;
+async function gdListFolder(folderId){
+  const q = encodeURIComponent(`'${folderId}' in parents and trashed=false`);
+  const res = await gdReq(`${GD_API}/files?q=${q}&fields=files(id,name,mimeType,createdTime,size)&orderBy=folder,name`);
+  return res.files||[];
 }
 
-function fmSave(fs){
-  try{
-    localStorage.setItem(fmKey(), JSON.stringify(fs));
-  } catch(e){
-    alert('Storage full or unavailable. Please free some browser storage.');
-  }
+async function gdCreateFolder(name,parentId){
+  return gdReq(`${GD_API}/files`,{method:'POST',body:JSON.stringify({name,mimeType:GD_FOLDER_MIME,parents:[parentId]})});
 }
 
-function fmRender(){
-  // Guard: do not render if no authenticated user
-  if(!FM_USER) return;
-
-  const fs = fmLoad();
-  const folder = FM_PATH.length === 0 ? fs['root'] : fs[FM_PATH[FM_PATH.length-1]];
-
-  // Breadcrumb — use textContent-safe approach to prevent XSS
-  const bc = document.getElementById('fmBreadcrumb');
-  bc.innerHTML = '';
-  const rootSpan = document.createElement('span');
-  rootSpan.textContent = '🏠 Vishak Tech Files';
-  rootSpan.onclick = fmGoRoot;
-  bc.appendChild(rootSpan);
-
-  let pathSoFar = [];
-  FM_PATH.forEach((id)=>{
-    pathSoFar.push(id);
-    const sep = document.createElement('span');
-    sep.className = 'sep';
-    sep.textContent = '/';
-    bc.appendChild(sep);
-    const node = fs[id];
-    const snap = [...pathSoFar];
-    const s = document.createElement('span');
-    s.textContent = node ? node.name : id; // textContent = safe
-    s.onclick = ()=>fmGoPath(snap);
-    bc.appendChild(s);
+async function gdCreateTextFile(name,parentId,content=''){
+  const meta={name,mimeType:'text/plain',parents:[parentId]};
+  const b='vt_b'; const enc=new TextEncoder();
+  const body=[
+    `--${b}\r\nContent-Type: application/json\r\n\r\n${JSON.stringify(meta)}\r\n`,
+    `--${b}\r\nContent-Type: text/plain\r\n\r\n${content}\r\n--${b}--`
+  ].join('');
+  const r=await fetch(`${GD_UPLOAD}/files?uploadType=multipart&fields=id,name,mimeType,createdTime`,{
+    method:'POST', headers:{'Authorization':'Bearer '+GD_TOKEN,'Content-Type':`multipart/related; boundary="${b}"`}, body
   });
-
-  // Grid — build safely with DOM methods to block XSS
-  const grid = document.getElementById('fmGrid');
-  grid.innerHTML = '';
-  const children = (folder && folder.children) ? folder.children : [];
-
-  if(children.length === 0){
-    grid.innerHTML = `<div class="fm-empty"><span class="icon">📂</span>This folder is empty.<br><small style="color:#64748b">Create a new folder or file to get started.</small></div>`;
-    return;
-  }
-
-  children.forEach(id => {
-    const node = fs[id];
-    if(!node) return;
-    const icon = node.type === 'folder' ? '📁' : getFileIcon(node.name);
-    const date = new Date(node.created).toLocaleDateString();
-    const sel = FM_SELECTED === id ? 'selected' : '';
-
-    const item = document.createElement('div');
-    item.className = 'fm-item ' + sel;
-    item.id = 'fmitem_' + id;
-    item.onclick = ()=>fmSelect(id);
-    item.ondblclick = ()=>fmOpen(id);
-    item.oncontextmenu = (e)=>fmCtx(e,id);
-
-    // ctx button
-    const ctxBtn = document.createElement('button');
-    ctxBtn.className = 'ctx-btn';
-    ctxBtn.textContent = '⋮';
-    ctxBtn.onclick = (e)=>{ e.stopPropagation(); fmCtx(e,id); };
-    item.appendChild(ctxBtn);
-
-    // icon
-    const iconSpan = document.createElement('span');
-    iconSpan.className = 'icon';
-    iconSpan.textContent = icon;
-    item.appendChild(iconSpan);
-
-    // name — textContent prevents XSS from crafted file names
-    const nameDiv = document.createElement('div');
-    nameDiv.className = 'name';
-    nameDiv.textContent = node.name;
-    item.appendChild(nameDiv);
-
-    // date
-    const metaDiv = document.createElement('div');
-    metaDiv.className = 'meta';
-    metaDiv.textContent = date;
-    item.appendChild(metaDiv);
-
-    grid.appendChild(item);
-  });
-
-  const hasSel = !!FM_SELECTED;
-  document.getElementById('fmRenameBtn').style.display = hasSel ? '' : 'none';
-  document.getElementById('fmDeleteBtn').style.display = hasSel ? '' : 'none';
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||r.statusText);}
+  return r.json();
 }
+
+async function gdReadFile(fileId){
+  const r=await fetch(`${GD_API}/files/${fileId}?alt=media`,{headers:{'Authorization':'Bearer '+GD_TOKEN}});
+  if(!r.ok) throw new Error('Could not read file');
+  return r.text();
+}
+
+async function gdUpdateFile(fileId,content){
+  const r=await fetch(`${GD_UPLOAD}/files/${fileId}?uploadType=media`,{
+    method:'PATCH', headers:{'Authorization':'Bearer '+GD_TOKEN,'Content-Type':'text/plain'}, body:content
+  });
+  if(!r.ok) throw new Error('Could not save file');
+  return r.json();
+}
+
+async function gdRenameFile(fileId,newName){
+  return gdReq(`${GD_API}/files/${fileId}`,{method:'PATCH',body:JSON.stringify({name:newName})});
+}
+
+async function gdDeleteFile(fileId){
+  const r=await fetch(`${GD_API}/files/${fileId}`,{method:'DELETE',headers:{'Authorization':'Bearer '+GD_TOKEN}});
+  if(!r.ok&&r.status!==204) throw new Error('Could not delete');
+}
+
+async function gdUploadBinary(file,parentId){
+  const meta={name:file.name,parents:[parentId]};
+  const b='vt_upload_b'; const fileContent=await file.arrayBuffer();
+  const enc=new TextEncoder();
+  const hdr=enc.encode(`--${b}\r\nContent-Type: application/json\r\n\r\n${JSON.stringify(meta)}\r\n--${b}\r\nContent-Type: ${file.type||'application/octet-stream'}\r\n\r\n`);
+  const ftr=enc.encode(`\r\n--${b}--`);
+  const combined=new Uint8Array(hdr.byteLength+fileContent.byteLength+ftr.byteLength);
+  combined.set(hdr,0); combined.set(new Uint8Array(fileContent),hdr.byteLength); combined.set(ftr,hdr.byteLength+fileContent.byteLength);
+  const r=await fetch(`${GD_UPLOAD}/files?uploadType=multipart&fields=id,name,mimeType,createdTime`,{
+    method:'POST', headers:{'Authorization':'Bearer '+GD_TOKEN,'Content-Type':`multipart/related; boundary="${b}"`}, body:combined
+  });
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||r.statusText);}
+  return r.json();
+}
+
+function fmShowStatus(msg,isError=false){
+  let bar=document.getElementById('fmStatusBar');
+  if(!bar){bar=document.createElement('div');bar.id='fmStatusBar';bar.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:10px 22px;border-radius:12px;font-size:.87rem;font-weight:500;z-index:99999;transition:.3s;';document.body.appendChild(bar);}
+  bar.style.background=isError?'rgba(239,68,68,.9)':'rgba(16,185,129,.9)';
+  bar.style.color='#fff'; bar.textContent=msg; bar.style.opacity='1';
+  clearTimeout(bar._t); bar._t=setTimeout(()=>bar.style.opacity='0',3000);
+}
+
+function fmShowLoading(msg='Loading from Google Drive…'){
+  document.getElementById('fmGrid').innerHTML=`<div class="fm-empty"><span style="font-size:2rem">⏳</span><br>${msg}</div>`;
+}
+
+async function fmRender(){
+  if(!FM_USER||!GD_TOKEN) return;
+  fmShowLoading();
+  const bc=document.getElementById('fmBreadcrumb'); bc.innerHTML='';
+  const rs=document.createElement('span'); rs.textContent='🏠 Vishak Tech Files'; rs.onclick=fmGoRoot; bc.appendChild(rs);
+  FM_PATH.forEach((seg,i)=>{
+    const sep=document.createElement('span'); sep.className='sep'; sep.textContent='/'; bc.appendChild(sep);
+    const s=document.createElement('span'); s.textContent=seg.name;
+    s.onclick=()=>fmGoPath(FM_PATH.slice(0,i+1)); bc.appendChild(s);
+  });
+  try{
+    const folderId=FM_PATH.length===0?await gdGetRootFolder():FM_PATH[FM_PATH.length-1].id;
+    const items=await gdListFolder(folderId);
+    const grid=document.getElementById('fmGrid'); grid.innerHTML='';
+    if(!items.length){
+      grid.innerHTML=`<div class="fm-empty"><span class="icon">📂</span>This folder is empty.<br><small style="color:#64748b">Create a new folder, file, or upload files.</small></div>`;
+    } else {
+      items.forEach(node=>{
+        const isFolder=node.mimeType===GD_FOLDER_MIME;
+        const icon=isFolder?'📁':getFileIcon(node.name);
+        const date=new Date(node.createdTime).toLocaleDateString();
+        const sel=FM_SELECTED?.id===node.id?'selected':'';
+        const item=document.createElement('div'); item.className='fm-item '+sel;
+        item.onclick=()=>fmSelect(node); item.ondblclick=()=>fmOpen(node); item.oncontextmenu=(e)=>fmCtx(e,node);
+        const ctxBtn=document.createElement('button'); ctxBtn.className='ctx-btn'; ctxBtn.textContent='⋮';
+        ctxBtn.onclick=(e)=>{e.stopPropagation();fmCtx(e,node);}; item.appendChild(ctxBtn);
+        const iconSpan=document.createElement('span'); iconSpan.className='icon'; iconSpan.textContent=icon; item.appendChild(iconSpan);
+        const nameDiv=document.createElement('div'); nameDiv.className='name'; nameDiv.textContent=node.name; item.appendChild(nameDiv);
+        const metaDiv=document.createElement('div'); metaDiv.className='meta';
+        metaDiv.textContent=date; item.appendChild(metaDiv);
+        grid.appendChild(item);
+      });
+    }
+  } catch(e){ fmShowStatus('Drive error: '+e.message,true); document.getElementById('fmGrid').innerHTML=`<div class="fm-empty" style="color:#f87171">⚠️ Could not load Drive files.<br><small>${e.message}</small></div>`; }
+  const hasSel=!!FM_SELECTED;
+  document.getElementById('fmRenameBtn').style.display=hasSel?'':'none';
+  document.getElementById('fmDeleteBtn').style.display=hasSel?'':'none';
+}
+
 
 function getFileIcon(name){
-  const ext = (name.split('.').pop() || '').toLowerCase();
-  const map = {txt:'📝',pdf:'📕',doc:'📘',docx:'📘',xls:'📗',xlsx:'📗',jpg:'🖼️',jpeg:'🖼️',png:'🖼️',mp4:'🎬',mp3:'🎵',zip:'📦',csv:'📊'};
-  return map[ext] || '📄';
+  const ext=(name.split('.').pop()||'').toLowerCase();
+  const map={txt:'📝',pdf:'📕',doc:'📘',docx:'📘',xls:'📗',xlsx:'📗',jpg:'🖼️',jpeg:'🖼️',png:'🖼️',gif:'🖼️',mp4:'🎬',mp3:'🎵',zip:'📦',csv:'📊',html:'🌐',js:'⚙️',json:'⚙️'};
+  return map[ext]||'📄';
 }
 
-function fmSelect(id){
-  FM_SELECTED = FM_SELECTED === id ? null : id;
-  fmRender();
-  hideCtxMenu();
-}
+function validName(n){ if(!n||!n.trim()) return false; if(/[<>"'`\/\\]/.test(n)) return false; if(n.trim().length>80) return false; return true; }
 
-function fmOpen(id){
+function fmSelect(node){ FM_SELECTED=FM_SELECTED?.id===node.id?null:node; fmRender(); hideCtxMenu(); }
+
+function fmOpen(node){
   hideCtxMenu();
-  if(!FM_USER) return; // guard
-  const fs = fmLoad();
-  const node = fs[id];
-  if(!node) return;
-  if(node.type === 'folder'){
-    FM_PATH.push(id);
-    FM_SELECTED = null;
-    fmRender();
-  } else {
-    fvOpen(id, node);
-  }
+  if(!FM_USER||!GD_TOKEN) return;
+  if(node.mimeType===GD_FOLDER_MIME){ FM_PATH.push({id:node.id,name:node.name}); FM_SELECTED=null; fmRender(); }
+  else fvOpen(node);
 }
 
 function ctxOpen(){ if(FM_SELECTED) fmOpen(FM_SELECTED); hideCtxMenu(); }
 function fmGoRoot(){ FM_PATH=[]; FM_SELECTED=null; fmRender(); }
 function fmGoPath(path){ FM_PATH=path; FM_SELECTED=null; fmRender(); }
 
-// Validate file/folder name
-function validName(name){
-  if(!name || !name.trim()) return false;
-  // Block path traversal and special chars that could be used for injection
-  if(/[<>"'`\/\\]/.test(name)) return false;
-  if(name.trim().length > 80) return false;
-  return true;
-}
-
 function fmNewFolder(){
-  if(!FM_USER) return;
-  showInp('📁 New Folder Name', 'Folder name...', (name)=>{
-    if(!validName(name)){ alert('Invalid name. Avoid special characters like < > \\ / \' "'); return; }
-    const fs = fmLoad();
-    const id = 'n_' + Date.now();
-    fs[id] = { id, name: name.trim(), type:'folder', children:[], created: Date.now() };
-    const folder = FM_PATH.length === 0 ? fs['root'] : fs[FM_PATH[FM_PATH.length-1]];
-    folder.children.push(id);
-    fmSave(fs);
-    fmRender();
+  if(!FM_USER||!GD_TOKEN) return;
+  showInp('📁 New Folder Name','Folder name...',async(name)=>{
+    if(!validName(name)){alert('Invalid name. Avoid special characters.');return;}
+    try{
+      fmShowStatus('Creating folder…');
+      const parentId=FM_PATH.length===0?await gdGetRootFolder():FM_PATH[FM_PATH.length-1].id;
+      await gdCreateFolder(name.trim(),parentId);
+      fmShowStatus('Folder created ✓'); fmRender();
+    }catch(e){fmShowStatus('Error: '+e.message,true);}
   });
 }
 
 function fmNewFile(){
-  if(!FM_USER) return;
-  showInp('📄 New File Name', 'e.g. notes.txt', (name)=>{
-    if(!validName(name)){ alert('Invalid name. Avoid special characters like < > \\ / \' "'); return; }
-    const fs = fmLoad();
-    const id = 'n_' + Date.now();
-    fs[id] = { id, name: name.trim(), type:'file', content:'', created: Date.now() };
-    const folder = FM_PATH.length === 0 ? fs['root'] : fs[FM_PATH[FM_PATH.length-1]];
-    folder.children.push(id);
-    fmSave(fs);
-    fmRender();
-    fvOpen(id, fs[id]);
+  if(!FM_USER||!GD_TOKEN) return;
+  showInp('📄 New File Name','e.g. notes.txt',async(name)=>{
+    if(!validName(name)){alert('Invalid name. Avoid special characters.');return;}
+    try{
+      fmShowStatus('Creating file…');
+      const parentId=FM_PATH.length===0?await gdGetRootFolder():FM_PATH[FM_PATH.length-1].id;
+      const node=await gdCreateTextFile(name.trim(),parentId,'');
+      fmShowStatus('File created ✓'); fmRender();
+      fvOpen(node);
+    }catch(e){fmShowStatus('Error: '+e.message,true);}
   });
+}
+
+function fmUpload(){
+  if(!FM_USER||!GD_TOKEN) return;
+  const input=document.createElement('input'); input.type='file'; input.multiple=true;
+  input.onchange=async()=>{
+    if(!input.files.length) return;
+    try{
+      const parentId=FM_PATH.length===0?await gdGetRootFolder():FM_PATH[FM_PATH.length-1].id;
+      let done=0;
+      for(const file of input.files){
+        fmShowStatus(`Uploading ${file.name}… (${done+1}/${input.files.length})`);
+        await gdUploadBinary(file,parentId);
+        done++;
+      }
+      fmShowStatus(`${done} file(s) uploaded to Drive ✓`); fmRender();
+    }catch(e){fmShowStatus('Upload error: '+e.message,true);}
+  };
+  input.click();
 }
 
 function fmRename(){
-  if(!FM_SELECTED || !FM_USER) return;
+  if(!FM_SELECTED||!FM_USER||!GD_TOKEN) return;
   hideCtxMenu();
-  const fs = fmLoad();
-  const node = fs[FM_SELECTED];
-  if(!node) return;
-  showInp('✏️ Rename', node.name, (name)=>{
-    if(!validName(name)){ alert('Invalid name. Avoid special characters like < > \\ / \' "'); return; }
-    const fs2 = fmLoad();
-    if(fs2[FM_SELECTED]) fs2[FM_SELECTED].name = name.trim();
-    fmSave(fs2);
-    fmRender();
+  showInp('✏️ Rename',FM_SELECTED.name,async(name)=>{
+    if(!validName(name)){alert('Invalid name.');return;}
+    try{
+      fmShowStatus('Renaming…');
+      await gdRenameFile(FM_SELECTED.id,name.trim());
+      fmShowStatus('Renamed ✓'); FM_SELECTED=null; fmRender();
+    }catch(e){fmShowStatus('Error: '+e.message,true);}
   });
 }
 
-function fmDelete(){
-  if(!FM_SELECTED || !FM_USER) return;
+async function fmDelete(){
+  if(!FM_SELECTED||!FM_USER||!GD_TOKEN) return;
   hideCtxMenu();
-  const fs = fmLoad();
-  const node = fs[FM_SELECTED];
-  if(!node) return;
-  if(!confirm('Delete "' + node.name + '"? This cannot be undone.')) return;
-  const folder = FM_PATH.length === 0 ? fs['root'] : fs[FM_PATH[FM_PATH.length-1]];
-  folder.children = folder.children.filter(c => c !== FM_SELECTED);
-  function delNode(id){
-    const n = fs[id];
-    if(n && n.children) n.children.forEach(delNode);
-    delete fs[id];
-  }
-  delNode(FM_SELECTED);
-  FM_SELECTED = null;
-  fmSave(fs);
-  fmRender();
+  if(!confirm('Move "'+FM_SELECTED.name+'" to trash in Google Drive?')) return;
+  try{
+    fmShowStatus('Deleting…');
+    await gdDeleteFile(FM_SELECTED.id);
+    fmShowStatus('Moved to trash ✓'); FM_SELECTED=null; fmRender();
+  }catch(e){fmShowStatus('Error: '+e.message,true);}
 }
 
-function fmCtx(e, id){
-  e.preventDefault();
-  e.stopPropagation();
-  FM_SELECTED = id;
-  fmRender();
-  const menu = document.getElementById('ctxMenu');
-  menu.style.display = 'block';
-  const x = Math.min(e.clientX, window.innerWidth - 180);
-  const y = Math.min(e.clientY, window.innerHeight - 140);
-  menu.style.left = x + 'px';
-  menu.style.top = y + 'px';
+function fmCtx(e,node){
+  e.preventDefault(); e.stopPropagation();
+  FM_SELECTED=node; fmRender();
+  const menu=document.getElementById('ctxMenu'); menu.style.display='block';
+  const x=Math.min(e.clientX,window.innerWidth-180); const y=Math.min(e.clientY,window.innerHeight-140);
+  menu.style.left=x+'px'; menu.style.top=y+'px';
 }
 function hideCtxMenu(){ document.getElementById('ctxMenu').style.display='none'; }
-document.addEventListener('click', hideCtxMenu);
-document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ hideCtxMenu(); inpCancel(); fvClose(); }});
+document.addEventListener('click',hideCtxMenu);
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){hideCtxMenu();inpCancel();fvClose();}});
 
-function showInp(title, placeholder, cb){
-  safeText('inpTitle', title);
-  const f = document.getElementById('inpField');
-  f.placeholder = placeholder;
-  f.value = '';
+function showInp(title,placeholder,cb){
+  safeText('inpTitle',title);
+  const f=document.getElementById('inpField'); f.placeholder=placeholder; f.value='';
   document.getElementById('inpModal').classList.add('show');
-  setTimeout(()=>f.focus(),100);
-  inpCallback = cb;
-  f.onkeydown = e=>{ if(e.key==='Enter') inpConfirm(); };
+  setTimeout(()=>f.focus(),100); inpCallback=cb;
+  f.onkeydown=e=>{if(e.key==='Enter')inpConfirm();};
 }
-function inpConfirm(){
-  const val = document.getElementById('inpField').value;
-  document.getElementById('inpModal').classList.remove('show');
-  if(inpCallback) inpCallback(val);
-  inpCallback = null;
-}
-function inpCancel(){
-  document.getElementById('inpModal').classList.remove('show');
-  inpCallback = null;
-}
+function inpConfirm(){ const val=document.getElementById('inpField').value; document.getElementById('inpModal').classList.remove('show'); if(inpCallback)inpCallback(val); inpCallback=null; }
+function inpCancel(){ document.getElementById('inpModal').classList.remove('show'); inpCallback=null; }
 
-function fvOpen(id, node){
-  if(!FM_USER) return; // guard: never open if not authenticated
-  fvEditingPath = id;
-  safeText('fvTitle', node.name);
-  document.getElementById('fvContent').value = node.content || '';
+async function fvOpen(node){
+  if(!FM_USER||!GD_TOKEN) return;
+  const isFolder=node.mimeType===GD_FOLDER_MIME;
+  if(isFolder) return;
+  fvEditingPath=node.id;
+  safeText('fvTitle',node.name);
+  const content=document.getElementById('fvContent');
+  content.value='Loading…'; content.disabled=true;
   document.getElementById('fileViewer').classList.add('show');
-  setTimeout(()=>document.getElementById('fvContent').focus(),100);
+  try{
+    const text=await gdReadFile(node.id);
+    content.value=text; content.disabled=false;
+    setTimeout(()=>content.focus(),100);
+  }catch(e){
+    content.value=''; content.disabled=false;
+    fmShowStatus('Could not read file (binary files are view-only)',true);
+  }
 }
-function fvSave(){
-  if(!fvEditingPath || !FM_USER) return;
-  const fs = fmLoad();
-  if(fs[fvEditingPath]) fs[fvEditingPath].content = document.getElementById('fvContent').value;
-  fmSave(fs);
-  fvClose();
-  fmRender();
+async function fvSave(){
+  if(!fvEditingPath||!FM_USER||!GD_TOKEN) return;
+  try{
+    fmShowStatus('Saving to Google Drive…');
+    await gdUpdateFile(fvEditingPath,document.getElementById('fvContent').value);
+    fmShowStatus('Saved to Google Drive ✓');
+    fvClose(); fmRender();
+  }catch(e){fmShowStatus('Save error: '+e.message,true);}
 }
-function fvClose(){
-  document.getElementById('fileViewer').classList.remove('show');
-  fvEditingPath = null;
-}
+function fvClose(){ document.getElementById('fileViewer').classList.remove('show'); fvEditingPath=null; }
 
 function showDashboardView(){
   document.getElementById('dashboardSection').style.display='block';
   document.getElementById('fileManagerSection').style.display='none';
 }
+
 function showFileManager(){
-  if(!FM_USER) return; // guard
+  if(!FM_USER||!GD_TOKEN) return;
   document.getElementById('dashboardSection').style.display='none';
   document.getElementById('fileManagerSection').style.display='block';
   FM_PATH=[];FM_SELECTED=null;
   fmRender();
 }
+
 </script>
 
 <script type="module">
@@ -712,6 +715,18 @@ async function showDashboard(user){
   const cardKeys = [...roles, 'files'];
   // Card HTML is entirely developer-controlled (no user input), so innerHTML is safe here
   document.getElementById('dashboardCards').innerHTML = cardKeys.map(r=>CARDS[r]).join('');
+  if(!GD_TOKEN){
+    let gdNotice=document.getElementById('gdConnectNotice');
+    if(!gdNotice){
+      gdNotice=document.createElement('div');
+      gdNotice.id='gdConnectNotice';
+      gdNotice.style.cssText='text-align:center;padding:14px 20px;margin:0 auto 10px;max-width:600px;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);border-radius:14px;font-size:.85rem;color:#93c5fd;';
+      gdNotice.innerHTML='☁️ <b>Google Drive not connected.</b> To use Drive file storage, please <button onclick="window.googleLogin()" style="background:none;border:none;color:#60a5fa;text-decoration:underline;cursor:pointer;font-size:.85rem;">sign in with Google</button> instead of email login.';
+      document.querySelector('.dash-hero').after(gdNotice);
+    }
+  } else {
+    const n=document.getElementById('gdConnectNotice'); if(n) n.remove();
+  }
 }
 
 function showLogin(){
@@ -737,13 +752,19 @@ window.googleLogin = async () => {
     return;
   }
   try{
-    const r = await signInWithPopup(auth, new GoogleAuthProvider());
+    const provider = new GoogleAuthProvider();
+    provider.addScope('https://www.googleapis.com/auth/drive.file');
+    const r = await signInWithPopup(auth, provider);
     const roles = await getRoles(r.user.email);
     if(roles.length === 0){
       alert('Access Denied.');
       await signOut(auth);
       RATE.fail();
+      return;
     }
+    // Capture Google OAuth access token for Drive API
+    const cred = GoogleAuthProvider.credentialFromResult(r);
+    if(cred && cred.accessToken) GD_TOKEN = cred.accessToken;
   } catch(e){
     safeText('login-error', e.message);
     RATE.fail();
