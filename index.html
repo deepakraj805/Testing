@@ -340,94 +340,55 @@ let FM_PATH = []; // array of {id, name}
 let FM_SELECTED = null; // {id, name, mimeType}
 let inpCallback = null;
 let fvEditingPath = null;
-let GD_TOKEN = null;
+
+// ── CLOUD FUNCTION ENDPOINTS (Service Account → Company Drive) ──
+const CF_BASE = 'https://vishaktech-drive.dr4683743.workers.dev';
+
+async function cfCall(endpoint, body={}){
+  const user = window._vtCurrentUser || (window._firebaseAuth && window._firebaseAuth.currentUser);
+  if(!user) throw new Error('Not authenticated');
+  const token = await user.getIdToken(true);
+  const r = await fetch(`${CF_BASE}/${endpoint}`, {
+    method: 'POST',
+    headers: { 'Content-Type':'application/json', 'Authorization':'Bearer '+token },
+    body: JSON.stringify(body)
+  });
+  const data = await r.json();
+  if(!r.ok) throw new Error(data.error || r.statusText);
+  return data;
+}
+
+// Wrappers that match the old GD_ function signatures
+async function gdGetRootFolder(){ return 'ROOT'; } // handled server-side
+async function gdListFolder(folderId){ return (await cfCall('driveList',{folderId})).files||[]; }
+async function gdCreateFolder(name,parentId){ return cfCall('driveCreateFolder',{name,parentId}); }
+async function gdCreateTextFile(name,parentId,content=''){ return cfCall('driveCreateFile',{name,parentId,content,mimeType:'text/plain'}); }
+async function gdReadFile(fileId){ return (await cfCall('driveReadFile',{fileId})).content; }
+async function gdUpdateFile(fileId,content){ return cfCall('driveUpdateFile',{fileId,content}); }
+async function gdRenameFile(fileId,newName){ return cfCall('driveRename',{fileId,newName}); }
+async function gdDeleteFile(fileId){ return cfCall('driveDelete',{fileId}); }
+
+async function gdUploadBinary(file, parentId){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = async ()=>{
+      try{
+        const base64 = reader.result.split(',')[1];
+        const result = await cfCall('driveUpload',{
+          name: file.name,
+          parentId,
+          base64,
+          mimeType: file.type || 'application/octet-stream'
+        });
+        resolve(result);
+      } catch(e){ reject(e); }
+    };
+    reader.onerror = ()=>reject(new Error('File read failed'));
+    reader.readAsDataURL(file);
+  });
+}
 
 const GD_FOLDER_MIME = 'application/vnd.google-apps.folder';
-const GD_API = 'https://www.googleapis.com/drive/v3';
-const GD_UPLOAD = 'https://www.googleapis.com/upload/drive/v3';
-
-async function gdReq(url, opts={}){
-  if(!GD_TOKEN) throw new Error('Not authenticated with Google');
-  const headers = { 'Authorization':'Bearer '+GD_TOKEN, ...(opts.headers||{}) };
-  if(!opts.rawBody) headers['Content-Type'] = 'application/json';
-  const r = await fetch(url, { ...opts, headers });
-  if(!r.ok){ const e=await r.json().catch(()=>({error:{message:r.statusText}})); throw new Error(e.error?.message||r.statusText); }
-  if(r.status===204) return {};
-  return r.json();
-}
-
-async function gdGetRootFolder(){
-  const cached = sessionStorage.getItem('vt_drive_root');
-  if(cached) return cached;
-  const q = encodeURIComponent(`name='Vishak Tech Files' and mimeType='${GD_FOLDER_MIME}' and trashed=false`);
-  const res = await gdReq(`${GD_API}/files?q=${q}&fields=files(id,name)`);
-  if(res.files?.length){ sessionStorage.setItem('vt_drive_root',res.files[0].id); return res.files[0].id; }
-  const created = await gdReq(`${GD_API}/files`,{ method:'POST', body:JSON.stringify({name:'Vishak Tech Files',mimeType:GD_FOLDER_MIME}) });
-  sessionStorage.setItem('vt_drive_root',created.id);
-  return created.id;
-}
-
-async function gdListFolder(folderId){
-  const q = encodeURIComponent(`'${folderId}' in parents and trashed=false`);
-  const res = await gdReq(`${GD_API}/files?q=${q}&fields=files(id,name,mimeType,createdTime,size)&orderBy=folder,name`);
-  return res.files||[];
-}
-
-async function gdCreateFolder(name,parentId){
-  return gdReq(`${GD_API}/files`,{method:'POST',body:JSON.stringify({name,mimeType:GD_FOLDER_MIME,parents:[parentId]})});
-}
-
-async function gdCreateTextFile(name,parentId,content=''){
-  const meta={name,mimeType:'text/plain',parents:[parentId]};
-  const b='vt_b'; const enc=new TextEncoder();
-  const body=[
-    `--${b}\r\nContent-Type: application/json\r\n\r\n${JSON.stringify(meta)}\r\n`,
-    `--${b}\r\nContent-Type: text/plain\r\n\r\n${content}\r\n--${b}--`
-  ].join('');
-  const r=await fetch(`${GD_UPLOAD}/files?uploadType=multipart&fields=id,name,mimeType,createdTime`,{
-    method:'POST', headers:{'Authorization':'Bearer '+GD_TOKEN,'Content-Type':`multipart/related; boundary="${b}"`}, body
-  });
-  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||r.statusText);}
-  return r.json();
-}
-
-async function gdReadFile(fileId){
-  const r=await fetch(`${GD_API}/files/${fileId}?alt=media`,{headers:{'Authorization':'Bearer '+GD_TOKEN}});
-  if(!r.ok) throw new Error('Could not read file');
-  return r.text();
-}
-
-async function gdUpdateFile(fileId,content){
-  const r=await fetch(`${GD_UPLOAD}/files/${fileId}?uploadType=media`,{
-    method:'PATCH', headers:{'Authorization':'Bearer '+GD_TOKEN,'Content-Type':'text/plain'}, body:content
-  });
-  if(!r.ok) throw new Error('Could not save file');
-  return r.json();
-}
-
-async function gdRenameFile(fileId,newName){
-  return gdReq(`${GD_API}/files/${fileId}`,{method:'PATCH',body:JSON.stringify({name:newName})});
-}
-
-async function gdDeleteFile(fileId){
-  const r=await fetch(`${GD_API}/files/${fileId}`,{method:'DELETE',headers:{'Authorization':'Bearer '+GD_TOKEN}});
-  if(!r.ok&&r.status!==204) throw new Error('Could not delete');
-}
-
-async function gdUploadBinary(file,parentId){
-  const meta={name:file.name,parents:[parentId]};
-  const b='vt_upload_b'; const fileContent=await file.arrayBuffer();
-  const enc=new TextEncoder();
-  const hdr=enc.encode(`--${b}\r\nContent-Type: application/json\r\n\r\n${JSON.stringify(meta)}\r\n--${b}\r\nContent-Type: ${file.type||'application/octet-stream'}\r\n\r\n`);
-  const ftr=enc.encode(`\r\n--${b}--`);
-  const combined=new Uint8Array(hdr.byteLength+fileContent.byteLength+ftr.byteLength);
-  combined.set(hdr,0); combined.set(new Uint8Array(fileContent),hdr.byteLength); combined.set(ftr,hdr.byteLength+fileContent.byteLength);
-  const r=await fetch(`${GD_UPLOAD}/files?uploadType=multipart&fields=id,name,mimeType,createdTime`,{
-    method:'POST', headers:{'Authorization':'Bearer '+GD_TOKEN,'Content-Type':`multipart/related; boundary="${b}"`}, body:combined
-  });
-  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||r.statusText);}
-  return r.json();
-}
 
 function fmShowStatus(msg,isError=false){
   let bar=document.getElementById('fmStatusBar');
@@ -442,7 +403,7 @@ function fmShowLoading(msg='Loading from Google Drive…'){
 }
 
 async function fmRender(){
-  if(!FM_USER||!GD_TOKEN) return;
+  if(!FM_USER) return;
   fmShowLoading();
   const bc=document.getElementById('fmBreadcrumb'); bc.innerHTML='';
   const rs=document.createElement('span'); rs.textContent='🏠 Vishak Tech Files'; rs.onclick=fmGoRoot; bc.appendChild(rs);
@@ -493,7 +454,7 @@ function fmSelect(node){ FM_SELECTED=FM_SELECTED?.id===node.id?null:node; fmRend
 
 function fmOpen(node){
   hideCtxMenu();
-  if(!FM_USER||!GD_TOKEN) return;
+  if(!FM_USER) return;
   if(node.mimeType===GD_FOLDER_MIME){ FM_PATH.push({id:node.id,name:node.name}); FM_SELECTED=null; fmRender(); }
   else fvOpen(node);
 }
@@ -503,7 +464,7 @@ function fmGoRoot(){ FM_PATH=[]; FM_SELECTED=null; fmRender(); }
 function fmGoPath(path){ FM_PATH=path; FM_SELECTED=null; fmRender(); }
 
 function fmNewFolder(){
-  if(!FM_USER||!GD_TOKEN) return;
+  if(!FM_USER) return;
   showInp('📁 New Folder Name','Folder name...',async(name)=>{
     if(!validName(name)){alert('Invalid name. Avoid special characters.');return;}
     try{
@@ -516,7 +477,7 @@ function fmNewFolder(){
 }
 
 function fmNewFile(){
-  if(!FM_USER||!GD_TOKEN) return;
+  if(!FM_USER) return;
   showInp('📄 New File Name','e.g. notes.txt',async(name)=>{
     if(!validName(name)){alert('Invalid name. Avoid special characters.');return;}
     try{
@@ -530,7 +491,7 @@ function fmNewFile(){
 }
 
 function fmUpload(){
-  if(!FM_USER||!GD_TOKEN) return;
+  if(!FM_USER) return;
   const input=document.createElement('input'); input.type='file'; input.multiple=true;
   input.onchange=async()=>{
     if(!input.files.length) return;
@@ -549,7 +510,7 @@ function fmUpload(){
 }
 
 function fmRename(){
-  if(!FM_SELECTED||!FM_USER||!GD_TOKEN) return;
+  if(!FM_SELECTED||!FM_USER) return;
   hideCtxMenu();
   showInp('✏️ Rename',FM_SELECTED.name,async(name)=>{
     if(!validName(name)){alert('Invalid name.');return;}
@@ -562,7 +523,7 @@ function fmRename(){
 }
 
 async function fmDelete(){
-  if(!FM_SELECTED||!FM_USER||!GD_TOKEN) return;
+  if(!FM_SELECTED||!FM_USER) return;
   hideCtxMenu();
   if(!confirm('Move "'+FM_SELECTED.name+'" to trash in Google Drive?')) return;
   try{
@@ -594,7 +555,7 @@ function inpConfirm(){ const val=document.getElementById('inpField').value; docu
 function inpCancel(){ document.getElementById('inpModal').classList.remove('show'); inpCallback=null; }
 
 async function fvOpen(node){
-  if(!FM_USER||!GD_TOKEN) return;
+  if(!FM_USER) return;
   const isFolder=node.mimeType===GD_FOLDER_MIME;
   if(isFolder) return;
   fvEditingPath=node.id;
@@ -612,7 +573,7 @@ async function fvOpen(node){
   }
 }
 async function fvSave(){
-  if(!fvEditingPath||!FM_USER||!GD_TOKEN) return;
+  if(!fvEditingPath||!FM_USER) return;
   try{
     fmShowStatus('Saving to Google Drive…');
     await gdUpdateFile(fvEditingPath,document.getElementById('fvContent').value);
@@ -628,7 +589,7 @@ function showDashboardView(){
 }
 
 function showFileManager(){
-  if(!FM_USER||!GD_TOKEN) return;
+  if(!FM_USER) return;
   document.getElementById('dashboardSection').style.display='none';
   document.getElementById('fileManagerSection').style.display='block';
   FM_PATH=[];FM_SELECTED=null;
@@ -654,6 +615,7 @@ const app = initializeApp({
   appId:"1:68398724582:web:76840e738169b3af429227"
 });
 const auth = getAuth(app);
+  window._firebaseAuth = auth;
 window._vtAuth = auth; // expose for session timeout logout only
 
 // ── Authorized emails stored as SHA-256 hashes — plaintext emails never in source code ──
@@ -715,18 +677,7 @@ async function showDashboard(user){
   const cardKeys = [...roles, 'files'];
   // Card HTML is entirely developer-controlled (no user input), so innerHTML is safe here
   document.getElementById('dashboardCards').innerHTML = cardKeys.map(r=>CARDS[r]).join('');
-  if(!GD_TOKEN){
-    let gdNotice=document.getElementById('gdConnectNotice');
-    if(!gdNotice){
-      gdNotice=document.createElement('div');
-      gdNotice.id='gdConnectNotice';
-      gdNotice.style.cssText='text-align:center;padding:14px 20px;margin:0 auto 10px;max-width:600px;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);border-radius:14px;font-size:.85rem;color:#93c5fd;';
-      gdNotice.innerHTML='☁️ <b>Google Drive not connected.</b> To use Drive file storage, please <button onclick="window.googleLogin()" style="background:none;border:none;color:#60a5fa;text-decoration:underline;cursor:pointer;font-size:.85rem;">sign in with Google</button> instead of email login.';
-      document.querySelector('.dash-hero').after(gdNotice);
-    }
-  } else {
-    const n=document.getElementById('gdConnectNotice'); if(n) n.remove();
-  }
+  // Drive works for all users via service account
 }
 
 function showLogin(){
@@ -762,9 +713,7 @@ window.googleLogin = async () => {
       RATE.fail();
       return;
     }
-    // Capture Google OAuth access token for Drive API
-    const cred = GoogleAuthProvider.credentialFromResult(r);
-    if(cred && cred.accessToken) GD_TOKEN = cred.accessToken;
+    // Drive access handled via Cloud Function (service account)
   } catch(e){
     safeText('login-error', e.message);
     RATE.fail();
