@@ -12,7 +12,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
-body{min-height:100vh;color:#fff;background:radial-gradient(circle at 10% 20%,rgba(16,185,129,.20),transparent 25%),radial-gradient(circle at 90% 10%,rgba(59,130,246,.20),transparent 25%),linear-gradient(135deg,#020617,#0f172a,#111827);background-size:400% 400%;animation:bgMove 20s ease infinite;}
+body{min-height:100vh;color:#fff;background:#020617;overflow-x:hidden;}
+#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;}
 @keyframes bgMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 .navbar{display:flex;justify-content:space-between;align-items:center;padding:18px 40px;background:rgba(255,255,255,.04);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.08);}
 .logo{height:60px;transition:.4s;}
@@ -114,6 +115,142 @@ body{min-height:100vh;color:#fff;background:radial-gradient(circle at 10% 20%,rg
 </head>
 
 <body>
+<canvas id="bg-canvas"></canvas>
+<script>
+(function(){
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, t = 0;
+
+  // Particles
+  const PARTICLE_COUNT = 70;
+  const particles = [];
+
+  function resize(){
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function randomBetween(a,b){ return a + Math.random()*(b-a); }
+
+  // Colour palette: emerald, cyan, blue, violet
+  const COLORS = [
+    [16,185,129],  // emerald
+    [6,182,212],   // cyan
+    [59,130,246],  // blue
+    [139,92,246],  // violet
+  ];
+
+  function mkParticle(){
+    const c = COLORS[Math.floor(Math.random()*COLORS.length)];
+    return {
+      x: Math.random()*W,
+      y: Math.random()*H,
+      r: randomBetween(1.2, 3.5),
+      vx: randomBetween(-0.18, 0.18),
+      vy: randomBetween(-0.22, 0.22),
+      alpha: randomBetween(0.25, 0.7),
+      color: c,
+      twinkleSpeed: randomBetween(0.005, 0.018),
+      twinkleDir: Math.random() > 0.5 ? 1 : -1,
+    };
+  }
+
+  for(let i=0;i<PARTICLE_COUNT;i++) particles.push(mkParticle());
+
+  // Flow lines
+  const LINE_COUNT = 5;
+  const flowLines = Array.from({length:LINE_COUNT},(_,i)=>({
+    phase: (i/LINE_COUNT)*Math.PI*2,
+    speed: randomBetween(0.0008, 0.0016),
+    amplitude: randomBetween(80, 180),
+    yBase: (i+1)/(LINE_COUNT+1),
+    colorIdx: i % COLORS.length,
+  }));
+
+  function drawBackground(){
+    // Deep base gradient
+    const bg = ctx.createLinearGradient(0, 0, W, H);
+    bg.addColorStop(0, '#020617');
+    bg.addColorStop(0.5, '#0f172a');
+    bg.addColorStop(1, '#111827');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0,0,W,H);
+
+    // Radial glow blobs (slowly drifting)
+    const blobData = [
+      {x: 0.1 + 0.05*Math.sin(t*0.0007), y: 0.18 + 0.04*Math.cos(t*0.0009), c: COLORS[0], r: 0.35},
+      {x: 0.85 + 0.04*Math.cos(t*0.0006), y: 0.12 + 0.05*Math.sin(t*0.0008), c: COLORS[2], r: 0.30},
+      {x: 0.5 + 0.06*Math.sin(t*0.0005), y: 0.75 + 0.05*Math.cos(t*0.0007), c: COLORS[3], r: 0.28},
+    ];
+    blobData.forEach(b=>{
+      const g = ctx.createRadialGradient(b.x*W, b.y*H, 0, b.x*W, b.y*H, b.r*W);
+      g.addColorStop(0, `rgba(${b.c[0]},${b.c[1]},${b.c[2]},0.13)`);
+      g.addColorStop(1, 'transparent');
+      ctx.fillStyle = g;
+      ctx.fillRect(0,0,W,H);
+    });
+  }
+
+  function drawFlowLines(){
+    flowLines.forEach(line=>{
+      const c = COLORS[line.colorIdx];
+      ctx.save();
+      ctx.beginPath();
+      const steps = Math.ceil(W/4) + 2;
+      for(let i=0; i<=steps; i++){
+        const x = (i/steps)*W;
+        const y = line.yBase*H
+          + Math.sin(x*0.006 + line.phase + t*line.speed*60)*line.amplitude
+          + Math.sin(x*0.003 - line.phase*0.7 + t*line.speed*40)*line.amplitude*0.4;
+        i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+      }
+      ctx.strokeStyle = `rgba(${c[0]},${c[1]},${c[2]},0.10)`;
+      ctx.lineWidth = 1.5;
+      ctx.shadowColor = `rgba(${c[0]},${c[1]},${c[2]},0.3)`;
+      ctx.shadowBlur = 8;
+      ctx.stroke();
+      ctx.restore();
+    });
+  }
+
+  function drawParticles(){
+    particles.forEach(p=>{
+      // Twinkle
+      p.alpha += p.twinkleSpeed * p.twinkleDir;
+      if(p.alpha >= 0.75 || p.alpha <= 0.12) p.twinkleDir *= -1;
+
+      p.x += p.vx;
+      p.y += p.vy;
+      if(p.x < -10) p.x = W+10;
+      if(p.x > W+10) p.x = -10;
+      if(p.y < -10) p.y = H+10;
+      if(p.y > H+10) p.y = -10;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(${p.color[0]},${p.color[1]},${p.color[2]},${p.alpha})`;
+      ctx.shadowColor = `rgba(${p.color[0]},${p.color[1]},${p.color[2]},0.6)`;
+      ctx.shadowBlur = 6;
+      ctx.fill();
+      ctx.restore();
+    });
+  }
+
+  function frame(ts){
+    t = ts;
+    drawBackground();
+    drawFlowLines();
+    drawParticles();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+
 <script>
 function togglePassword() {
     const password = document.getElementById("login-password");
