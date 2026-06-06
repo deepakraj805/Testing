@@ -709,7 +709,8 @@ window._fbAuth = { GoogleAuthProvider, signInWithPopup, getAuth };
 window._vtAuth = auth;
 
 // ── Admin emails (SHA-256 hashed) ──
-const ADMIN_HASHES = ["aa1e3101e6da4e4597c8d70242ce26899e5be014d301c433d88213492424922e"];
+// info@vishaktech.com → full admin/dashboard access
+const ADMIN_HASHES = ["1a07615a3a984536a7c2c6b831293224c176db083fc96979505cd49bba7a983e"];
 
 async function hashEmail(email){
   const buf=new TextEncoder().encode(email.toLowerCase().trim());
