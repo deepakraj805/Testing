@@ -517,7 +517,7 @@ async function fmRender(){
         const date=new Date(node.createdTime).toLocaleDateString();
         const sel=FM_SELECTED?.id===node.id?'selected':'';
         const item=document.createElement('div');item.className='fm-item '+sel;
-        item.onclick=()=>fmSelect(node);item.ondblclick=()=>fmOpen(node);item.oncontextmenu=(e)=>fmCtx(e,node);
+        item.onclick=()=>{if(node.mimeType===GD_FOLDER_MIME){fmOpen(node);}else{fmSelect(node);}};item.ondblclick=()=>fmOpen(node);item.oncontextmenu=(e)=>fmCtx(e,node);
         const ctxBtn=document.createElement('button');ctxBtn.className='ctx-btn';ctxBtn.textContent='⋮';
         ctxBtn.onclick=(e)=>{e.stopPropagation();fmCtx(e,node);};item.appendChild(ctxBtn);
         const iconSpan=document.createElement('span');iconSpan.className='icon';iconSpan.textContent=icon;item.appendChild(iconSpan);
@@ -555,7 +555,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){hideCtxMenu();inpCa
 function showInp(title,placeholder,cb){safeText('inpTitle',title);const f=document.getElementById('inpField');f.placeholder=placeholder;f.value='';document.getElementById('inpModal').classList.add('show');setTimeout(()=>f.focus(),100);inpCallback=cb;f.onkeydown=e=>{if(e.key==='Enter')inpConfirm();};}
 function inpConfirm(){const val=document.getElementById('inpField').value;document.getElementById('inpModal').classList.remove('show');if(inpCallback)inpCallback(val);inpCallback=null;}
 function inpCancel(){document.getElementById('inpModal').classList.remove('show');inpCallback=null;}
-async function fvOpen(node){if(!FM_USER||node.mimeType===GD_FOLDER_MIME)return;fvEditingPath=node.id;safeText('fvTitle',node.name);const content=document.getElementById('fvContent');content.value='Loading…';content.disabled=true;document.getElementById('fileViewer').classList.add('show');try{const text=await gdReadFile(node.id);content.value=text;content.disabled=false;setTimeout(()=>content.focus(),100);}catch(e){content.value='';content.disabled=false;fmShowStatus('Could not read file (binary files are view-only)',true);}}
+async async function fvOpen(node){if(!FM_USER||node.mimeType===GD_FOLDER_MIME)return;fvEditingPath=node.id;safeText('fvTitle',node.name);const content=document.getElementById('fvContent');content.value='Loading…';content.disabled=true;document.getElementById('fileViewer').classList.add('show');try{const text=await gdReadFile(node.id);content.value=text;content.disabled=false;setTimeout(()=>content.focus(),100);}catch(e){content.value='Error: could not open file. Binary/image files cannot be previewed.';content.disabled=false;fmShowStatus('Could not read file (binary or image files are view-only)',true);}}
 async function fvSave(){if(!fvEditingPath||!FM_USER)return;try{fmShowStatus('Saving to Google Drive…');await gdUpdateFile(fvEditingPath,document.getElementById('fvContent').value);fmShowStatus('Saved to Google Drive ✓');fvClose();fmRender();}catch(e){fmShowStatus('Save error: '+e.message,true);}}
 function fvClose(){document.getElementById('fileViewer').classList.remove('show');fvEditingPath=null;}
 function showDashboardView(){document.getElementById('dashboardSection').style.display='block';document.getElementById('fileManagerSection').style.display='none';}
