@@ -19,7 +19,7 @@ body{min-height:100vh;color:#fff;background:#020617;}
 .btn{background:linear-gradient(270deg,#10b981,#06b6d4,#3b82f6,#10b981);background-size:400% 400%;animation:gradientMove 8s ease infinite;border:none;padding:12px 24px;border-radius:50px;color:#fff;font-weight:600;cursor:pointer;font-size:.9rem;transition:.3s;}
 .btn:hover{opacity:.85;transform:scale(1.03);}
 @keyframes gradientMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-#loginSection,#dashboardSection,#fileManagerSection,#adminSection{display:none;}
+#loginSection,#dashboardSection,#fileManagerSection{display:none;}
 .field{width:100%;padding:13px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.07);color:#fff;font-size:.92rem;outline:none;transition:.3s;margin-bottom:12px;}
 .field:focus{border-color:rgba(16,185,129,.5);background:rgba(255,255,255,.10);}
 .field::placeholder{color:#64748b;}
@@ -113,38 +113,7 @@ body{min-height:100vh;color:#fff;background:#020617;}
 .drive-connect-banner strong{color:#fff;}
 .drive-connected-bar{background:rgba(16,185,129,.10);border:1px solid rgba(16,185,129,.3);border-radius:14px;padding:12px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
 .drive-connected-bar span{color:#6ee7b7;font-size:.85rem;}
-/* ADMIN PANEL */
-#adminSection{max-width:900px;margin:0 auto;padding:30px 20px 60px;}
-.admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px;}
-.admin-title{font-size:1.5rem;font-weight:700;background:linear-gradient(90deg,#fff,#fca5a5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.admin-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
-.admin-tab{padding:8px 20px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#94a3b8;font-size:.85rem;cursor:pointer;transition:.3s;}
-.admin-tab.active{background:linear-gradient(135deg,#10b981,#06b6d4);border:none;color:#fff;}
-.admin-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:28px;margin-bottom:20px;}
-.admin-card h3{font-size:1rem;margin-bottom:18px;color:#e2e8f0;}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
-.form-row.full{grid-template-columns:1fr;}
-.form-label{font-size:.78rem;color:#94a3b8;margin-bottom:5px;}
-.form-input{width:100%;padding:11px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.07);color:#fff;font-size:.88rem;outline:none;transition:.3s;}
-.form-input:focus{border-color:rgba(16,185,129,.5);}
-.form-input::placeholder{color:#475569;}
-.form-select{width:100%;padding:11px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(15,23,42,.95);color:#fff;font-size:.88rem;outline:none;cursor:pointer;}
-.form-select option{background:#0f172a;}
-.submit-btn{padding:11px 28px;border-radius:10px;border:none;background:linear-gradient(135deg,#10b981,#06b6d4);color:#fff;font-size:.9rem;font-weight:600;cursor:pointer;transition:.3s;}
-.submit-btn:hover{opacity:.88;}
-.submit-btn:disabled{opacity:.5;cursor:not-allowed;}
-.danger-btn{padding:11px 28px;border-radius:10px;border:none;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#f87171;font-size:.9rem;font-weight:600;cursor:pointer;transition:.3s;}
-.danger-btn:hover{background:rgba(239,68,68,.25);}
-.user-table{width:100%;border-collapse:collapse;}
-.user-table th{text-align:left;padding:10px 14px;font-size:.78rem;color:#64748b;border-bottom:1px solid rgba(255,255,255,.06);text-transform:uppercase;letter-spacing:.05em;}
-.user-table td{padding:12px 14px;font-size:.84rem;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle;}
-.user-table tr:hover td{background:rgba(255,255,255,.03);}
-.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px;}
-.status-active{background:#10b981;}
-.status-disabled{background:#ef4444;}
-.admin-msg{font-size:.84rem;min-height:20px;margin-top:10px;}
-.admin-msg.ok{color:#6ee7b7;}
-.admin-msg.err{color:#f87171;}
+
 @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 </style>
 </head>
@@ -153,23 +122,85 @@ body{min-height:100vh;color:#fff;background:#020617;}
 <canvas id="bg-canvas"></canvas>
 
 <script>
-/* ── Static background ── */
+/* ── Slow-motion animated background ── */
 (function(){
   const cvs=document.getElementById('bg-canvas');
   const cx=cvs.getContext('2d');
-  let W,H;
-  function draw(){
+  let W,H,t=0;
+  const P=[[16,185,129],[6,182,212],[59,130,246],[139,92,246]];
+  const rnd=(a,b)=>a+Math.random()*(b-a);
+
+  /* Very few, slow particles */
+  const PTCL=[];
+  for(let i=0;i<28;i++){
+    const c=P[i%P.length];
+    PTCL.push({x:Math.random()*1920,y:Math.random()*1080,r:rnd(1,2.5),
+      vx:rnd(-.04,.04),vy:rnd(-.05,.05),
+      a:rnd(.15,.5),c,ts:rnd(.002,.006),td:Math.random()>.5?1:-1});
+  }
+
+  /* Slow drifting blobs */
+  const BLOBS=[
+    {bx:.12,by:.20,c:P[0],r:.30,px:.04,py:.03,fx:.00015,fy:.00012},
+    {bx:.85,by:.15,c:P[2],r:.26,px:.03,py:.04,fx:.00012,fy:.00010},
+    {bx:.50,by:.80,c:P[3],r:.24,px:.05,py:.03,fx:.00010,fy:.00014},
+    {bx:.30,by:.55,c:P[1],r:.20,px:.03,py:.05,fx:.00013,fy:.00011},
+  ];
+
+  /* Single very slow wave line */
+  function resize(){W=cvs.width=window.innerWidth;H=cvs.height=window.innerHeight;}
+  window.addEventListener('resize',resize);resize();
+
+  function frame(ts){
+    t=ts*.001;
     const bg=cx.createLinearGradient(0,0,W,H);
     bg.addColorStop(0,'#020617');bg.addColorStop(.5,'#0f172a');bg.addColorStop(1,'#111827');
     cx.fillStyle=bg;cx.fillRect(0,0,W,H);
-    [[.10,.18,[16,185,129],.32],[.88,.12,[59,130,246],.28],[.50,.78,[139,92,246],.24]].forEach(([bx,by,c,r])=>{
-      const g=cx.createRadialGradient(bx*W,by*H,0,bx*W,by*H,r*W);
-      g.addColorStop(0,`rgba(${c[0]},${c[1]},${c[2]},.13)`);g.addColorStop(1,'transparent');
+
+    /* Drifting blobs */
+    BLOBS.forEach(b=>{
+      const x=(b.bx+b.px*Math.sin(t*b.fx))*W;
+      const y=(b.by+b.py*Math.cos(t*b.fy))*H;
+      const g=cx.createRadialGradient(x,y,0,x,y,b.r*W);
+      g.addColorStop(0,`rgba(${b.c[0]},${b.c[1]},${b.c[2]},.12)`);
+      g.addColorStop(1,'transparent');
       cx.fillStyle=g;cx.fillRect(0,0,W,H);
     });
+
+    /* One slow wave */
+    [0,1].forEach(li=>{
+      const c=P[li*2];
+      cx.save();cx.beginPath();
+      const steps=Math.ceil(W/4)+2;
+      for(let i=0;i<=steps;i++){
+        const x=(i/steps)*W;
+        const y=(.35+li*.3)*H
+          +Math.sin(x*.004+(li*.8)+t*.18)*60
+          +Math.sin(x*.002-(li*.5)+t*.11)*30;
+        i===0?cx.moveTo(x,y):cx.lineTo(x,y);
+      }
+      cx.strokeStyle=`rgba(${c[0]},${c[1]},${c[2]},.07)`;
+      cx.lineWidth=1.5;cx.shadowColor=`rgba(${c[0]},${c[1]},${c[2]},.2)`;
+      cx.shadowBlur=8;cx.stroke();cx.restore();
+    });
+
+    /* Slow particles */
+    PTCL.forEach(p=>{
+      p.a+=p.ts*p.td;
+      if(p.a>=.55||p.a<=.10)p.td*=-1;
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<-10)p.x=W+10;if(p.x>W+10)p.x=-10;
+      if(p.y<-10)p.y=H+10;if(p.y>H+10)p.y=-10;
+      cx.save();cx.beginPath();
+      cx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      cx.fillStyle=`rgba(${p.c[0]},${p.c[1]},${p.c[2]},${p.a})`;
+      cx.shadowColor=`rgba(${p.c[0]},${p.c[1]},${p.c[2]},.4)`;
+      cx.shadowBlur=6;cx.fill();cx.restore();
+    });
+
+    requestAnimationFrame(frame);
   }
-  function resize(){W=cvs.width=window.innerWidth;H=cvs.height=window.innerHeight;draw();}
-  window.addEventListener('resize',resize);resize();
+  requestAnimationFrame(frame);
 })();
 </script>
 
@@ -259,84 +290,6 @@ function togglePassword(id,eyeId){
   </div>
   <div class="fm-breadcrumb" id="fmBreadcrumb"></div>
   <div class="fm-grid" id="fmGrid"></div>
-</div>
-
-<!-- ══════════════ ADMIN PANEL ══════════════ -->
-<div id="adminSection">
-  <div class="admin-header">
-    <span class="admin-title">🔐 Admin Panel</span>
-    <button class="fm-btn" onclick="showDashboardView()">← Back to Dashboard</button>
-  </div>
-  <div class="admin-tabs">
-    <button class="admin-tab active" onclick="adminTab('create')">➕ Create User</button>
-    <button class="admin-tab" onclick="adminTab('manage')">👥 Manage Users</button>
-    <button class="admin-tab" onclick="adminTab('password')">🔑 Reset Password</button>
-  </div>
-
-  <!-- CREATE USER -->
-  <div id="adminCreate" class="admin-card">
-    <h3>Create New Worker Account</h3>
-    <div class="form-row">
-      <div>
-        <div class="form-label">Full Name</div>
-        <input class="form-input" id="adName" placeholder="e.g. Ravi Kumar" maxlength="60">
-      </div>
-      <div>
-        <div class="form-label">Employee ID / Email</div>
-        <input class="form-input" id="adEmail" type="email" placeholder="e.g. ravi@vishaktec.com">
-      </div>
-    </div>
-    <div class="form-row">
-      <div>
-        <div class="form-label">Password</div>
-        <div style="position:relative;">
-          <input class="form-input" id="adPass" type="password" placeholder="Min 8 characters" style="padding-right:44px;">
-          <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;" onclick="togglePassword('adPass','adPassEye')"><i id="adPassEye" class="fa-solid fa-eye" style="font-size:15px;"></i></span>
-        </div>
-      </div>
-      <div>
-        <div class="form-label">Role(s) — hold Ctrl/Cmd for multiple</div>
-        <select class="form-select" id="adRoles" multiple size="4">
-          <option value="sales">📈 Sales</option>
-          <option value="workorder">🏭 Work Order</option>
-          <option value="accounts">🏦 Accounts</option>
-          <option value="admin">🔐 Admin</option>
-        </select>
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:14px;margin-top:6px;">
-      <button class="submit-btn" id="adCreateBtn" onclick="adminCreateUser()">Create Account</button>
-      <span id="adCreateMsg" class="admin-msg"></span>
-    </div>
-  </div>
-
-  <!-- MANAGE USERS -->
-  <div id="adminManage" class="admin-card" style="display:none;">
-    <h3>All Worker Accounts <button class="fm-btn" style="font-size:.78rem;padding:6px 14px;" onclick="adminLoadUsers()">🔄 Refresh</button></h3>
-    <div id="adminUserTable" style="overflow-x:auto;"></div>
-  </div>
-
-  <!-- RESET PASSWORD -->
-  <div id="adminPassword" class="admin-card" style="display:none;">
-    <h3>Reset Worker Password</h3>
-    <div class="form-row">
-      <div>
-        <div class="form-label">Worker Email</div>
-        <input class="form-input" id="adResetEmail" type="email" placeholder="worker@vishaktec.com">
-      </div>
-      <div>
-        <div class="form-label">New Password</div>
-        <div style="position:relative;">
-          <input class="form-input" id="adResetPass" type="password" placeholder="Min 8 characters" style="padding-right:44px;">
-          <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;" onclick="togglePassword('adResetPass','adResetEye')"><i id="adResetEye" class="fa-solid fa-eye" style="font-size:15px;"></i></span>
-        </div>
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:14px;margin-top:6px;">
-      <button class="submit-btn" id="adResetBtn" onclick="adminResetPassword()">Reset Password</button>
-      <span id="adResetMsg" class="admin-msg"></span>
-    </div>
-  </div>
 </div>
 
 <!-- Contact Modal -->
@@ -585,22 +538,8 @@ function inpCancel(){document.getElementById('inpModal').classList.remove('show'
 async function fvOpen(node){if(!FM_USER||node.mimeType===GD_FOLDER_MIME)return;fvEditingPath=node.id;safeText('fvTitle',node.name);const content=document.getElementById('fvContent');content.value='Loading…';content.disabled=true;document.getElementById('fileViewer').classList.add('show');try{const text=await gdReadFile(node.id);content.value=text;content.disabled=false;setTimeout(()=>content.focus(),100);}catch(e){content.value='';content.disabled=false;fmShowStatus('Could not read file (binary files are view-only)',true);}}
 async function fvSave(){if(!fvEditingPath||!FM_USER)return;try{fmShowStatus('Saving to Google Drive…');await gdUpdateFile(fvEditingPath,document.getElementById('fvContent').value);fmShowStatus('Saved to Google Drive ✓');fvClose();fmRender();}catch(e){fmShowStatus('Save error: '+e.message,true);}}
 function fvClose(){document.getElementById('fileViewer').classList.remove('show');fvEditingPath=null;}
-function showDashboardView(){document.getElementById('dashboardSection').style.display='block';document.getElementById('fileManagerSection').style.display='none';document.getElementById('adminSection').style.display='none';}
-function showFileManager(){if(!FM_USER)return;document.getElementById('dashboardSection').style.display='none';document.getElementById('fileManagerSection').style.display='block';document.getElementById('adminSection').style.display='none';updateDriveBanner();FM_PATH=[];FM_SELECTED=null;fmRender();}
-function showAdminPanel(){if(!FM_USER)return;document.getElementById('dashboardSection').style.display='none';document.getElementById('fileManagerSection').style.display='none';document.getElementById('adminSection').style.display='block';}
-
-/* ══ ADMIN TABS ══ */
-function adminTab(tab){
-  ['create','manage','password'].forEach(t=>{
-    document.getElementById('adminCreate').style.display=t==='create'&&tab==='create'?'block':'none';
-    document.getElementById('adminManage').style.display=t==='manage'&&tab==='manage'?'block':'none';
-    document.getElementById('adminPassword').style.display=t==='password'&&tab==='password'?'block':'none';
-  });
-  document.querySelectorAll('.admin-tab').forEach((btn,i)=>{
-    btn.classList.toggle('active',['create','manage','password'][i]===tab);
-  });
-  if(tab==='manage')adminLoadUsers();
-}
+function showDashboardView(){document.getElementById('dashboardSection').style.display='block';document.getElementById('fileManagerSection').style.display='none';}
+function showFileManager(){if(!FM_USER)return;document.getElementById('dashboardSection').style.display='none';document.getElementById('fileManagerSection').style.display='block';updateDriveBanner();FM_PATH=[];FM_SELECTED=null;fmRender();}
 </script>
 
 <script type="module">
@@ -626,8 +565,8 @@ window._fbAuth = { GoogleAuthProvider, signInWithPopup, getAuth };
 window._vtAuth = auth;
 
 // ── Admin emails (SHA-256 hashed) ──
-// dr4683743@gmail.com → full admin/dashboard access (testing primary)
-const ADMIN_HASHES = ["02f6b857d3100b0cd628d85c1750e1793228c86957fdc1c34d27667ef9e0e487"];
+// info@vishaktech.com → full admin/dashboard access
+const ADMIN_HASHES = ["1a07615a3a984536a7c2c6b831293224c176db083fc96979505cd49bba7a983e"];
 
 async function hashEmail(email){
   const buf=new TextEncoder().encode(email.toLowerCase().trim());
@@ -678,10 +617,8 @@ async function showDashboard(user){
     workorder:`<a href="/Testing/WorkOrder/" class="card"><h2>🏭 Work Order Dashboard</h2><p>Track Fabrication, Casting, Production Progress, Quality Control, Packing and Dispatch.</p></a>`,
     accounts:`<a href="/Testing/Accounts/" class="card"><h2>🏦 Accounts Dashboard</h2><p>Track Account Balances, Credits, Debits, Transaction History and Google Drive Sync.</p></a>`,
     files:`<div class="card" onclick="showFileManager()"><h2>📁 Vishak Tech Files</h2><p>Shared company file manager — saved directly to company Google Drive. Connect your Google account inside.</p></div>`,
-    admin:`<div class="card" onclick="showAdminPanel()" style="border-color:rgba(239,68,68,.2)"><h2>🔐 Admin Panel</h2><p>Create and manage worker accounts, assign roles, reset passwords for Sales, Accounts and Work Order teams.</p></div>`
   };
   const cardKeys=[...roles.filter(r=>r!=='admin'),'files'];
-  if(isAdmin||roles.includes('admin')) cardKeys.push('admin');
   document.getElementById('dashboardCards').innerHTML=cardKeys.map(r=>CARDS[r]||'').join('');
 }
 
@@ -691,7 +628,7 @@ function showLogin(){
   document.getElementById('loginSection').style.display='block';
   document.getElementById('dashboardSection').style.display='none';
   document.getElementById('fileManagerSection').style.display='none';
-  document.getElementById('adminSection').style.display='none';
+  
   document.getElementById('logoutBtn').style.display='none';
   document.getElementById('userEmailBadge').style.display='none';
   document.getElementById('userRoleBadge').style.display='none';
@@ -727,90 +664,10 @@ window.logoutUser=async()=>{
 };
 
 /* ══ ADMIN FUNCTIONS ══ */
-window.adminCreateUser=async()=>{
-  const name=document.getElementById('adName').value.trim();
-  const email=document.getElementById('adEmail').value.trim().toLowerCase();
-  const pass=document.getElementById('adPass').value;
-  const selEl=document.getElementById('adRoles');
-  const roles=[...selEl.selectedOptions].map(o=>o.value);
-  const msg=document.getElementById('adCreateMsg');
-  msg.className='admin-msg';msg.textContent='';
-  if(!name){msg.className='admin-msg err';msg.textContent='Enter full name.';return;}
-  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){msg.className='admin-msg err';msg.textContent='Enter valid email.';return;}
-  if(pass.length<8){msg.className='admin-msg err';msg.textContent='Password must be at least 8 characters.';return;}
-  if(!roles.length){msg.className='admin-msg err';msg.textContent='Select at least one role.';return;}
-  const btn=document.getElementById('adCreateBtn');btn.disabled=true;btn.textContent='Creating…';
-  try{
-    // Create Firebase Auth account
-    const r=await createUserWithEmailAndPassword(auth,email,pass);
-    // Save worker profile to Firestore
-    await setDoc(doc(db,'workers',email),{name,email,roles,disabled:false,createdAt:serverTimestamp(),createdBy:FM_USER});
-    msg.className='admin-msg ok';msg.textContent=`✅ Account created for ${name} (${email})`;
-    document.getElementById('adName').value='';document.getElementById('adEmail').value='';document.getElementById('adPass').value='';
-    selEl.selectedIndex=-1;
-  } catch(e){
-    msg.className='admin-msg err';
-    msg.textContent='Error: '+(e.code==='auth/email-already-in-use'?'Email already registered.':e.message);
-  } finally{btn.disabled=false;btn.textContent='Create Account';}
-};
 
-window.adminLoadUsers=async()=>{
-  const container=document.getElementById('adminUserTable');
-  container.innerHTML='<p style="color:#64748b;font-size:.85rem;padding:10px 0;">Loading…</p>';
-  try{
-    const snap=await getDocs(collection(db,'workers'));
-    if(snap.empty){container.innerHTML='<p style="color:#64748b;padding:10px 0;">No worker accounts yet.</p>';return;}
-    let rows='';
-    snap.forEach(d=>{
-      const w=d.data();
-      const statusDot=w.disabled?'<span class="status-dot status-disabled"></span>Disabled':'<span class="status-dot status-active"></span>Active';
-      const roleHtml=(w.roles||[]).map(r=>roleBadgeHtml(r)).join(' ');
-      rows+=`<tr>
-        <td><strong>${w.name||'—'}</strong></td>
-        <td style="color:#94a3b8;">${w.email}</td>
-        <td>${roleHtml}</td>
-        <td>${statusDot}</td>
-        <td style="display:flex;gap:8px;flex-wrap:wrap;">
-          ${w.disabled
-            ?`<button class="submit-btn" style="font-size:.76rem;padding:6px 12px;" onclick="adminToggleUser('${w.email}',false)">Enable</button>`
-            :`<button class="danger-btn" style="font-size:.76rem;padding:6px 12px;" onclick="adminToggleUser('${w.email}',true)">Disable</button>`}
-          <button class="danger-btn" style="font-size:.76rem;padding:6px 12px;" onclick="adminDeleteUser('${w.email}','${w.name||w.email}')">Delete</button>
-        </td>
-      </tr>`;
-    });
-    container.innerHTML=`<table class="user-table"><thead><tr><th>Name</th><th>Email</th><th>Roles</th><th>Status</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
-  } catch(e){container.innerHTML=`<p style="color:#f87171;">Error: ${e.message}</p>`;}
-};
 
-window.adminToggleUser=async(email,disable)=>{
-  if(!confirm(`${disable?'Disable':'Enable'} account for ${email}?`))return;
-  try{await updateDoc(doc(db,'workers',email),{disabled:disable});fmShowStatus(`Account ${disable?'disabled':'enabled'} ✓`);adminLoadUsers();}
-  catch(e){fmShowStatus('Error: '+e.message,true);}
-};
 
-window.adminDeleteUser=async(email,name)=>{
-  if(!confirm(`Permanently delete account for ${name}?\n\nThis removes their Firestore record. Firebase Auth account must be deleted separately in Firebase Console.`))return;
-  try{await deleteDoc(doc(db,'workers',email));fmShowStatus(`Account deleted ✓`);adminLoadUsers();}
-  catch(e){fmShowStatus('Error: '+e.message,true);}
-};
 
-window.adminResetPassword=async()=>{
-  const email=document.getElementById('adResetEmail').value.trim().toLowerCase();
-  const pass=document.getElementById('adResetPass').value;
-  const msg=document.getElementById('adResetMsg');
-  msg.className='admin-msg';msg.textContent='';
-  if(!email){msg.className='admin-msg err';msg.textContent='Enter email.';return;}
-  if(pass.length<8){msg.className='admin-msg err';msg.textContent='Password must be at least 8 characters.';return;}
-  const btn=document.getElementById('adResetBtn');btn.disabled=true;btn.textContent='Resetting…';
-  try{
-    // Send password reset email via Firebase
-    await sendPasswordResetEmail(auth,email);
-    msg.className='admin-msg ok';msg.textContent=`✅ Password reset email sent to ${email}`;
-    document.getElementById('adResetEmail').value='';document.getElementById('adResetPass').value='';
-  } catch(e){
-    msg.className='admin-msg err';msg.textContent='Error: '+e.message;
-  } finally{btn.disabled=false;btn.textContent='Reset Password';}
-};
 </script>
 </body>
 </html>
