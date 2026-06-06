@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Security headers via meta (backup; real CSP should be on server) -->
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <title>Vishak Tech | Portal</title>
@@ -12,25 +11,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
-body{min-height:100vh;color:#fff;background:#020617;overflow-x:hidden;}
+body{min-height:100vh;color:#fff;background:#020617;}
 #bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;}
-@keyframes bgMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 .navbar{display:flex;justify-content:space-between;align-items:center;padding:18px 40px;background:rgba(255,255,255,.04);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.08);}
 .logo{height:60px;transition:.4s;}
 .logo:hover{transform:scale(1.05);filter:drop-shadow(0 0 10px rgba(16,185,129,.4));}
 .btn{background:linear-gradient(270deg,#10b981,#06b6d4,#3b82f6,#10b981);background-size:400% 400%;animation:gradientMove 8s ease infinite;border:none;padding:12px 24px;border-radius:50px;color:#fff;font-weight:600;cursor:pointer;font-size:.9rem;transition:.3s;}
 .btn:hover{opacity:.85;transform:scale(1.03);}
 @keyframes gradientMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-#loginSection,#dashboardSection{display:none;}
-.login-wrap{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 80px);padding:40px 20px;}
-.login-box{width:100%;max-width:440px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);border-radius:28px;padding:44px 40px;backdrop-filter:blur(20px);animation:fadeUp .5s ease both;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
-.login-box h2{font-size:1.7rem;font-weight:700;margin-bottom:6px;background:linear-gradient(90deg,#fff,#d1fae5,#93c5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.login-box p.sub{color:#94a3b8;font-size:.88rem;margin-bottom:28px;}
-.google-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:13px;border-radius:14px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:#fff;font-size:.95rem;font-weight:500;cursor:pointer;transition:.3s;margin-bottom:22px;}
-.google-btn:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.3);}
-.divider{display:flex;align-items:center;gap:12px;margin-bottom:22px;color:#475569;font-size:.8rem;}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08);}
+#loginSection,#dashboardSection,#fileManagerSection,#adminSection{display:none;}
 .field{width:100%;padding:13px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.07);color:#fff;font-size:.92rem;outline:none;transition:.3s;margin-bottom:12px;}
 .field:focus{border-color:rgba(16,185,129,.5);background:rgba(255,255,255,.10);}
 .field::placeholder{color:#64748b;}
@@ -58,9 +47,14 @@ body{min-height:100vh;color:#fff;background:#020617;overflow-x:hidden;}
 .footer{text-align:center;padding:40px;color:#475569;font-size:.85rem;}
 .logout-btn{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);animation:none;padding:10px 20px;}
 .session-warn{display:none;position:fixed;bottom:24px;right:24px;background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.4);border-radius:14px;padding:14px 20px;color:#fbbf24;font-size:.85rem;z-index:99999;}
-
-/* ===== FILE MANAGER ===== */
-#fileManagerSection{display:none;max-width:1000px;margin:0 auto;padding:20px 20px 60px;}
+/* ROLE BADGE */
+.role-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:600;margin-left:6px;}
+.role-sales{background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);color:#6ee7b7;}
+.role-accounts{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd;}
+.role-workorder{background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);color:#fcd34d;}
+.role-admin{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#fca5a5;}
+/* FILE MANAGER */
+#fileManagerSection{max-width:1000px;margin:0 auto;padding:20px 20px 60px;}
 .fm-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
 .fm-title{font-size:1.4rem;font-weight:700;background:linear-gradient(90deg,#fff,#d1fae5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .fm-breadcrumb{display:flex;align-items:center;gap:6px;font-size:.85rem;color:#94a3b8;flex-wrap:wrap;margin-bottom:16px;}
@@ -74,6 +68,8 @@ body{min-height:100vh;color:#fff;background:#020617;overflow-x:hidden;}
 .fm-btn.primary:hover{opacity:.88;}
 .fm-btn.danger{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.3);}
 .fm-btn.danger:hover{background:rgba(239,68,68,.25);}
+.fm-btn.google{background:linear-gradient(135deg,#4285f4,#34a853);border:none;}
+.fm-btn.google:hover{opacity:.88;}
 .fm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px;min-height:200px;}
 .fm-item{position:relative;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:20px 14px 14px;text-align:center;cursor:pointer;transition:.3s;user-select:none;}
 .fm-item:hover{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.2);transform:translateY(-3px);}
@@ -111,167 +107,162 @@ body{min-height:100vh;color:#fff;background:#020617;overflow-x:hidden;}
 .fv-body{flex:1;padding:24px;overflow:auto;}
 .fv-body textarea{width:100%;height:100%;min-height:calc(100vh - 140px);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;color:#e2e8f0;padding:16px;font-size:.9rem;font-family:Poppins,sans-serif;resize:none;outline:none;}
 .fv-footer{display:flex;gap:10px;padding:14px 24px;border-top:1px solid rgba(255,255,255,.08);}
+/* DRIVE CONNECT BANNER */
+.drive-connect-banner{background:rgba(66,133,244,.10);border:1px solid rgba(66,133,244,.3);border-radius:14px;padding:18px 22px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.drive-connect-banner p{color:#93c5fd;font-size:.88rem;}
+.drive-connect-banner strong{color:#fff;}
+.drive-connected-bar{background:rgba(16,185,129,.10);border:1px solid rgba(16,185,129,.3);border-radius:14px;padding:12px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.drive-connected-bar span{color:#6ee7b7;font-size:.85rem;}
+/* ADMIN PANEL */
+#adminSection{max-width:900px;margin:0 auto;padding:30px 20px 60px;}
+.admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px;}
+.admin-title{font-size:1.5rem;font-weight:700;background:linear-gradient(90deg,#fff,#fca5a5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.admin-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.admin-tab{padding:8px 20px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#94a3b8;font-size:.85rem;cursor:pointer;transition:.3s;}
+.admin-tab.active{background:linear-gradient(135deg,#10b981,#06b6d4);border:none;color:#fff;}
+.admin-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:28px;margin-bottom:20px;}
+.admin-card h3{font-size:1rem;margin-bottom:18px;color:#e2e8f0;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.form-row.full{grid-template-columns:1fr;}
+.form-label{font-size:.78rem;color:#94a3b8;margin-bottom:5px;}
+.form-input{width:100%;padding:11px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.07);color:#fff;font-size:.88rem;outline:none;transition:.3s;}
+.form-input:focus{border-color:rgba(16,185,129,.5);}
+.form-input::placeholder{color:#475569;}
+.form-select{width:100%;padding:11px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(15,23,42,.95);color:#fff;font-size:.88rem;outline:none;cursor:pointer;}
+.form-select option{background:#0f172a;}
+.submit-btn{padding:11px 28px;border-radius:10px;border:none;background:linear-gradient(135deg,#10b981,#06b6d4);color:#fff;font-size:.9rem;font-weight:600;cursor:pointer;transition:.3s;}
+.submit-btn:hover{opacity:.88;}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed;}
+.danger-btn{padding:11px 28px;border-radius:10px;border:none;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#f87171;font-size:.9rem;font-weight:600;cursor:pointer;transition:.3s;}
+.danger-btn:hover{background:rgba(239,68,68,.25);}
+.user-table{width:100%;border-collapse:collapse;}
+.user-table th{text-align:left;padding:10px 14px;font-size:.78rem;color:#64748b;border-bottom:1px solid rgba(255,255,255,.06);text-transform:uppercase;letter-spacing:.05em;}
+.user-table td{padding:12px 14px;font-size:.84rem;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle;}
+.user-table tr:hover td{background:rgba(255,255,255,.03);}
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px;}
+.status-active{background:#10b981;}
+.status-disabled{background:#ef4444;}
+.admin-msg{font-size:.84rem;min-height:20px;margin-top:10px;}
+.admin-msg.ok{color:#6ee7b7;}
+.admin-msg.err{color:#f87171;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 </style>
 </head>
-
 <body>
-<canvas id="bg-canvas"></canvas>
-<script>
-(function(){
-  const canvas = document.getElementById('bg-canvas');
-  const ctx = canvas.getContext('2d');
-  let W, H, t = 0;
 
-  // Particles
-  const PARTICLE_COUNT = 70;
-  const particles = [];
+<canvas id="bg-canvas"></canvas>
+
+<script>
+/* ── Animated background ── */
+(function(){
+  const cvs=document.getElementById('bg-canvas');
+  const cx=cvs.getContext('2d');
+  let W,H,raf,t=0;
 
   function resize(){
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
+    W=cvs.width=window.innerWidth;
+    H=cvs.height=window.innerHeight;
   }
-  window.addEventListener('resize', resize);
+  window.addEventListener('resize',resize);
   resize();
 
-  function randomBetween(a,b){ return a + Math.random()*(b-a); }
+  /* Colour palette */
+  const P=[[16,185,129],[6,182,212],[59,130,246],[139,92,246]];
+  const rnd=(a,b)=>a+Math.random()*(b-a);
 
-  // Colour palette: emerald, cyan, blue, violet
-  const COLORS = [
-    [16,185,129],  // emerald
-    [6,182,212],   // cyan
-    [59,130,246],  // blue
-    [139,92,246],  // violet
-  ];
-
-  function mkParticle(){
-    const c = COLORS[Math.floor(Math.random()*COLORS.length)];
-    return {
-      x: Math.random()*W,
-      y: Math.random()*H,
-      r: randomBetween(1.2, 3.5),
-      vx: randomBetween(-0.18, 0.18),
-      vy: randomBetween(-0.22, 0.22),
-      alpha: randomBetween(0.25, 0.7),
-      color: c,
-      twinkleSpeed: randomBetween(0.005, 0.018),
-      twinkleDir: Math.random() > 0.5 ? 1 : -1,
-    };
+  /* Particles */
+  const PTCL=[];
+  for(let i=0;i<80;i++){
+    const c=P[i%P.length];
+    PTCL.push({x:Math.random()*W,y:Math.random()*H,r:rnd(1,3.2),
+      vx:rnd(-.18,.18),vy:rnd(-.2,.2),
+      a:rnd(.2,.65),c,ts:rnd(.005,.02),td:Math.random()>.5?1:-1});
   }
 
-  for(let i=0;i<PARTICLE_COUNT;i++) particles.push(mkParticle());
-
-  // Flow lines
-  const LINE_COUNT = 5;
-  const flowLines = Array.from({length:LINE_COUNT},(_,i)=>({
-    phase: (i/LINE_COUNT)*Math.PI*2,
-    speed: randomBetween(0.0008, 0.0016),
-    amplitude: randomBetween(80, 180),
-    yBase: (i+1)/(LINE_COUNT+1),
-    colorIdx: i % COLORS.length,
+  /* Flow lines */
+  const LINES=[0,1,2,3,4].map((i,_,arr)=>({
+    phase:(i/arr.length)*Math.PI*2,
+    spd:rnd(.0009,.0018),
+    amp:rnd(70,170),
+    yb:(i+1)/(arr.length+1),
+    ci:i%P.length
   }));
 
-  function drawBackground(){
-    // Deep base gradient
-    const bg = ctx.createLinearGradient(0, 0, W, H);
-    bg.addColorStop(0, '#020617');
-    bg.addColorStop(0.5, '#0f172a');
-    bg.addColorStop(1, '#111827');
-    ctx.fillStyle = bg;
-    ctx.fillRect(0,0,W,H);
-
-    // Radial glow blobs (slowly drifting)
-    const blobData = [
-      {x: 0.1 + 0.05*Math.sin(t*0.0007), y: 0.18 + 0.04*Math.cos(t*0.0009), c: COLORS[0], r: 0.35},
-      {x: 0.85 + 0.04*Math.cos(t*0.0006), y: 0.12 + 0.05*Math.sin(t*0.0008), c: COLORS[2], r: 0.30},
-      {x: 0.5 + 0.06*Math.sin(t*0.0005), y: 0.75 + 0.05*Math.cos(t*0.0007), c: COLORS[3], r: 0.28},
-    ];
-    blobData.forEach(b=>{
-      const g = ctx.createRadialGradient(b.x*W, b.y*H, 0, b.x*W, b.y*H, b.r*W);
-      g.addColorStop(0, `rgba(${b.c[0]},${b.c[1]},${b.c[2]},0.13)`);
-      g.addColorStop(1, 'transparent');
-      ctx.fillStyle = g;
-      ctx.fillRect(0,0,W,H);
-    });
-  }
-
-  function drawFlowLines(){
-    flowLines.forEach(line=>{
-      const c = COLORS[line.colorIdx];
-      ctx.save();
-      ctx.beginPath();
-      const steps = Math.ceil(W/4) + 2;
-      for(let i=0; i<=steps; i++){
-        const x = (i/steps)*W;
-        const y = line.yBase*H
-          + Math.sin(x*0.006 + line.phase + t*line.speed*60)*line.amplitude
-          + Math.sin(x*0.003 - line.phase*0.7 + t*line.speed*40)*line.amplitude*0.4;
-        i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
-      }
-      ctx.strokeStyle = `rgba(${c[0]},${c[1]},${c[2]},0.10)`;
-      ctx.lineWidth = 1.5;
-      ctx.shadowColor = `rgba(${c[0]},${c[1]},${c[2]},0.3)`;
-      ctx.shadowBlur = 8;
-      ctx.stroke();
-      ctx.restore();
-    });
-  }
-
-  function drawParticles(){
-    particles.forEach(p=>{
-      // Twinkle
-      p.alpha += p.twinkleSpeed * p.twinkleDir;
-      if(p.alpha >= 0.75 || p.alpha <= 0.12) p.twinkleDir *= -1;
-
-      p.x += p.vx;
-      p.y += p.vy;
-      if(p.x < -10) p.x = W+10;
-      if(p.x > W+10) p.x = -10;
-      if(p.y < -10) p.y = H+10;
-      if(p.y > H+10) p.y = -10;
-
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-      ctx.fillStyle = `rgba(${p.color[0]},${p.color[1]},${p.color[2]},${p.alpha})`;
-      ctx.shadowColor = `rgba(${p.color[0]},${p.color[1]},${p.color[2]},0.6)`;
-      ctx.shadowBlur = 6;
-      ctx.fill();
-      ctx.restore();
-    });
-  }
+  /* Drifting glow blobs */
+  const BLOBS=[
+    {bx:.10,by:.18,c:P[0],r:.32,px:.05,py:.04,fx:.0007,fy:.0009},
+    {bx:.88,by:.12,c:P[2],r:.28,px:.04,py:.05,fx:.0006,fy:.0008},
+    {bx:.50,by:.78,c:P[3],r:.26,px:.06,py:.05,fx:.0005,fy:.0007},
+  ];
 
   function frame(ts){
-    t = ts;
-    drawBackground();
-    drawFlowLines();
-    drawParticles();
-    requestAnimationFrame(frame);
+    t=ts;
+    /* Base gradient */
+    const bg=cx.createLinearGradient(0,0,W,H);
+    bg.addColorStop(0,'#020617');
+    bg.addColorStop(.5,'#0f172a');
+    bg.addColorStop(1,'#111827');
+    cx.fillStyle=bg;
+    cx.fillRect(0,0,W,H);
+
+    /* Glow blobs */
+    BLOBS.forEach(b=>{
+      const x=(b.bx+b.px*Math.sin(t*b.fx))*W;
+      const y=(b.by+b.py*Math.cos(t*b.fy))*H;
+      const g=cx.createRadialGradient(x,y,0,x,y,b.r*W);
+      g.addColorStop(0,`rgba(${b.c[0]},${b.c[1]},${b.c[2]},.14)`);
+      g.addColorStop(1,'transparent');
+      cx.fillStyle=g;
+      cx.fillRect(0,0,W,H);
+    });
+
+    /* Flow wave lines */
+    LINES.forEach(l=>{
+      const c=P[l.ci];
+      cx.save();cx.beginPath();
+      const steps=Math.ceil(W/3)+2;
+      for(let i=0;i<=steps;i++){
+        const x=(i/steps)*W;
+        const y=l.yb*H
+          +Math.sin(x*.006+l.phase+t*l.spd*55)*l.amp
+          +Math.sin(x*.003-l.phase*.7+t*l.spd*35)*l.amp*.38;
+        i===0?cx.moveTo(x,y):cx.lineTo(x,y);
+      }
+      cx.strokeStyle=`rgba(${c[0]},${c[1]},${c[2]},.11)`;
+      cx.lineWidth=1.6;
+      cx.shadowColor=`rgba(${c[0]},${c[1]},${c[2]},.35)`;
+      cx.shadowBlur=9;
+      cx.stroke();cx.restore();
+    });
+
+    /* Floating particles */
+    PTCL.forEach(p=>{
+      p.a+=p.ts*p.td;
+      if(p.a>=.70||p.a<=.12)p.td*=-1;
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<-10)p.x=W+10;if(p.x>W+10)p.x=-10;
+      if(p.y<-10)p.y=H+10;if(p.y>H+10)p.y=-10;
+      cx.save();cx.beginPath();
+      cx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      cx.fillStyle=`rgba(${p.c[0]},${p.c[1]},${p.c[2]},${p.a})`;
+      cx.shadowColor=`rgba(${p.c[0]},${p.c[1]},${p.c[2]},.55)`;
+      cx.shadowBlur=7;
+      cx.fill();cx.restore();
+    });
+
+    raf=requestAnimationFrame(frame);
   }
-  requestAnimationFrame(frame);
+  raf=requestAnimationFrame(frame);
 })();
 </script>
 
 <script>
-function togglePassword() {
-    const password = document.getElementById("login-password");
-    const eye = document.getElementById("toggleEye");
-    if (!password || !eye) return;
-    if (password.type === "password") {
-        password.type = "text";
-        eye.classList.remove("fa-eye-slash");
-        eye.classList.add("fa-eye");
-    } else {
-        password.type = "password";
-        eye.classList.remove("fa-eye");
-        eye.classList.add("fa-eye-slash");
-    }
+function togglePassword(id,eyeId){
+  const p=document.getElementById(id),e=document.getElementById(eyeId);
+  if(!p||!e)return;
+  if(p.type==='password'){p.type='text';e.className='fa-solid fa-eye';}
+  else{p.type='password';e.className='fa-solid fa-eye-slash';}
 }
-document.addEventListener("DOMContentLoaded", function() {
-    const p = document.getElementById("login-password");
-    const e = document.getElementById("toggleEye");
-    if (p) p.type = "password";
-    if (e) { e.classList.remove("fa-eye-slash"); e.classList.add("fa-eye"); }
-});
 </script>
 
 <div id="loadingOverlay"><div class="spinner"></div></div>
@@ -281,65 +272,48 @@ document.addEventListener("DOMContentLoaded", function() {
   <a href="https://vishaktec.com/home" target="_blank" rel="noopener noreferrer">
     <img src="VISHAKTECH_LOGO.jpeg" class="logo" onerror="this.style.display='none'" alt="Vishak Tech">
   </a>
-  <div style="display:flex;gap:10px;align-items:center;">
-    <span id="userEmailBadge" style="display:none;color:#6ee7b7;font-size:.82rem;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+    <span id="userEmailBadge" style="display:none;color:#6ee7b7;font-size:.82rem;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+    <span id="userRoleBadge" style="display:none;"></span>
     <button class="btn" onclick="openContact()">Contact Us</button>
     <button class="btn logout-btn" id="logoutBtn" style="display:none;" onclick="logoutUser()">Logout</button>
   </div>
 </header>
 
-<!-- LOGIN -->
+<!-- ══════════════ LOGIN ══════════════ -->
 <div id="loginSection">
-<div class="container" style="width:1250px;max-width:95%;height:720px;display:flex;border-radius:30px;overflow:hidden;background:rgba(255,255,255,.08);backdrop-filter:blur(20px);box-shadow:0 40px 120px rgba(0,0,0,.45);margin:30px auto;">
-<div class="left" style="width:42%;background:#fff;padding:60px;display:flex;align-items:center;justify-content:center">
-<div class="login-box" style="max-width:380px;background:none;border:none;padding:0">
-<div style="font-size:28px;font-weight:700;color:#111827;margin-bottom:20px">Vishak Tech</div>
-<div style="display:inline-block;padding:8px 18px;background:#ecfdf5;color:#10b981;border-radius:50px;margin-bottom:20px">Enterprise Portal</div>
-<h1 style="font-size:42px;color:#111827">Sign In</h1>
-<p style="color:#6b7280;margin:10px 0 25px;">Access your secure enterprise workspace.</p>
-<input id="login-email" class="field" type="email" placeholder="Email Address" autocomplete="email" style="width:100%;padding:16px;margin-bottom:14px;border:1px solid #e5e7eb;border-radius:14px;background:#f8fafc;color:#111">
-
-
-<div style="position:relative;width:100%;margin-bottom:14px;">
-
-<input
-    id="login-password"
-    type="password"
-    placeholder="Password"
-    autocomplete="current-password"
-    data-type="password"
-    onkeydown="if(event.key==='Enter')emailLogin()"
-    style="
-        width:100%;
-        padding:16px;
-        padding-right:50px;
-        border:1px solid #10b981;
-        border-radius:14px;
-        background:#f8fafc;
-        color:#111827;
-        font-size:16px;
-    "
->
-
-<span style="position:absolute;right:15px;top:50%;transform:translateY(-50%);cursor:pointer;" onclick="togglePassword()">
-    <i id="toggleEye" class="fa-solid fa-eye" style="color:#6b7280;font-size:18px;"></i>
-</span>
-
+<div style="width:1250px;max-width:95%;height:720px;display:flex;border-radius:30px;overflow:hidden;background:rgba(255,255,255,.08);backdrop-filter:blur(20px);box-shadow:0 40px 120px rgba(0,0,0,.45);margin:30px auto;">
+  <div style="width:42%;background:#fff;padding:60px;display:flex;align-items:center;justify-content:center">
+    <div style="max-width:380px;width:100%;">
+      <div style="font-size:28px;font-weight:700;color:#111827;margin-bottom:20px">Vishak Tech</div>
+      <div style="display:inline-block;padding:8px 18px;background:#ecfdf5;color:#10b981;border-radius:50px;margin-bottom:20px">Enterprise Portal</div>
+      <h1 style="font-size:42px;color:#111827">Sign In</h1>
+      <p style="color:#6b7280;margin:10px 0 25px;">Access your secure enterprise workspace.</p>
+      <input id="login-email" type="email" placeholder="Employee ID / Email" autocomplete="email"
+        style="width:100%;padding:16px;margin-bottom:14px;border:1px solid #e5e7eb;border-radius:14px;background:#f8fafc;color:#111;font-size:15px;outline:none;font-family:Poppins,sans-serif;">
+      <div style="position:relative;width:100%;margin-bottom:14px;">
+        <input id="login-password" type="password" placeholder="Password" autocomplete="current-password"
+          onkeydown="if(event.key==='Enter')emailLogin()"
+          style="width:100%;padding:16px;padding-right:50px;border:1px solid #10b981;border-radius:14px;background:#f8fafc;color:#111827;font-size:16px;outline:none;font-family:Poppins,sans-serif;">
+        <span style="position:absolute;right:15px;top:50%;transform:translateY(-50%);cursor:pointer;" onclick="togglePassword('login-password','toggleEye')">
+          <i id="toggleEye" class="fa-solid fa-eye" style="color:#6b7280;font-size:18px;"></i>
+        </span>
+      </div>
+      <p id="login-error" style="color:#ef4444;font-size:.82rem;min-height:18px;margin-bottom:10px;"></p>
+      <button id="loginSubmitBtn" class="login-submit" onclick="emailLogin()">Sign In</button>
+    </div>
+  </div>
+  <div style="width:58%;position:relative;background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),url('https://images.unsplash.com/photo-1565008447742-97f6f38c985c?auto=format&fit=crop&w=1800&q=80') center/cover">
+    <div style="position:absolute;bottom:70px;left:70px;color:#fff;max-width:600px">
+      <div style="display:inline-block;padding:10px 18px;border-radius:50px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);margin-bottom:20px">Engineering • Manufacturing • Innovation</div>
+      <h2 style="font-size:60px;line-height:1.1;margin-bottom:15px">Building The Future Of Industry</h2>
+      <p>Delivering fabrication, casting, hydraulic systems and industrial engineering solutions.</p>
+    </div>
+  </div>
+</div>
 </div>
 
-<p id="login-error" class="error-msg"></p>
-<button id="loginSubmitBtn" class="login-submit" onclick="emailLogin()">Sign In</button>
-<button class="btn" onclick="googleLogin()" style="margin-top:12px;background:#fff;color:#111;border:1px solid #e5e7eb">Continue with Google</button>
-</div></div>
-<div class="right" style="width:58%;position:relative;background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),url('https://images.unsplash.com/photo-1565008447742-97f6f38c985c?auto=format&fit=crop&w=1800&q=80') center/cover">
-<div style="position:absolute;bottom:70px;left:70px;color:#fff;max-width:600px">
-<div style="display:inline-block;padding:10px 18px;border-radius:50px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);margin-bottom:20px">Engineering • Manufacturing • Innovation</div>
-<h2 style="font-size:60px;line-height:1.1;margin-bottom:15px">Building The Future Of Industry</h2>
-<p>Delivering fabrication, casting, hydraulic systems and industrial engineering solutions.</p>
-</div></div></div>
-</div>
-
-<!-- DASHBOARD -->
+<!-- ══════════════ DASHBOARD ══════════════ -->
 <div id="dashboardSection">
   <div class="dash-hero">
     <div class="user-badge">
@@ -352,10 +326,11 @@ document.addEventListener("DOMContentLoaded", function() {
   <div class="cards" id="dashboardCards"></div>
 </div>
 
-<!-- FILE MANAGER -->
+<!-- ══════════════ FILE MANAGER ══════════════ -->
 <div id="fileManagerSection">
+  <div id="fmDriveBanner"></div>
   <div class="fm-header">
-    <span class="fm-title">📁 Vishak Tech Files <span style="font-size:.7rem;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);border-radius:50px;padding:3px 10px;color:#6ee7b7;vertical-align:middle;">☁️ Google Drive</span></span>
+    <span class="fm-title">📁 Vishak Tech Files <span id="fmDriveBadge" style="font-size:.7rem;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:50px;padding:3px 10px;color:#94a3b8;vertical-align:middle;">Not connected</span></span>
     <div class="fm-actions">
       <button class="fm-btn" onclick="fmNewFolder()">📁 New Folder</button>
       <button class="fm-btn" onclick="fmNewFile()">📄 New File</button>
@@ -367,6 +342,84 @@ document.addEventListener("DOMContentLoaded", function() {
   </div>
   <div class="fm-breadcrumb" id="fmBreadcrumb"></div>
   <div class="fm-grid" id="fmGrid"></div>
+</div>
+
+<!-- ══════════════ ADMIN PANEL ══════════════ -->
+<div id="adminSection">
+  <div class="admin-header">
+    <span class="admin-title">🔐 Admin Panel</span>
+    <button class="fm-btn" onclick="showDashboardView()">← Back to Dashboard</button>
+  </div>
+  <div class="admin-tabs">
+    <button class="admin-tab active" onclick="adminTab('create')">➕ Create User</button>
+    <button class="admin-tab" onclick="adminTab('manage')">👥 Manage Users</button>
+    <button class="admin-tab" onclick="adminTab('password')">🔑 Reset Password</button>
+  </div>
+
+  <!-- CREATE USER -->
+  <div id="adminCreate" class="admin-card">
+    <h3>Create New Worker Account</h3>
+    <div class="form-row">
+      <div>
+        <div class="form-label">Full Name</div>
+        <input class="form-input" id="adName" placeholder="e.g. Ravi Kumar" maxlength="60">
+      </div>
+      <div>
+        <div class="form-label">Employee ID / Email</div>
+        <input class="form-input" id="adEmail" type="email" placeholder="e.g. ravi@vishaktec.com">
+      </div>
+    </div>
+    <div class="form-row">
+      <div>
+        <div class="form-label">Password</div>
+        <div style="position:relative;">
+          <input class="form-input" id="adPass" type="password" placeholder="Min 8 characters" style="padding-right:44px;">
+          <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;" onclick="togglePassword('adPass','adPassEye')"><i id="adPassEye" class="fa-solid fa-eye" style="font-size:15px;"></i></span>
+        </div>
+      </div>
+      <div>
+        <div class="form-label">Role(s) — hold Ctrl/Cmd for multiple</div>
+        <select class="form-select" id="adRoles" multiple size="4">
+          <option value="sales">📈 Sales</option>
+          <option value="workorder">🏭 Work Order</option>
+          <option value="accounts">🏦 Accounts</option>
+          <option value="admin">🔐 Admin</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;margin-top:6px;">
+      <button class="submit-btn" id="adCreateBtn" onclick="adminCreateUser()">Create Account</button>
+      <span id="adCreateMsg" class="admin-msg"></span>
+    </div>
+  </div>
+
+  <!-- MANAGE USERS -->
+  <div id="adminManage" class="admin-card" style="display:none;">
+    <h3>All Worker Accounts <button class="fm-btn" style="font-size:.78rem;padding:6px 14px;" onclick="adminLoadUsers()">🔄 Refresh</button></h3>
+    <div id="adminUserTable" style="overflow-x:auto;"></div>
+  </div>
+
+  <!-- RESET PASSWORD -->
+  <div id="adminPassword" class="admin-card" style="display:none;">
+    <h3>Reset Worker Password</h3>
+    <div class="form-row">
+      <div>
+        <div class="form-label">Worker Email</div>
+        <input class="form-input" id="adResetEmail" type="email" placeholder="worker@vishaktec.com">
+      </div>
+      <div>
+        <div class="form-label">New Password</div>
+        <div style="position:relative;">
+          <input class="form-input" id="adResetPass" type="password" placeholder="Min 8 characters" style="padding-right:44px;">
+          <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;" onclick="togglePassword('adResetPass','adResetEye')"><i id="adResetEye" class="fa-solid fa-eye" style="font-size:15px;"></i></span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;margin-top:6px;">
+      <button class="submit-btn" id="adResetBtn" onclick="adminResetPassword()">Reset Password</button>
+      <span id="adResetMsg" class="admin-msg"></span>
+    </div>
+  </div>
 </div>
 
 <!-- Contact Modal -->
@@ -393,7 +446,7 @@ document.addEventListener("DOMContentLoaded", function() {
   </div>
 </div>
 
-<!-- File Viewer/Editor -->
+<!-- File Viewer -->
 <div class="file-viewer" id="fileViewer">
   <div class="fv-header">
     <h3 id="fvTitle">File</h3>
@@ -418,141 +471,153 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <div class="footer">Driven by Engineering. Powered by Innovation.</div>
 
+<!-- ══════════════ SCRIPTS ══════════════ -->
 <script>
-// ── Safe text setter (prevents XSS when inserting user-controlled text into DOM) ──
-function safeText(el, text){
-  if(typeof el === 'string') el = document.getElementById(el);
-  if(el) el.textContent = text;
-}
-
+function safeText(el,text){ if(typeof el==='string')el=document.getElementById(el); if(el)el.textContent=text; }
 function openContact(){document.getElementById('contactModal').style.display='block';}
 function closeContact(){document.getElementById('contactModal').style.display='none';}
 
-// ── Brute-force login protection ──
-const RATE = {
-  attempts: 0,
-  lockUntil: 0,
-  MAX: 5,
-  LOCK_MS: 5 * 60 * 1000, // 5-minute lockout after 5 failures
-  check(){
-    if(Date.now() < this.lockUntil) return false;
-    return true;
-  },
-  fail(){
-    this.attempts++;
-    if(this.attempts >= this.MAX){
-      this.lockUntil = Date.now() + this.LOCK_MS;
-      this.attempts = 0;
-      return false;
-    }
-    return true;
-  },
-  reset(){ this.attempts = 0; this.lockUntil = 0; }
+/* Brute-force protection */
+const RATE={attempts:0,lockUntil:0,MAX:5,LOCK_MS:5*60*1000,
+  check(){return Date.now()>=this.lockUntil;},
+  fail(){this.attempts++;if(this.attempts>=this.MAX){this.lockUntil=Date.now()+this.LOCK_MS;this.attempts=0;return false;}return true;},
+  reset(){this.attempts=0;this.lockUntil=0;}
 };
 
-// ── Session timeout (30 min idle → auto-logout) ──
-const SESSION_TIMEOUT = 30 * 60 * 1000;
-const SESSION_WARN_AT = 28 * 60 * 1000;
-let _sessionTimer, _sessionWarnTimer;
-
+/* Session timeout */
+const SESSION_TIMEOUT=30*60*1000, SESSION_WARN_AT=28*60*1000;
+let _sessionTimer,_sessionWarnTimer;
 function resetSessionTimer(){
-  clearTimeout(_sessionTimer);
-  clearTimeout(_sessionWarnTimer);
-  document.getElementById('sessionWarn').style.display = 'none';
-  _sessionWarnTimer = setTimeout(()=>{
-    document.getElementById('sessionWarn').style.display = 'block';
-  }, SESSION_WARN_AT);
-  _sessionTimer = setTimeout(()=>{
-    alert('Session expired due to inactivity. Please log in again.');
-    if(window._vtAuth) window._vtAuth.signOut();
-  }, SESSION_TIMEOUT);
+  clearTimeout(_sessionTimer);clearTimeout(_sessionWarnTimer);
+  document.getElementById('sessionWarn').style.display='none';
+  _sessionWarnTimer=setTimeout(()=>document.getElementById('sessionWarn').style.display='block',SESSION_WARN_AT);
+  _sessionTimer=setTimeout(()=>{alert('Session expired. Please log in again.');if(window._vtAuth)window._vtAuth.signOut();},SESSION_TIMEOUT);
 }
-['click','keydown','mousemove','touchstart'].forEach(e=>
-  document.addEventListener(e, resetSessionTimer, {passive:true})
-);
+['click','keydown','mousemove','touchstart'].forEach(e=>document.addEventListener(e,resetSessionTimer,{passive:true}));
 
-// ── FILE MANAGER LOGIC (Google Drive backend) ──
-let FM_USER = '';
-let FM_PATH = []; // array of {id, name}
-let FM_SELECTED = null; // {id, name, mimeType}
-let inpCallback = null;
-let fvEditingPath = null;
+/* ══ FILE MANAGER (Google Drive API) ══ */
+let FM_USER='', FM_PATH=[], FM_SELECTED=null, inpCallback=null, fvEditingPath=null;
+const GD_FOLDER_MIME='application/vnd.google-apps.folder';
+const COMPANY_FOLDER_ID='1yqkLJrWr3CLUlooYLhH_DoErpYVEvXt5';
 
-// ── CLOUD FUNCTION ENDPOINTS (Service Account → Company Drive) ──
-const CF_BASE = 'https://vishaktech-drive.dr4683743.workers.dev';
-
-async function cfCall(endpoint, body={}){
-  const user = window._vtCurrentUser || (window._firebaseAuth && window._firebaseAuth.currentUser);
-  if(!user) throw new Error('Not authenticated');
-  const token = await user.getIdToken(true);
-  const r = await fetch(`${CF_BASE}/${endpoint}`, {
-    method: 'POST',
-    headers: { 'Content-Type':'application/json', 'Authorization':'Bearer '+token },
-    body: JSON.stringify(body)
-  });
-  const data = await r.json();
-  if(!r.ok) throw new Error(data.error || r.statusText);
-  return data;
+async function gdToken(){
+  if(!window._gdAccessToken) throw new Error('NEEDS_DRIVE_AUTH');
+  return window._gdAccessToken;
 }
 
-// Wrappers that match the old GD_ function signatures
-async function gdGetRootFolder(){ return 'ROOT'; } // handled server-side
-async function gdListFolder(folderId){ return (await cfCall('driveList',{folderId})).files||[]; }
-async function gdCreateFolder(name,parentId){ return cfCall('driveCreateFolder',{name,parentId}); }
-async function gdCreateTextFile(name,parentId,content=''){ return cfCall('driveCreateFile',{name,parentId,content,mimeType:'text/plain'}); }
-async function gdReadFile(fileId){ return (await cfCall('driveReadFile',{fileId})).content; }
-async function gdUpdateFile(fileId,content){ return cfCall('driveUpdateFile',{fileId,content}); }
-async function gdRenameFile(fileId,newName){ return cfCall('driveRename',{fileId,newName}); }
-async function gdDeleteFile(fileId){ return cfCall('driveDelete',{fileId}); }
-
-async function gdUploadBinary(file, parentId){
-  return new Promise((resolve,reject)=>{
-    const reader = new FileReader();
-    reader.onload = async ()=>{
-      try{
-        const base64 = reader.result.split(',')[1];
-        const result = await cfCall('driveUpload',{
-          name: file.name,
-          parentId,
-          base64,
-          mimeType: file.type || 'application/octet-stream'
-        });
-        resolve(result);
-      } catch(e){ reject(e); }
-    };
-    reader.onerror = ()=>reject(new Error('File read failed'));
-    reader.readAsDataURL(file);
-  });
+async function gdApi(method,path,body=null,params={}){
+  const token=await gdToken();
+  const url=new URL('https://www.googleapis.com/drive/v3/'+path);
+  Object.entries(params).forEach(([k,v])=>url.searchParams.set(k,v));
+  const opts={method,headers:{'Authorization':'Bearer '+token}};
+  if(body&&typeof body==='string'){opts.headers['Content-Type']='application/json';opts.body=body;}
+  else if(body){opts.body=body;}
+  const r=await fetch(url.toString(),opts);
+  if(!r.ok){let msg=r.statusText;try{const e=await r.json();msg=e.error?.message||msg;}catch(x){}if(r.status===401){window._gdAccessToken=null;updateDriveBanner();}throw new Error(msg);}
+  if(r.status===204)return{};
+  return r.json();
 }
 
-const GD_FOLDER_MIME = 'application/vnd.google-apps.folder';
+async function gdGetRootFolder(){return COMPANY_FOLDER_ID;}
+async function gdListFolder(folderId){
+  const d=await gdApi('GET','files',null,{q:`'${folderId}' in parents and trashed=false`,fields:'files(id,name,mimeType,createdTime,size)',orderBy:'folder,name',pageSize:'200'});
+  return d.files||[];
+}
+async function gdCreateFolder(name,parentId){return gdApi('POST','files',JSON.stringify({name,mimeType:GD_FOLDER_MIME,parents:[parentId]}),{fields:'id,name,mimeType,createdTime'});}
+async function gdCreateTextFile(name,parentId,content=''){
+  const meta=JSON.stringify({name,mimeType:'text/plain',parents:[parentId]});
+  const bnd='bnd'+Date.now();
+  const body=new Blob(['--'+bnd+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+meta+'\r\n','--'+bnd+'\r\nContent-Type: text/plain\r\n\r\n'+content+'\r\n--'+bnd+'--'],{type:'multipart/related; boundary='+bnd});
+  const token=await gdToken();
+  const r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,mimeType,createdTime',{method:'POST',headers:{'Authorization':'Bearer '+token,'Content-Type':'multipart/related; boundary='+bnd},body});
+  if(!r.ok){const e=await r.json();throw new Error(e.error?.message||r.statusText);}
+  return r.json();
+}
+async function gdReadFile(fileId){
+  const token=await gdToken();
+  const r=await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,{headers:{'Authorization':'Bearer '+token}});
+  if(!r.ok)throw new Error('Could not read file');
+  return r.text();
+}
+async function gdUpdateFile(fileId,content){
+  const token=await gdToken();
+  const r=await fetch(`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`,{method:'PATCH',headers:{'Authorization':'Bearer '+token,'Content-Type':'text/plain'},body:content});
+  if(!r.ok){const e=await r.json();throw new Error(e.error?.message||r.statusText);}
+  return r.json();
+}
+async function gdRenameFile(fileId,newName){return gdApi('PATCH','files/'+fileId,JSON.stringify({name:newName}),{fields:'id,name'});}
+async function gdDeleteFile(fileId){return gdApi('DELETE','files/'+fileId);}
+async function gdUploadBinary(file,parentId){
+  const token=await gdToken();
+  const meta=JSON.stringify({name:file.name,parents:[parentId]});
+  const body=new FormData();
+  body.append('metadata',new Blob([meta],{type:'application/json'}));
+  body.append('file',file);
+  const r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,mimeType,createdTime',{method:'POST',headers:{'Authorization':'Bearer '+token},body});
+  if(!r.ok){const e=await r.json();throw new Error(e.error?.message||r.statusText);}
+  return r.json();
+}
+
+/* Drive connect banner */
+function updateDriveBanner(){
+  const banner=document.getElementById('fmDriveBanner');
+  const badge=document.getElementById('fmDriveBadge');
+  if(window._gdAccessToken){
+    badge.style.background='rgba(16,185,129,.15)';badge.style.border='1px solid rgba(16,185,129,.3)';badge.style.color='#6ee7b7';badge.textContent='☁️ Google Drive Connected';
+    banner.innerHTML=`<div class="drive-connected-bar"><span>✅ Connected to company Google Drive as <strong>${window._gdConnectedAs||''}</strong></span><button class="fm-btn danger" style="font-size:.78rem;padding:6px 14px;" onclick="driveDisconnect()">Disconnect</button></div>`;
+  } else {
+    badge.style.background='rgba(255,255,255,.08)';badge.style.border='1px solid rgba(255,255,255,.12)';badge.style.color='#94a3b8';badge.textContent='Not connected';
+    banner.innerHTML=`<div class="drive-connect-banner"><div><strong>Connect Google Drive</strong><p>Sign in with your Google account to save files to the company shared Drive folder.</p></div><button class="fm-btn google" onclick="driveConnect()">🔗 Connect Google Drive</button></div>`;
+  }
+}
+
+window.driveConnect=async()=>{
+  try{
+    const {GoogleAuthProvider,signInWithPopup,getAuth}=window._fbAuth;
+    const auth=getAuth(window._fbApp);
+    const provider=new GoogleAuthProvider();
+    provider.addScope('https://www.googleapis.com/auth/drive');
+    const r=await signInWithPopup(auth,provider);
+    const cred=GoogleAuthProvider.credentialFromResult(r);
+    if(cred?.accessToken){
+      window._gdAccessToken=cred.accessToken;
+      window._gdConnectedAs=r.user.email;
+      updateDriveBanner();
+      fmRender();
+    }
+  } catch(e){fmShowStatus('Drive connect failed: '+e.message,true);}
+};
+window.driveDisconnect=()=>{window._gdAccessToken=null;window._gdConnectedAs=null;updateDriveBanner();fmRender();};
 
 function fmShowStatus(msg,isError=false){
   let bar=document.getElementById('fmStatusBar');
   if(!bar){bar=document.createElement('div');bar.id='fmStatusBar';bar.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:10px 22px;border-radius:12px;font-size:.87rem;font-weight:500;z-index:99999;transition:.3s;';document.body.appendChild(bar);}
   bar.style.background=isError?'rgba(239,68,68,.9)':'rgba(16,185,129,.9)';
-  bar.style.color='#fff'; bar.textContent=msg; bar.style.opacity='1';
-  clearTimeout(bar._t); bar._t=setTimeout(()=>bar.style.opacity='0',3000);
+  bar.style.color='#fff';bar.textContent=msg;bar.style.opacity='1';
+  clearTimeout(bar._t);bar._t=setTimeout(()=>bar.style.opacity='0',3000);
 }
-
-function fmShowLoading(msg='Loading from Google Drive…'){
-  document.getElementById('fmGrid').innerHTML=`<div class="fm-empty"><span style="font-size:2rem">⏳</span><br>${msg}</div>`;
-}
+function fmShowLoading(msg='Loading from Google Drive…'){document.getElementById('fmGrid').innerHTML=`<div class="fm-empty"><span style="font-size:2rem">⏳</span><br>${msg}</div>`;}
 
 async function fmRender(){
-  if(!FM_USER) return;
+  if(!FM_USER)return;
+  if(!window._gdAccessToken){
+    document.getElementById('fmGrid').innerHTML=`<div class="fm-empty"><span class="icon">🔗</span>Connect Google Drive above to view and manage files.</div>`;
+    const bc=document.getElementById('fmBreadcrumb');bc.innerHTML='';
+    document.getElementById('fmRenameBtn').style.display='none';
+    document.getElementById('fmDeleteBtn').style.display='none';
+    return;
+  }
   fmShowLoading();
-  const bc=document.getElementById('fmBreadcrumb'); bc.innerHTML='';
-  const rs=document.createElement('span'); rs.textContent='🏠 Vishak Tech Files'; rs.onclick=fmGoRoot; bc.appendChild(rs);
+  const bc=document.getElementById('fmBreadcrumb');bc.innerHTML='';
+  const rs=document.createElement('span');rs.textContent='🏠 Vishak Tech Files';rs.onclick=fmGoRoot;bc.appendChild(rs);
   FM_PATH.forEach((seg,i)=>{
-    const sep=document.createElement('span'); sep.className='sep'; sep.textContent='/'; bc.appendChild(sep);
-    const s=document.createElement('span'); s.textContent=seg.name;
-    s.onclick=()=>fmGoPath(FM_PATH.slice(0,i+1)); bc.appendChild(s);
+    const sep=document.createElement('span');sep.className='sep';sep.textContent='/';bc.appendChild(sep);
+    const s=document.createElement('span');s.textContent=seg.name;s.onclick=()=>fmGoPath(FM_PATH.slice(0,i+1));bc.appendChild(s);
   });
   try{
     const folderId=FM_PATH.length===0?await gdGetRootFolder():FM_PATH[FM_PATH.length-1].id;
     const items=await gdListFolder(folderId);
-    const grid=document.getElementById('fmGrid'); grid.innerHTML='';
+    const grid=document.getElementById('fmGrid');grid.innerHTML='';
     if(!items.length){
       grid.innerHTML=`<div class="fm-empty"><span class="icon">📂</span>This folder is empty.<br><small style="color:#64748b">Create a new folder, file, or upload files.</small></div>`;
     } else {
@@ -561,188 +626,71 @@ async function fmRender(){
         const icon=isFolder?'📁':getFileIcon(node.name);
         const date=new Date(node.createdTime).toLocaleDateString();
         const sel=FM_SELECTED?.id===node.id?'selected':'';
-        const item=document.createElement('div'); item.className='fm-item '+sel;
-        item.onclick=()=>fmSelect(node); item.ondblclick=()=>fmOpen(node); item.oncontextmenu=(e)=>fmCtx(e,node);
-        const ctxBtn=document.createElement('button'); ctxBtn.className='ctx-btn'; ctxBtn.textContent='⋮';
-        ctxBtn.onclick=(e)=>{e.stopPropagation();fmCtx(e,node);}; item.appendChild(ctxBtn);
-        const iconSpan=document.createElement('span'); iconSpan.className='icon'; iconSpan.textContent=icon; item.appendChild(iconSpan);
-        const nameDiv=document.createElement('div'); nameDiv.className='name'; nameDiv.textContent=node.name; item.appendChild(nameDiv);
-        const metaDiv=document.createElement('div'); metaDiv.className='meta';
-        metaDiv.textContent=date; item.appendChild(metaDiv);
+        const item=document.createElement('div');item.className='fm-item '+sel;
+        item.onclick=()=>fmSelect(node);item.ondblclick=()=>fmOpen(node);item.oncontextmenu=(e)=>fmCtx(e,node);
+        const ctxBtn=document.createElement('button');ctxBtn.className='ctx-btn';ctxBtn.textContent='⋮';
+        ctxBtn.onclick=(e)=>{e.stopPropagation();fmCtx(e,node);};item.appendChild(ctxBtn);
+        const iconSpan=document.createElement('span');iconSpan.className='icon';iconSpan.textContent=icon;item.appendChild(iconSpan);
+        const nameDiv=document.createElement('div');nameDiv.className='name';nameDiv.textContent=node.name;item.appendChild(nameDiv);
+        const metaDiv=document.createElement('div');metaDiv.className='meta';metaDiv.textContent=date;item.appendChild(metaDiv);
         grid.appendChild(item);
       });
     }
-  } catch(e){ fmShowStatus('Drive error: '+e.message,true); document.getElementById('fmGrid').innerHTML=`<div class="fm-empty" style="color:#f87171">⚠️ Could not load Drive files.<br><small>${e.message}</small></div>`; }
+  } catch(e){
+    if(e.message==='NEEDS_DRIVE_AUTH'){updateDriveBanner();fmRender();return;}
+    fmShowStatus('Drive error: '+e.message,true);
+    document.getElementById('fmGrid').innerHTML=`<div class="fm-empty" style="color:#f87171">⚠️ Could not load Drive files.<br><small>${e.message}</small></div>`;
+  }
   const hasSel=!!FM_SELECTED;
   document.getElementById('fmRenameBtn').style.display=hasSel?'':'none';
   document.getElementById('fmDeleteBtn').style.display=hasSel?'':'none';
 }
 
-
-function getFileIcon(name){
-  const ext=(name.split('.').pop()||'').toLowerCase();
-  const map={txt:'📝',pdf:'📕',doc:'📘',docx:'📘',xls:'📗',xlsx:'📗',jpg:'🖼️',jpeg:'🖼️',png:'🖼️',gif:'🖼️',mp4:'🎬',mp3:'🎵',zip:'📦',csv:'📊',html:'🌐',js:'⚙️',json:'⚙️'};
-  return map[ext]||'📄';
-}
-
-function validName(n){ if(!n||!n.trim()) return false; if(/[<>"'`\/\\]/.test(n)) return false; if(n.trim().length>80) return false; return true; }
-
-function fmSelect(node){ FM_SELECTED=FM_SELECTED?.id===node.id?null:node; fmRender(); hideCtxMenu(); }
-
-function fmOpen(node){
-  hideCtxMenu();
-  if(!FM_USER) return;
-  if(node.mimeType===GD_FOLDER_MIME){ FM_PATH.push({id:node.id,name:node.name}); FM_SELECTED=null; fmRender(); }
-  else fvOpen(node);
-}
-
-function ctxOpen(){ if(FM_SELECTED) fmOpen(FM_SELECTED); hideCtxMenu(); }
-function fmGoRoot(){ FM_PATH=[]; FM_SELECTED=null; fmRender(); }
-function fmGoPath(path){ FM_PATH=path; FM_SELECTED=null; fmRender(); }
-
-function fmNewFolder(){
-  if(!FM_USER) return;
-  showInp('📁 New Folder Name','Folder name...',async(name)=>{
-    if(!validName(name)){alert('Invalid name. Avoid special characters.');return;}
-    try{
-      fmShowStatus('Creating folder…');
-      const parentId=FM_PATH.length===0?await gdGetRootFolder():FM_PATH[FM_PATH.length-1].id;
-      await gdCreateFolder(name.trim(),parentId);
-      fmShowStatus('Folder created ✓'); fmRender();
-    }catch(e){fmShowStatus('Error: '+e.message,true);}
-  });
-}
-
-function fmNewFile(){
-  if(!FM_USER) return;
-  showInp('📄 New File Name','e.g. notes.txt',async(name)=>{
-    if(!validName(name)){alert('Invalid name. Avoid special characters.');return;}
-    try{
-      fmShowStatus('Creating file…');
-      const parentId=FM_PATH.length===0?await gdGetRootFolder():FM_PATH[FM_PATH.length-1].id;
-      const node=await gdCreateTextFile(name.trim(),parentId,'');
-      fmShowStatus('File created ✓'); fmRender();
-      fvOpen(node);
-    }catch(e){fmShowStatus('Error: '+e.message,true);}
-  });
-}
-
-function fmUpload(){
-  if(!FM_USER) return;
-  const input=document.createElement('input'); input.type='file'; input.multiple=true;
-  input.onchange=async()=>{
-    if(!input.files.length) return;
-    try{
-      const parentId=FM_PATH.length===0?await gdGetRootFolder():FM_PATH[FM_PATH.length-1].id;
-      let done=0;
-      for(const file of input.files){
-        fmShowStatus(`Uploading ${file.name}… (${done+1}/${input.files.length})`);
-        await gdUploadBinary(file,parentId);
-        done++;
-      }
-      fmShowStatus(`${done} file(s) uploaded to Drive ✓`); fmRender();
-    }catch(e){fmShowStatus('Upload error: '+e.message,true);}
-  };
-  input.click();
-}
-
-function fmRename(){
-  if(!FM_SELECTED||!FM_USER) return;
-  hideCtxMenu();
-  showInp('✏️ Rename',FM_SELECTED.name,async(name)=>{
-    if(!validName(name)){alert('Invalid name.');return;}
-    try{
-      fmShowStatus('Renaming…');
-      await gdRenameFile(FM_SELECTED.id,name.trim());
-      fmShowStatus('Renamed ✓'); FM_SELECTED=null; fmRender();
-    }catch(e){fmShowStatus('Error: '+e.message,true);}
-  });
-}
-
-async function fmDelete(){
-  if(!FM_SELECTED||!FM_USER) return;
-  hideCtxMenu();
-  if(!confirm('Move "'+FM_SELECTED.name+'" to trash in Google Drive?')) return;
-  try{
-    fmShowStatus('Deleting…');
-    await gdDeleteFile(FM_SELECTED.id);
-    fmShowStatus('Moved to trash ✓'); FM_SELECTED=null; fmRender();
-  }catch(e){fmShowStatus('Error: '+e.message,true);}
-}
-
-function fmCtx(e,node){
-  e.preventDefault(); e.stopPropagation();
-  FM_SELECTED=node; fmRender();
-  const menu=document.getElementById('ctxMenu'); menu.style.display='block';
-  const x=Math.min(e.clientX,window.innerWidth-180); const y=Math.min(e.clientY,window.innerHeight-140);
-  menu.style.left=x+'px'; menu.style.top=y+'px';
-}
-function hideCtxMenu(){ document.getElementById('ctxMenu').style.display='none'; }
+function getFileIcon(name){const ext=(name.split('.').pop()||'').toLowerCase();return({txt:'📝',pdf:'📕',doc:'📘',docx:'📘',xls:'📗',xlsx:'📗',jpg:'🖼️',jpeg:'🖼️',png:'🖼️',gif:'🖼️',mp4:'🎬',mp3:'🎵',zip:'📦',csv:'📊',html:'🌐',js:'⚙️',json:'⚙️'})[ext]||'📄';}
+function validName(n){return n&&n.trim()&&!/[<>"'`\/\\]/.test(n)&&n.trim().length<=80;}
+function fmSelect(node){FM_SELECTED=FM_SELECTED?.id===node.id?null:node;fmRender();hideCtxMenu();}
+function fmOpen(node){hideCtxMenu();if(!FM_USER)return;if(node.mimeType===GD_FOLDER_MIME){FM_PATH.push({id:node.id,name:node.name});FM_SELECTED=null;fmRender();}else fvOpen(node);}
+function ctxOpen(){if(FM_SELECTED)fmOpen(FM_SELECTED);hideCtxMenu();}
+function fmGoRoot(){FM_PATH=[];FM_SELECTED=null;fmRender();}
+function fmGoPath(path){FM_PATH=path;FM_SELECTED=null;fmRender();}
+function fmNewFolder(){if(!FM_USER)return;showInp('📁 New Folder Name','Folder name...',async(name)=>{if(!validName(name)){alert('Invalid name.');return;}try{fmShowStatus('Creating folder…');const pid=FM_PATH.length===0?await gdGetRootFolder():FM_PATH[FM_PATH.length-1].id;await gdCreateFolder(name.trim(),pid);fmShowStatus('Folder created ✓');fmRender();}catch(e){fmShowStatus('Error: '+e.message,true);}});}
+function fmNewFile(){if(!FM_USER)return;showInp('📄 New File Name','e.g. notes.txt',async(name)=>{if(!validName(name)){alert('Invalid name.');return;}try{fmShowStatus('Creating file…');const pid=FM_PATH.length===0?await gdGetRootFolder():FM_PATH[FM_PATH.length-1].id;const node=await gdCreateTextFile(name.trim(),pid,'');fmShowStatus('File created ✓');fmRender();fvOpen(node);}catch(e){fmShowStatus('Error: '+e.message,true);}});}
+function fmUpload(){if(!FM_USER)return;const input=document.createElement('input');input.type='file';input.multiple=true;input.onchange=async()=>{if(!input.files.length)return;try{const pid=FM_PATH.length===0?await gdGetRootFolder():FM_PATH[FM_PATH.length-1].id;let done=0;for(const file of input.files){fmShowStatus(`Uploading ${file.name}… (${done+1}/${input.files.length})`);await gdUploadBinary(file,pid);done++;}fmShowStatus(`${done} file(s) uploaded to Drive ✓`);fmRender();}catch(e){fmShowStatus('Upload error: '+e.message,true);}};input.click();}
+function fmRename(){if(!FM_SELECTED||!FM_USER)return;hideCtxMenu();showInp('✏️ Rename',FM_SELECTED.name,async(name)=>{if(!validName(name)){alert('Invalid name.');return;}try{fmShowStatus('Renaming…');await gdRenameFile(FM_SELECTED.id,name.trim());fmShowStatus('Renamed ✓');FM_SELECTED=null;fmRender();}catch(e){fmShowStatus('Error: '+e.message,true);}});}
+async function fmDelete(){if(!FM_SELECTED||!FM_USER)return;hideCtxMenu();if(!confirm('Move "'+FM_SELECTED.name+'" to trash?'))return;try{fmShowStatus('Deleting…');await gdDeleteFile(FM_SELECTED.id);fmShowStatus('Moved to trash ✓');FM_SELECTED=null;fmRender();}catch(e){fmShowStatus('Error: '+e.message,true);}}
+function fmCtx(e,node){e.preventDefault();e.stopPropagation();FM_SELECTED=node;fmRender();const menu=document.getElementById('ctxMenu');menu.style.display='block';const x=Math.min(e.clientX,window.innerWidth-180),y=Math.min(e.clientY,window.innerHeight-140);menu.style.left=x+'px';menu.style.top=y+'px';}
+function hideCtxMenu(){document.getElementById('ctxMenu').style.display='none';}
 document.addEventListener('click',hideCtxMenu);
-document.addEventListener('keydown',e=>{ if(e.key==='Escape'){hideCtxMenu();inpCancel();fvClose();}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){hideCtxMenu();inpCancel();fvClose();}});
+function showInp(title,placeholder,cb){safeText('inpTitle',title);const f=document.getElementById('inpField');f.placeholder=placeholder;f.value='';document.getElementById('inpModal').classList.add('show');setTimeout(()=>f.focus(),100);inpCallback=cb;f.onkeydown=e=>{if(e.key==='Enter')inpConfirm();};}
+function inpConfirm(){const val=document.getElementById('inpField').value;document.getElementById('inpModal').classList.remove('show');if(inpCallback)inpCallback(val);inpCallback=null;}
+function inpCancel(){document.getElementById('inpModal').classList.remove('show');inpCallback=null;}
+async function fvOpen(node){if(!FM_USER||node.mimeType===GD_FOLDER_MIME)return;fvEditingPath=node.id;safeText('fvTitle',node.name);const content=document.getElementById('fvContent');content.value='Loading…';content.disabled=true;document.getElementById('fileViewer').classList.add('show');try{const text=await gdReadFile(node.id);content.value=text;content.disabled=false;setTimeout(()=>content.focus(),100);}catch(e){content.value='';content.disabled=false;fmShowStatus('Could not read file (binary files are view-only)',true);}}
+async function fvSave(){if(!fvEditingPath||!FM_USER)return;try{fmShowStatus('Saving to Google Drive…');await gdUpdateFile(fvEditingPath,document.getElementById('fvContent').value);fmShowStatus('Saved to Google Drive ✓');fvClose();fmRender();}catch(e){fmShowStatus('Save error: '+e.message,true);}}
+function fvClose(){document.getElementById('fileViewer').classList.remove('show');fvEditingPath=null;}
+function showDashboardView(){document.getElementById('dashboardSection').style.display='block';document.getElementById('fileManagerSection').style.display='none';document.getElementById('adminSection').style.display='none';}
+function showFileManager(){if(!FM_USER)return;document.getElementById('dashboardSection').style.display='none';document.getElementById('fileManagerSection').style.display='block';document.getElementById('adminSection').style.display='none';updateDriveBanner();FM_PATH=[];FM_SELECTED=null;fmRender();}
+function showAdminPanel(){if(!FM_USER)return;document.getElementById('dashboardSection').style.display='none';document.getElementById('fileManagerSection').style.display='none';document.getElementById('adminSection').style.display='block';}
 
-function showInp(title,placeholder,cb){
-  safeText('inpTitle',title);
-  const f=document.getElementById('inpField'); f.placeholder=placeholder; f.value='';
-  document.getElementById('inpModal').classList.add('show');
-  setTimeout(()=>f.focus(),100); inpCallback=cb;
-  f.onkeydown=e=>{if(e.key==='Enter')inpConfirm();};
+/* ══ ADMIN TABS ══ */
+function adminTab(tab){
+  ['create','manage','password'].forEach(t=>{
+    document.getElementById('adminCreate').style.display=t==='create'&&tab==='create'?'block':'none';
+    document.getElementById('adminManage').style.display=t==='manage'&&tab==='manage'?'block':'none';
+    document.getElementById('adminPassword').style.display=t==='password'&&tab==='password'?'block':'none';
+  });
+  document.querySelectorAll('.admin-tab').forEach((btn,i)=>{
+    btn.classList.toggle('active',['create','manage','password'][i]===tab);
+  });
+  if(tab==='manage')adminLoadUsers();
 }
-function inpConfirm(){ const val=document.getElementById('inpField').value; document.getElementById('inpModal').classList.remove('show'); if(inpCallback)inpCallback(val); inpCallback=null; }
-function inpCancel(){ document.getElementById('inpModal').classList.remove('show'); inpCallback=null; }
-
-async function fvOpen(node){
-  if(!FM_USER) return;
-  const isFolder=node.mimeType===GD_FOLDER_MIME;
-  if(isFolder) return;
-  fvEditingPath=node.id;
-  safeText('fvTitle',node.name);
-  const content=document.getElementById('fvContent');
-  content.value='Loading…'; content.disabled=true;
-  document.getElementById('fileViewer').classList.add('show');
-  try{
-    const text=await gdReadFile(node.id);
-    content.value=text; content.disabled=false;
-    setTimeout(()=>content.focus(),100);
-  }catch(e){
-    content.value=''; content.disabled=false;
-    fmShowStatus('Could not read file (binary files are view-only)',true);
-  }
-}
-async function fvSave(){
-  if(!fvEditingPath||!FM_USER) return;
-  try{
-    fmShowStatus('Saving to Google Drive…');
-    await gdUpdateFile(fvEditingPath,document.getElementById('fvContent').value);
-    fmShowStatus('Saved to Google Drive ✓');
-    fvClose(); fmRender();
-  }catch(e){fmShowStatus('Save error: '+e.message,true);}
-}
-function fvClose(){ document.getElementById('fileViewer').classList.remove('show'); fvEditingPath=null; }
-
-function showDashboardView(){
-  document.getElementById('dashboardSection').style.display='block';
-  document.getElementById('fileManagerSection').style.display='none';
-}
-
-function showFileManager(){
-  if(!FM_USER) return;
-  document.getElementById('dashboardSection').style.display='none';
-  document.getElementById('fileManagerSection').style.display='block';
-  FM_PATH=[];FM_SELECTED=null;
-  fmRender();
-}
-
 </script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail, updatePassword, fetchSignInMethodsForEmail } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, getDocs, collection, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
-// ⚠️ SECURITY NOTE: Firebase client config is intentionally public — it identifies your project.
-// Protect it by: (1) restricting this API key to your domain in Google Cloud Console → Credentials,
-// (2) enabling Firebase App Check in Firebase Console, (3) setting Firestore/Storage security rules.
-// NEVER place server-side service account keys here.
 const app = initializeApp({
   apiKey:"AIzaSyAETO-bfN1wORtT8cVhSZseQ05ZGmQspC0",
   authDomain:"vishaktech-79a37.firebaseapp.com",
@@ -751,152 +699,199 @@ const app = initializeApp({
   messagingSenderId:"68398724582",
   appId:"1:68398724582:web:76840e738169b3af429227"
 });
+
 const auth = getAuth(app);
-  window._firebaseAuth = auth;
-window._vtAuth = auth; // expose for session timeout logout only
+const db   = getFirestore(app);
 
-// ── Authorized emails stored as SHA-256 hashes — plaintext emails never in source code ──
-const SALES_EMAILS     = ["02f6b857d3100b0cd628d85c1750e1793228c86957fdc1c34d27667ef9e0e487","41c5e468614ff1df3203070d30e34de7177ba53b2369f6504ae3cf8cfe41b729","12c928d35e54634890981e38cdd82d65223c2652ccda66c23af3b80fed6ebee1","aa1e3101e6da4e4597c8d70242ce26899e5be014d301c433d88213492424922e"];
-const WORKORDER_EMAILS = ["932a255a83a640c31efa5ec02848b700bd9337f7f2dab7222505682b853a48b6","aa1e3101e6da4e4597c8d70242ce26899e5be014d301c433d88213492424922e"];
-const ACCOUNTS_EMAILS  = ["02f6b857d3100b0cd628d85c1750e1793228c86957fdc1c34d27667ef9e0e487","41c5e468614ff1df3203070d30e34de7177ba53b2369f6504ae3cf8cfe41b729","aa1e3101e6da4e4597c8d70242ce26899e5be014d301c433d88213492424922e","12c928d35e54634890981e38cdd82d65223c2652ccda66c23af3b80fed6ebee1"];
+// Expose for Drive connect popup
+window._fbApp  = app;
+window._fbAuth = { GoogleAuthProvider, signInWithPopup, getAuth };
+window._vtAuth = auth;
 
-const CARDS = {
-  sales:`<a href="/Testing/Sales/" class="card"><h2>📈 Sales Dashboard</h2><p>Manage Leads, RFQs, Quotations, Purchase Requests, Purchase Orders and Customer Follow-ups.</p></a>`,
-  workorder:`<a href="/Testing/WorkOrder/" class="card"><h2>🏭 Work Order Dashboard</h2><p>Track Fabrication, Casting, Production Progress, Quality Control, Packing and Dispatch.</p></a>`,
-  accounts:`<a href="/Testing/Accounts/" class="card"><h2>🏦 Accounts Dashboard</h2><p>Track Account Balances, Credits, Debits, Transaction History and Google Drive Sync for Vishak Tech accounts.</p></a>`,
-  files:`<div class="card" onclick="showFileManager()"><h2>📁 Vishak Tech Files</h2><p>Your personal file manager. Create folders, write notes and store documents — saved privately in your browser.</p></div>`
-};
-
-function hideLoader(){
-  const ol=document.getElementById('loadingOverlay');
-  ol.style.opacity='0';
-  setTimeout(()=>ol.style.display='none',400);
-}
+// ── Admin emails (SHA-256 hashed) ──
+const ADMIN_HASHES = ["aa1e3101e6da4e4597c8d70242ce26899e5be014d301c433d88213492424922e"];
 
 async function hashEmail(email){
-  const buf = new TextEncoder().encode(email.toLowerCase().trim());
-  const hash = await crypto.subtle.digest('SHA-256', buf);
+  const buf=new TextEncoder().encode(email.toLowerCase().trim());
+  const hash=await crypto.subtle.digest('SHA-256',buf);
   return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
-async function getRoles(email){
-  const h = await hashEmail(email);
-  const r = [];
-  if(SALES_EMAILS.includes(h))     r.push('sales');
-  if(WORKORDER_EMAILS.includes(h)) r.push('workorder');
-  if(ACCOUNTS_EMAILS.includes(h))  r.push('accounts');
-  return r;
+async function getUserRoles(email){
+  try{
+    const snap=await getDoc(doc(db,'workers',email.toLowerCase().trim()));
+    if(!snap.exists()) return [];
+    const data=snap.data();
+    if(data.disabled) return [];
+    return data.roles||[];
+  } catch(e){ return []; }
 }
+
+function roleLabel(role){
+  return {sales:'📈 Sales',workorder:'🏭 Work Order',accounts:'🏦 Accounts',admin:'🔐 Admin'}[role]||role;
+}
+function roleBadgeHtml(role){
+  return `<span class="role-badge role-${role}">${roleLabel(role)}</span>`;
+}
+
+function hideLoader(){const ol=document.getElementById('loadingOverlay');ol.style.opacity='0';setTimeout(()=>ol.style.display='none',400);}
 
 async function showDashboard(user){
   hideLoader();
-  const roles = await getRoles(user.email);
-  if(roles.length === 0){
-    alert('Access Denied. Your account is not authorized.');
-    await signOut(auth);
-    return;
-  }
-  // Set FM user and start session timer
-  window.FM_USER = user.email;
-  FM_USER = user.email;
-  resetSessionTimer();
-  RATE.reset();
-
+  const h=await hashEmail(user.email);
+  const isAdmin=ADMIN_HASHES.includes(h);
+  const roles=await getUserRoles(user.email);
+  if(roles.length===0&&!isAdmin){alert('Access Denied. Your account is not authorized.');await signOut(auth);return;}
+  window.FM_USER=user.email; FM_USER=user.email;
+  resetSessionTimer(); RATE.reset();
   document.getElementById('loginSection').style.display='none';
   document.getElementById('dashboardSection').style.display='block';
-
-  // Use safeText — never use innerHTML with user data
-  safeText('welcomeEmail', user.email);
-  safeText('userEmailBadge', user.email);
+  safeText('welcomeEmail',user.email);
+  safeText('userEmailBadge',user.email);
   document.getElementById('userEmailBadge').style.display='inline';
   document.getElementById('logoutBtn').style.display='inline-block';
-
-  const cardKeys = [...roles, 'files'];
-  // Card HTML is entirely developer-controlled (no user input), so innerHTML is safe here
-  document.getElementById('dashboardCards').innerHTML = cardKeys.map(r=>CARDS[r]).join('');
-  // Drive works for all users via service account
+  // Role badges in navbar
+  const allRoles=isAdmin&&!roles.includes('admin')?[...roles,'admin']:roles;
+  document.getElementById('userRoleBadge').style.display='inline';
+  document.getElementById('userRoleBadge').innerHTML=allRoles.map(r=>roleBadgeHtml(r)).join('');
+  // Dashboard cards
+  const CARDS={
+    sales:`<a href="/Testing/Sales/" class="card"><h2>📈 Sales Dashboard</h2><p>Manage Leads, RFQs, Quotations, Purchase Requests, Purchase Orders and Customer Follow-ups.</p></a>`,
+    workorder:`<a href="/Testing/WorkOrder/" class="card"><h2>🏭 Work Order Dashboard</h2><p>Track Fabrication, Casting, Production Progress, Quality Control, Packing and Dispatch.</p></a>`,
+    accounts:`<a href="/Testing/Accounts/" class="card"><h2>🏦 Accounts Dashboard</h2><p>Track Account Balances, Credits, Debits, Transaction History and Google Drive Sync.</p></a>`,
+    files:`<div class="card" onclick="showFileManager()"><h2>📁 Vishak Tech Files</h2><p>Shared company file manager — saved directly to company Google Drive. Connect your Google account inside.</p></div>`,
+    admin:`<div class="card" onclick="showAdminPanel()" style="border-color:rgba(239,68,68,.2)"><h2>🔐 Admin Panel</h2><p>Create and manage worker accounts, assign roles, reset passwords for Sales, Accounts and Work Order teams.</p></div>`
+  };
+  const cardKeys=[...roles.filter(r=>r!=='admin'),'files'];
+  if(isAdmin||roles.includes('admin')) cardKeys.push('admin');
+  document.getElementById('dashboardCards').innerHTML=cardKeys.map(r=>CARDS[r]||'').join('');
 }
 
 function showLogin(){
-  hideLoader();
-  clearTimeout(_sessionTimer);
-  clearTimeout(_sessionWarnTimer);
-  FM_USER = '';
-  window.FM_USER = '';
+  hideLoader();clearTimeout(_sessionTimer);clearTimeout(_sessionWarnTimer);
+  FM_USER='';window.FM_USER='';window._gdAccessToken=null;window._gdConnectedAs=null;
   document.getElementById('loginSection').style.display='block';
   document.getElementById('dashboardSection').style.display='none';
   document.getElementById('fileManagerSection').style.display='none';
+  document.getElementById('adminSection').style.display='none';
   document.getElementById('logoutBtn').style.display='none';
   document.getElementById('userEmailBadge').style.display='none';
+  document.getElementById('userRoleBadge').style.display='none';
   document.getElementById('sessionWarn').style.display='none';
 }
 
-onAuthStateChanged(auth, user=>{ if(user) showDashboard(user); else showLogin(); });
+onAuthStateChanged(auth,user=>{window._vtCurrentUser=user||null;if(user)showDashboard(user);else showLogin();});
 
-window.googleLogin = async () => {
-  document.getElementById('login-error').textContent = '';
-  if(!RATE.check()){
-    safeText('login-error', 'Too many attempts. Please wait 5 minutes.');
-    return;
-  }
+window.emailLogin=async()=>{
+  const email=document.getElementById('login-email').value.trim();
+  const pass=document.getElementById('login-password').value;
+  safeText('login-error','');
+  if(!RATE.check()){safeText('login-error','Too many failed attempts. Please wait 5 minutes.');return;}
+  if(!email||!pass){safeText('login-error','Please enter email and password.');return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){safeText('login-error','Invalid email format.');return;}
+  const btn=document.getElementById('loginSubmitBtn');
+  btn.disabled=true;btn.textContent='Signing in…';
   try{
-    const provider = new GoogleAuthProvider();
-    provider.addScope('https://www.googleapis.com/auth/drive.file');
-    const r = await signInWithPopup(auth, provider);
-    const roles = await getRoles(r.user.email);
-    if(roles.length === 0){
-      alert('Access Denied.');
-      await signOut(auth);
-      RATE.fail();
-      return;
-    }
-    // Drive access handled via Cloud Function (service account)
-  } catch(e){
-    safeText('login-error', e.message);
-    RATE.fail();
-  }
-};
-
-window.emailLogin = async () => {
-  const email = document.getElementById('login-email').value.trim();
-  const pass  = document.getElementById('login-password').value;
-  const err   = document.getElementById('login-error');
-  err.textContent = '';
-
-  if(!RATE.check()){
-    safeText('login-error', 'Too many failed attempts. Please wait 5 minutes.');
-    return;
-  }
-  if(!email || !pass){ safeText('login-error', 'Please enter email and password.'); return; }
-
-  // Basic email format check
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ safeText('login-error', 'Invalid email format.'); return; }
-
-  const btn = document.getElementById('loginSubmitBtn');
-  btn.disabled = true;
-  btn.textContent = 'Signing in…';
-
-  try{
-    await signInWithEmailAndPassword(auth, email, pass);
+    await signInWithEmailAndPassword(auth,email,pass);
     RATE.reset();
   } catch(e){
-    const ok = RATE.fail();
-    const remaining = RATE.MAX - RATE.attempts;
-    if(!ok){
-      safeText('login-error', 'Account locked for 5 minutes after too many failed attempts.');
-    } else {
-      safeText('login-error', 'Login failed: ' + e.message + (remaining < RATE.MAX ? ' (' + remaining + ' attempts left)' : ''));
-    }
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Sign In';
-  }
+    const ok=RATE.fail();
+    const rem=RATE.MAX-RATE.attempts;
+    if(!ok) safeText('login-error','Account locked for 5 minutes after too many failed attempts.');
+    else safeText('login-error','Login failed: '+(e.code==='auth/invalid-credential'?'Incorrect email or password.':e.message)+(rem<RATE.MAX?' ('+rem+' attempts left)':''));
+  } finally{btn.disabled=false;btn.textContent='Sign In';}
 };
 
-window.logoutUser = async () => {
-  clearTimeout(_sessionTimer);
-  clearTimeout(_sessionWarnTimer);
+window.logoutUser=async()=>{
+  clearTimeout(_sessionTimer);clearTimeout(_sessionWarnTimer);
+  window._gdAccessToken=null;window._gdConnectedAs=null;
   await signOut(auth);
+};
+
+/* ══ ADMIN FUNCTIONS ══ */
+window.adminCreateUser=async()=>{
+  const name=document.getElementById('adName').value.trim();
+  const email=document.getElementById('adEmail').value.trim().toLowerCase();
+  const pass=document.getElementById('adPass').value;
+  const selEl=document.getElementById('adRoles');
+  const roles=[...selEl.selectedOptions].map(o=>o.value);
+  const msg=document.getElementById('adCreateMsg');
+  msg.className='admin-msg';msg.textContent='';
+  if(!name){msg.className='admin-msg err';msg.textContent='Enter full name.';return;}
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){msg.className='admin-msg err';msg.textContent='Enter valid email.';return;}
+  if(pass.length<8){msg.className='admin-msg err';msg.textContent='Password must be at least 8 characters.';return;}
+  if(!roles.length){msg.className='admin-msg err';msg.textContent='Select at least one role.';return;}
+  const btn=document.getElementById('adCreateBtn');btn.disabled=true;btn.textContent='Creating…';
+  try{
+    // Create Firebase Auth account
+    const r=await createUserWithEmailAndPassword(auth,email,pass);
+    // Save worker profile to Firestore
+    await setDoc(doc(db,'workers',email),{name,email,roles,disabled:false,createdAt:serverTimestamp(),createdBy:FM_USER});
+    msg.className='admin-msg ok';msg.textContent=`✅ Account created for ${name} (${email})`;
+    document.getElementById('adName').value='';document.getElementById('adEmail').value='';document.getElementById('adPass').value='';
+    selEl.selectedIndex=-1;
+  } catch(e){
+    msg.className='admin-msg err';
+    msg.textContent='Error: '+(e.code==='auth/email-already-in-use'?'Email already registered.':e.message);
+  } finally{btn.disabled=false;btn.textContent='Create Account';}
+};
+
+window.adminLoadUsers=async()=>{
+  const container=document.getElementById('adminUserTable');
+  container.innerHTML='<p style="color:#64748b;font-size:.85rem;padding:10px 0;">Loading…</p>';
+  try{
+    const snap=await getDocs(collection(db,'workers'));
+    if(snap.empty){container.innerHTML='<p style="color:#64748b;padding:10px 0;">No worker accounts yet.</p>';return;}
+    let rows='';
+    snap.forEach(d=>{
+      const w=d.data();
+      const statusDot=w.disabled?'<span class="status-dot status-disabled"></span>Disabled':'<span class="status-dot status-active"></span>Active';
+      const roleHtml=(w.roles||[]).map(r=>roleBadgeHtml(r)).join(' ');
+      rows+=`<tr>
+        <td><strong>${w.name||'—'}</strong></td>
+        <td style="color:#94a3b8;">${w.email}</td>
+        <td>${roleHtml}</td>
+        <td>${statusDot}</td>
+        <td style="display:flex;gap:8px;flex-wrap:wrap;">
+          ${w.disabled
+            ?`<button class="submit-btn" style="font-size:.76rem;padding:6px 12px;" onclick="adminToggleUser('${w.email}',false)">Enable</button>`
+            :`<button class="danger-btn" style="font-size:.76rem;padding:6px 12px;" onclick="adminToggleUser('${w.email}',true)">Disable</button>`}
+          <button class="danger-btn" style="font-size:.76rem;padding:6px 12px;" onclick="adminDeleteUser('${w.email}','${w.name||w.email}')">Delete</button>
+        </td>
+      </tr>`;
+    });
+    container.innerHTML=`<table class="user-table"><thead><tr><th>Name</th><th>Email</th><th>Roles</th><th>Status</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
+  } catch(e){container.innerHTML=`<p style="color:#f87171;">Error: ${e.message}</p>`;}
+};
+
+window.adminToggleUser=async(email,disable)=>{
+  if(!confirm(`${disable?'Disable':'Enable'} account for ${email}?`))return;
+  try{await updateDoc(doc(db,'workers',email),{disabled:disable});fmShowStatus(`Account ${disable?'disabled':'enabled'} ✓`);adminLoadUsers();}
+  catch(e){fmShowStatus('Error: '+e.message,true);}
+};
+
+window.adminDeleteUser=async(email,name)=>{
+  if(!confirm(`Permanently delete account for ${name}?\n\nThis removes their Firestore record. Firebase Auth account must be deleted separately in Firebase Console.`))return;
+  try{await deleteDoc(doc(db,'workers',email));fmShowStatus(`Account deleted ✓`);adminLoadUsers();}
+  catch(e){fmShowStatus('Error: '+e.message,true);}
+};
+
+window.adminResetPassword=async()=>{
+  const email=document.getElementById('adResetEmail').value.trim().toLowerCase();
+  const pass=document.getElementById('adResetPass').value;
+  const msg=document.getElementById('adResetMsg');
+  msg.className='admin-msg';msg.textContent='';
+  if(!email){msg.className='admin-msg err';msg.textContent='Enter email.';return;}
+  if(pass.length<8){msg.className='admin-msg err';msg.textContent='Password must be at least 8 characters.';return;}
+  const btn=document.getElementById('adResetBtn');btn.disabled=true;btn.textContent='Resetting…';
+  try{
+    // Send password reset email via Firebase
+    await sendPasswordResetEmail(auth,email);
+    msg.className='admin-msg ok';msg.textContent=`✅ Password reset email sent to ${email}`;
+    document.getElementById('adResetEmail').value='';document.getElementById('adResetPass').value='';
+  } catch(e){
+    msg.className='admin-msg err';msg.textContent='Error: '+e.message;
+  } finally{btn.disabled=false;btn.textContent='Reset Password';}
 };
 </script>
 </body>
