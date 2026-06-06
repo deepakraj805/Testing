@@ -371,27 +371,16 @@ const GD_FOLDER_MIME='application/vnd.google-apps.folder';
 const COMPANY_FOLDER_ID='1yqkLJrWr3CLUlooYLhH_DoErpYVEvXt5';
 
 async function gdToken(){
-  if(window._gdAccessToken) return window._gdAccessToken;
-  // Try silent re-auth with Google popup
-  try{
-    const {GoogleAuthProvider,signInWithPopup,getAuth}=window._fbAuth;
-    const auth=getAuth(window._fbApp);
-    const provider=new GoogleAuthProvider();
-    provider.addScope('https://www.googleapis.com/auth/drive');
-    provider.setCustomParameters({prompt:'none'}); // silent - no UI shown if already signed in
-    const r=await signInWithPopup(auth,provider);
-    const cred=GoogleAuthProvider.credentialFromResult(r);
-    if(cred?.accessToken){
-      window._gdAccessToken=cred.accessToken;
-      window._gdConnectedAs=r.user.email;
-      try{localStorage.setItem('gd_token',cred.accessToken);localStorage.setItem('gd_email',r.user.email);}catch(x){}
-      updateDriveBanner();
-      return window._gdAccessToken;
-    }
-  } catch(e){
-    // Silent re-auth failed - need manual reconnect
+  // Try localStorage first
+  if(!window._gdAccessToken){
+    try{
+      const t=localStorage.getItem('gd_token');
+      const e=localStorage.getItem('gd_email');
+      if(t&&e){window._gdAccessToken=t;window._gdConnectedAs=e;updateDriveBanner();}
+    }catch(x){}
   }
-  throw new Error('NEEDS_DRIVE_AUTH');
+  if(!window._gdAccessToken) throw new Error('NEEDS_DRIVE_AUTH');
+  return window._gdAccessToken;
 }
 
 async function gdApi(method,path,body=null,params={}){
