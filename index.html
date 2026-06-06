@@ -517,7 +517,7 @@ async function fmRender(){
         const date=new Date(node.createdTime).toLocaleDateString();
         const sel=FM_SELECTED?.id===node.id?'selected':'';
         const item=document.createElement('div');item.className='fm-item '+sel;
-        item.onclick=()=>fmSelect(node);item.ondblclick=()=>fmOpen(node);item.oncontextmenu=(e)=>fmCtx(e,node);
+        item.onclick=()=>fmOpen(node);item.oncontextmenu=(e)=>fmCtx(e,node);
         const ctxBtn=document.createElement('button');ctxBtn.className='ctx-btn';ctxBtn.textContent='⋮';
         ctxBtn.onclick=(e)=>{e.stopPropagation();fmCtx(e,node);};item.appendChild(ctxBtn);
         const iconSpan=document.createElement('span');iconSpan.className='icon';iconSpan.textContent=icon;item.appendChild(iconSpan);
@@ -538,7 +538,21 @@ async function fmRender(){
 
 function getFileIcon(name){const ext=(name.split('.').pop()||'').toLowerCase();return({txt:'📝',pdf:'📕',doc:'📘',docx:'📘',xls:'📗',xlsx:'📗',jpg:'🖼️',jpeg:'🖼️',png:'🖼️',gif:'🖼️',mp4:'🎬',mp3:'🎵',zip:'📦',csv:'📊',html:'🌐',js:'⚙️',json:'⚙️'})[ext]||'📄';}
 function validName(n){return n&&n.trim()&&!/[<>"'`\/\\]/.test(n)&&n.trim().length<=80;}
-function fmSelect(node){FM_SELECTED=FM_SELECTED?.id===node.id?null:node;fmRender();hideCtxMenu();}
+function fmSelect(node){
+  FM_SELECTED=FM_SELECTED?.id===node.id?null:node;
+  // Update selection CSS without full re-render
+  document.querySelectorAll('.fm-item').forEach(el=>el.classList.remove('selected'));
+  if(FM_SELECTED){
+    document.querySelectorAll('.fm-item').forEach(el=>{
+      const nameEl=el.querySelector('.name');
+      if(nameEl&&nameEl.textContent===FM_SELECTED.name) el.classList.add('selected');
+    });
+  }
+  const hasSel=!!FM_SELECTED;
+  document.getElementById('fmRenameBtn').style.display=hasSel?'':'none';
+  document.getElementById('fmDeleteBtn').style.display=hasSel?'':'none';
+  hideCtxMenu();
+}
 function fmOpen(node){hideCtxMenu();if(!FM_USER)return;if(node.mimeType===GD_FOLDER_MIME){FM_PATH.push({id:node.id,name:node.name});FM_SELECTED=null;fmRender();}else fvOpen(node);}
 function ctxOpen(){if(FM_SELECTED)fmOpen(FM_SELECTED);hideCtxMenu();}
 function fmGoRoot(){FM_PATH=[];FM_SELECTED=null;fmRender();}
@@ -548,7 +562,7 @@ function fmNewFile(){if(!FM_USER)return;showInp('📄 New File Name','e.g. notes
 function fmUpload(){if(!FM_USER)return;const input=document.createElement('input');input.type='file';input.multiple=true;input.onchange=async()=>{if(!input.files.length)return;try{const pid=FM_PATH.length===0?await gdGetRootFolder():FM_PATH[FM_PATH.length-1].id;let done=0;for(const file of input.files){fmShowStatus(`Uploading ${file.name}… (${done+1}/${input.files.length})`);await gdUploadBinary(file,pid);done++;}fmShowStatus(`${done} file(s) uploaded to Drive ✓`);fmRender();}catch(e){fmShowStatus('Upload error: '+e.message,true);}};input.click();}
 function fmRename(){if(!FM_SELECTED||!FM_USER)return;hideCtxMenu();showInp('✏️ Rename',FM_SELECTED.name,async(name)=>{if(!validName(name)){alert('Invalid name.');return;}try{fmShowStatus('Renaming…');await gdRenameFile(FM_SELECTED.id,name.trim());fmShowStatus('Renamed ✓');FM_SELECTED=null;fmRender();}catch(e){fmShowStatus('Error: '+e.message,true);}});}
 async function fmDelete(){if(!FM_SELECTED||!FM_USER)return;hideCtxMenu();if(!confirm('Move "'+FM_SELECTED.name+'" to trash?'))return;try{fmShowStatus('Deleting…');await gdDeleteFile(FM_SELECTED.id);fmShowStatus('Moved to trash ✓');FM_SELECTED=null;fmRender();}catch(e){fmShowStatus('Error: '+e.message,true);}}
-function fmCtx(e,node){e.preventDefault();e.stopPropagation();FM_SELECTED=node;fmRender();const menu=document.getElementById('ctxMenu');menu.style.display='block';const x=Math.min(e.clientX,window.innerWidth-180),y=Math.min(e.clientY,window.innerHeight-140);menu.style.left=x+'px';menu.style.top=y+'px';}
+function fmCtx(e,node){e.preventDefault();e.stopPropagation();FM_SELECTED=node;document.querySelectorAll('.fm-item').forEach(el=>el.classList.remove('selected'));document.querySelectorAll('.fm-item').forEach(el=>{const nameEl=el.querySelector('.name');if(nameEl&&nameEl.textContent===FM_SELECTED.name)el.classList.add('selected');});const hasSel=!!FM_SELECTED;document.getElementById('fmRenameBtn').style.display=hasSel?'':'none';document.getElementById('fmDeleteBtn').style.display=hasSel?'':'none';const menu=document.getElementById('ctxMenu');menu.style.display='block';const x=Math.min(e.clientX,window.innerWidth-180),y=Math.min(e.clientY,window.innerHeight-140);menu.style.left=x+'px';menu.style.top=y+'px';}
 function hideCtxMenu(){document.getElementById('ctxMenu').style.display='none';}
 document.addEventListener('click',hideCtxMenu);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){hideCtxMenu();inpCancel();fvClose();}});
