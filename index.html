@@ -355,7 +355,7 @@ const RATE={attempts:0,lockUntil:0,MAX:5,LOCK_MS:5*60*1000,
 };
 
 /* Session timeout */
-const SESSION_TIMEOUT=30*60*1000, SESSION_WARN_AT=28*60*1000;
+const SESSION_TIMEOUT=10*60*1000, SESSION_WARN_AT=8*60*1000;
 let _sessionTimer,_sessionWarnTimer;
 function resetSessionTimer(){
   clearTimeout(_sessionTimer);clearTimeout(_sessionWarnTimer);
@@ -371,8 +371,27 @@ const GD_FOLDER_MIME='application/vnd.google-apps.folder';
 const COMPANY_FOLDER_ID='1yqkLJrWr3CLUlooYLhH_DoErpYVEvXt5';
 
 async function gdToken(){
-  if(!window._gdAccessToken) throw new Error('NEEDS_DRIVE_AUTH');
-  return window._gdAccessToken;
+  if(window._gdAccessToken) return window._gdAccessToken;
+  // Try silent re-auth with Google popup
+  try{
+    const {GoogleAuthProvider,signInWithPopup,getAuth}=window._fbAuth;
+    const auth=getAuth(window._fbApp);
+    const provider=new GoogleAuthProvider();
+    provider.addScope('https://www.googleapis.com/auth/drive');
+    provider.setCustomParameters({prompt:'none'}); // silent - no UI shown if already signed in
+    const r=await signInWithPopup(auth,provider);
+    const cred=GoogleAuthProvider.credentialFromResult(r);
+    if(cred?.accessToken){
+      window._gdAccessToken=cred.accessToken;
+      window._gdConnectedAs=r.user.email;
+      try{localStorage.setItem('gd_token',cred.accessToken);localStorage.setItem('gd_email',r.user.email);}catch(x){}
+      updateDriveBanner();
+      return window._gdAccessToken;
+    }
+  } catch(e){
+    // Silent re-auth failed - need manual reconnect
+  }
+  throw new Error('NEEDS_DRIVE_AUTH');
 }
 
 async function gdApi(method,path,body=null,params={}){
@@ -383,7 +402,7 @@ async function gdApi(method,path,body=null,params={}){
   if(body&&typeof body==='string'){opts.headers['Content-Type']='application/json';opts.body=body;}
   else if(body){opts.body=body;}
   const r=await fetch(url.toString(),opts);
-  if(!r.ok){let msg=r.statusText;try{const e=await r.json();msg=e.error?.message||msg;}catch(x){}if(r.status===401){window._gdAccessToken=null;updateDriveBanner();}throw new Error(msg);}
+  if(!r.ok){let msg=r.statusText;try{const e=await r.json();msg=e.error?.message||msg;}catch(x){}if(r.status===401){window._gdAccessToken=null;try{localStorage.removeItem('gd_token');}catch(x){}setTimeout(()=>{if(window.FM_USER)fmRender();},500);}throw new Error(msg);}
   if(r.status===204)return{};
   return r.json();
 }
@@ -452,12 +471,13 @@ window.driveConnect=async()=>{
     if(cred?.accessToken){
       window._gdAccessToken=cred.accessToken;
       window._gdConnectedAs=r.user.email;
+      try{localStorage.setItem('gd_token',cred.accessToken);localStorage.setItem('gd_email',r.user.email);}catch(x){}
       updateDriveBanner();
       fmRender();
     }
   } catch(e){fmShowStatus('Drive connect failed: '+e.message,true);}
 };
-window.driveDisconnect=()=>{window._gdAccessToken=null;window._gdConnectedAs=null;updateDriveBanner();fmRender();};
+window.driveDisconnect=()=>{window._gdAccessToken=null;window._gdConnectedAs=null;try{localStorage.removeItem('gd_token');localStorage.removeItem('gd_email');}catch(x){}updateDriveBanner();fmRender();};
 
 function fmShowStatus(msg,isError=false){
   let bar=document.getElementById('fmStatusBar');
@@ -539,12 +559,25 @@ async function fvOpen(node){if(!FM_USER||node.mimeType===GD_FOLDER_MIME)return;f
 async function fvSave(){if(!fvEditingPath||!FM_USER)return;try{fmShowStatus('Saving to Google Drive…');await gdUpdateFile(fvEditingPath,document.getElementById('fvContent').value);fmShowStatus('Saved to Google Drive ✓');fvClose();fmRender();}catch(e){fmShowStatus('Save error: '+e.message,true);}}
 function fvClose(){document.getElementById('fileViewer').classList.remove('show');fvEditingPath=null;}
 function showDashboardView(){document.getElementById('dashboardSection').style.display='block';document.getElementById('fileManagerSection').style.display='none';}
-function showFileManager(){if(!FM_USER)return;document.getElementById('dashboardSection').style.display='none';document.getElementById('fileManagerSection').style.display='block';updateDriveBanner();FM_PATH=[];FM_SELECTED=null;fmRender();}
+function showFileManager(){
+  if(!FM_USER)return;
+  document.getElementById('dashboardSection').style.display='none';
+  document.getElementById('fileManagerSection').style.display='block';
+  // Auto restore Drive token from localStorage on every open
+  if(!window._gdAccessToken){
+    try{
+      const t=localStorage.getItem('gd_token');
+      const e=localStorage.getItem('gd_email');
+      if(t&&e){window._gdAccessToken=t;window._gdConnectedAs=e;}
+    }catch(x){}
+  }
+  updateDriveBanner();FM_PATH=[];FM_SELECTED=null;fmRender();
+}
 </script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail, updatePassword, fetchSignInMethodsForEmail } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail, updatePassword, fetchSignInMethodsForEmail, browserLocalPersistence, setPersistence } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, getDocs, collection, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
 const app = initializeApp({
@@ -559,14 +592,17 @@ const app = initializeApp({
 const auth = getAuth(app);
 const db   = getFirestore(app);
 
+// Keep user logged in after refresh
+setPersistence(auth, browserLocalPersistence).catch(e=>console.warn('Persistence error:',e));
+
 // Expose for Drive connect popup
 window._fbApp  = app;
 window._fbAuth = { GoogleAuthProvider, signInWithPopup, getAuth };
 window._vtAuth = auth;
 
 // ── Admin emails (SHA-256 hashed) ──
-// info@vishaktech.com → full admin/dashboard access
-const ADMIN_HASHES = ["1a07615a3a984536a7c2c6b831293224c176db083fc96979505cd49bba7a983e"];
+// info@vishaktech.com + dr4683743@gmail.com → full admin access
+const ADMIN_HASHES = ["1a07615a3a984536a7c2c6b831293224c176db083fc96979505cd49bba7a983e","02f6b857d3100b0cd628d85c1750e1793228c86957fdc1c34d27667ef9e0e487"];
 
 async function hashEmail(email){
   const buf=new TextEncoder().encode(email.toLowerCase().trim());
@@ -594,6 +630,12 @@ function roleBadgeHtml(role){
 function hideLoader(){const ol=document.getElementById('loadingOverlay');ol.style.opacity='0';setTimeout(()=>ol.style.display='none',400);}
 
 async function showDashboard(user){
+  // Restore Drive connection from localStorage
+  try{
+    const savedToken=localStorage.getItem('gd_token');
+    const savedEmail=localStorage.getItem('gd_email');
+    if(savedToken&&savedEmail){window._gdAccessToken=savedToken;window._gdConnectedAs=savedEmail;}
+  }catch(x){}
   hideLoader();
   const h=await hashEmail(user.email);
   const isAdmin=ADMIN_HASHES.includes(h);
@@ -660,6 +702,7 @@ window.emailLogin=async()=>{
 window.logoutUser=async()=>{
   clearTimeout(_sessionTimer);clearTimeout(_sessionWarnTimer);
   window._gdAccessToken=null;window._gdConnectedAs=null;
+  try{localStorage.removeItem('gd_token');localStorage.removeItem('gd_email');}catch(x){}
   await signOut(auth);
 };
 
