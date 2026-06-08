@@ -283,6 +283,43 @@ tr:last-child td{border-bottom:none}
 .sparkline-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .6s}
 .sparkline-fill.neg{background:var(--red)}
 
+/* ── LANDING PAGE ────────────────────────────────── */
+#landingPage{
+  position:fixed;inset:0;background:var(--bg);z-index:9000;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0;transition:opacity .35s ease;
+}
+#landingPage.hidden{opacity:0;pointer-events:none;}
+.landing-inner{
+  display:flex;flex-direction:column;align-items:center;gap:28px;
+  max-width:520px;width:100%;padding:40px 32px;
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:20px;box-shadow:0 24px 64px rgba(0,0,0,.12);
+}
+.landing-logo{
+  width:64px;height:64px;border-radius:16px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+}
+.landing-logo svg{width:30px;height:30px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round}
+.landing-title{font-family:var(--display);font-size:32px;font-weight:600;letter-spacing:-.02em;text-align:center;line-height:1.2}
+.landing-title span{color:var(--accent);font-style:italic}
+.landing-sub{font-size:15px;color:var(--muted);text-align:center;line-height:1.7;max-width:380px}
+.landing-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%}
+.landing-card{
+  background:var(--bg3);border:1px solid var(--border);border-radius:12px;
+  padding:14px 12px;display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;
+}
+.landing-card-icon{font-size:22px}
+.landing-card-label{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.04em}
+.landing-enter{
+  width:100%;padding:14px;border-radius:12px;font-size:16px;font-weight:700;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;
+  border:none;cursor:pointer;transition:.2s;letter-spacing:.01em;
+}
+.landing-enter:hover{filter:brightness(1.1);transform:translateY(-1px);box-shadow:0 8px 24px rgba(13,148,136,.3)}
+.landing-tagline{font-size:12px;color:var(--faint);letter-spacing:.05em}
+
 /* ── LOADING OVERLAY ─────────────────────────────── */
 #loadingOverlay{
   position:fixed;inset:0;background:var(--bg);z-index:9999;
@@ -318,6 +355,35 @@ tr:last-child td{border-bottom:none}
 </style>
 </head>
 <body>
+<!-- ── LANDING PAGE ── -->
+<div id="landingPage" style="display:none">
+  <div class="landing-inner">
+    <div class="landing-logo">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    </div>
+    <div>
+      <div class="landing-title">Vishak Tech<br><span>Accounts Dash</span></div>
+    </div>
+    <div class="landing-sub">Manage all your business accounts, track transactions, and sync with Google Drive — all in one place.</div>
+    <div class="landing-cards">
+      <div class="landing-card">
+        <div class="landing-card-icon">📊</div>
+        <div class="landing-card-label">Balance Overview</div>
+      </div>
+      <div class="landing-card">
+        <div class="landing-card-icon">💳</div>
+        <div class="landing-card-label">Transactions</div>
+      </div>
+      <div class="landing-card">
+        <div class="landing-card-icon">☁️</div>
+        <div class="landing-card-label">Drive Sync</div>
+      </div>
+    </div>
+    <button class="landing-enter" onclick="enterDash()">Enter Dashboard →</button>
+    <div class="landing-tagline">VISHAK TECH · PROPRIETOR ACCOUNTS</div>
+  </div>
+</div>
+
 <div id="loadingOverlay">
   <div class="loader-ring"></div>
   <div class="loader-text">Loading your data…</div>
@@ -371,7 +437,7 @@ tr:last-child td{border-bottom:none}
     </button>
     <div class="header-title" id="headerTitle">Accounts <span>Dash</span></div>
     <div class="header-actions">
-      <button class="btn btn-ghost" onclick="switchView('dashboard', document.querySelector('.nav-item[data-view=dashboard]'))" title="Go to main dashboard" style="display:flex;align-items:center;gap:6px;padding:8px 12px;">
+      <button class="btn btn-ghost" onclick="showLanding()" title="Go to home landing page" style="display:flex;align-items:center;gap:6px;padding:8px 12px;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         Home
       </button>
@@ -677,6 +743,21 @@ let tokenClient=null, accessToken=null, driveFileId='', pickerLoaded=false;
 const SCOPES='https://www.googleapis.com/auth/drive';
 
 // ══════════════════════════════════════════════════
+//  LANDING PAGE
+// ══════════════════════════════════════════════════
+function showLanding(){
+  const lp = document.getElementById('landingPage');
+  lp.style.display = 'flex';
+  requestAnimationFrame(()=>{ lp.style.opacity='1'; lp.classList.remove('hidden'); });
+}
+function enterDash(){
+  const lp = document.getElementById('landingPage');
+  lp.classList.add('hidden');
+  setTimeout(()=>{ lp.style.display='none'; }, 360);
+  switchView('dashboard', document.querySelector('.nav-item[data-view=dashboard]'));
+}
+
+// ══════════════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════════════
 document.getElementById('entryDate').value = new Date().toISOString().split('T')[0];
@@ -698,9 +779,12 @@ syncHolder();
   refreshAll();
   updateDriveButtons();
   loadAutoSyncPref();
-  // Fade out overlay
+  // Fade out overlay and show landing page
   overlay.classList.add('hidden');
-  setTimeout(()=>{ overlay.style.display='none'; }, 320);
+  setTimeout(()=>{
+    overlay.style.display='none';
+    showLanding();
+  }, 320);
   // Auto reconnect — wait for Google API scripts to fully load first
   function tryAutoReconnect(attempts){
     if(typeof gapi !== 'undefined' && typeof google !== 'undefined' && google.accounts){
