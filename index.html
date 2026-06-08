@@ -372,14 +372,16 @@ body {
 .login-right {
   position: relative;
   background: linear-gradient(
-    to bottom right,
-    rgba(6,14,9,.55),
-    rgba(10,30,15,.30)
+    to bottom,
+    rgba(6,14,9,.30) 0%,
+    rgba(6,14,9,.10) 35%,
+    rgba(6,14,9,.45) 100%
   ),
   url('https://media.istockphoto.com/id/135277824/photo/cement-plant.jpg?s=612x612&w=0&k=20&c=ZDaSTf90niU2d_qH0jdNAxO08H7mFZY5ZeDOAmhPdio=')
   center / cover no-repeat;
-  display: flex; flex-direction: column; justify-content: flex-end;
-  padding: 56px;
+  display: flex; flex-direction: column; justify-content: center;
+  align-items: flex-start;
+  padding: 44px 48px;
 }
 /* Grid overlay on image */
 .login-right::before {
@@ -392,18 +394,19 @@ body {
 }
 .login-hero-tag {
   display: inline-flex; align-items: center; gap: 8px;
-  padding: 8px 18px;
-  background: rgba(0,0,0,.5);
+  padding: 7px 16px;
+  background: rgba(0,0,0,.55);
   border: 1px solid rgba(200,169,122,.35);
   border-radius: var(--radius);
   font-family: var(--font-mono);
-  font-size: .72rem;
+  font-size: .68rem;
   color: var(--gold-2);
-  letter-spacing: .12em;
+  letter-spacing: .10em;
   text-transform: uppercase;
-  margin-bottom: 24px;
+  margin-bottom: 14px;
   width: fit-content;
   position: relative;
+  align-self: flex-start;
 }
 .login-hero-tag::before {
   content: '';
@@ -418,14 +421,14 @@ body {
 
 .login-hero-title {
   font-family: var(--font-cond);
-  font-size: 3.6rem;
+  font-size: 3.8rem;
   font-weight: 900;
-  line-height: 1;
+  line-height: 1.02;
   color: #fff;
   text-transform: uppercase;
-  letter-spacing: .02em;
-  margin-bottom: 16px;
-  text-shadow: 0 4px 20px rgba(0,0,0,.5);
+  letter-spacing: .01em;
+  margin-bottom: 0;
+  text-shadow: 0 4px 24px rgba(0,0,0,.6);
 }
 .login-hero-title em {
   font-style: normal;
@@ -1110,21 +1113,6 @@ function togglePassword(id,eyeId){
       <div class="login-right">
         <div class="login-hero-tag">Engineering • Manufacturing • Innovation</div>
         <h2 class="login-hero-title">Building<br>The <em>Future</em><br>Of Industry</h2>
-        <p class="login-hero-desc">Delivering fabrication, casting, hydraulic systems and industrial engineering solutions for cement, steel, power and process industries.</p>
-        <div class="login-stats">
-          <div class="stat-item">
-            <span class="stat-val">20+</span>
-            <span class="stat-label">Years Experience</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-val">500+</span>
-            <span class="stat-label">Projects Delivered</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-val">ISO</span>
-            <span class="stat-label">Certified</span>
-          </div>
-        </div>
       </div>
     </div>
   </div>
