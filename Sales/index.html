@@ -831,6 +831,18 @@
   }
   .drawer-close:hover { background: var(--surface3); color: var(--text); }
   .drawer-close svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2.5; stroke-linecap:round; }
+
+  /* HOME BUTTON — shared across all sub-panels */
+  .btn-home {
+    display: inline-flex; align-items: center; gap: 5px;
+    height: 30px; padding: 0 10px; border-radius: 8px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface2); color: var(--text2);
+    font-size: 11.5px; font-weight: 700; font-family: inherit;
+    cursor: pointer; transition: all 0.16s; flex-shrink: 0; white-space: nowrap;
+  }
+  .btn-home:hover { background: var(--accent); border-color: var(--accent); color: white; box-shadow: 0 3px 10px rgba(224,96,48,0.30); }
+  .btn-home svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
   .drawer-filters {
     padding: 0.85rem 1.5rem 0.75rem; border-bottom: 1px solid var(--border);
     flex-shrink: 0; background: var(--surface2);
@@ -1109,6 +1121,10 @@
     <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;" id="file-info">—</div>
     <div class="topbar-right">
       <div class="btn-cluster">
+        <a class="hbtn" href="/" title="Go to Landing Page">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Home
+        </a>
         <div class="hbtn"><div class="live-dot"></div>&nbsp;Live</div>
         <button class="hbtn" onclick="loadAll()">
           <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.54"/></svg>
@@ -1274,7 +1290,13 @@
   <div class="modal" style="width:min(500px,95vw)">
     <div class="modal-header">
       <div class="modal-title"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Configure Apps Script URL</div>
-      <button class="modal-close" onclick="closeScriptConfig()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button class="btn-home" onclick="window.location.href='/'"  title="Back to Main Dashboard">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Home
+        </button>
+        <button class="modal-close" onclick="closeScriptConfig()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
     </div>
     <div class="modal-body">
       <p style="font-size:13px;color:var(--text2);margin-bottom:1.2rem;line-height:1.6">
@@ -1338,7 +1360,13 @@ function buildRes(obj) {
         <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Add Entry
       </div>
-      <button class="modal-close" onclick="closeBottomSheet()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button class="btn-home" onclick="window.location.href='/'"  title="Back to Main Dashboard">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Home
+        </button>
+        <button class="modal-close" onclick="closeBottomSheet()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
     </div>
     <!-- Tab switcher (only shown in add mode) -->
     <div class="bottom-sheet-tabs" id="bs-tab-bar">
@@ -1376,7 +1404,13 @@ function buildRes(obj) {
         <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Add Entry
       </div>
-      <button class="modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button class="btn-home" onclick="window.location.href='/'"  title="Back to Main Dashboard">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Home
+        </button>
+        <button class="modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
     </div>
     <div class="modal-body">
       <!-- ═══ LEAD FORM ═══ -->
@@ -1599,9 +1633,15 @@ function buildRes(obj) {
       All Site Visits
       <span class="drawer-count" id="drawer-count"></span>
     </div>
-    <button class="drawer-close" onclick="closeVisitsDrawer()" title="Close">
-      <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
+    <div style="display:flex;gap:6px;align-items:center">
+      <button class="btn-home" onclick="window.location.href='/'"  title="Back to Main Dashboard">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </button>
+      <button class="drawer-close" onclick="closeVisitsDrawer()" title="Close">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
   </div>
   <div class="drawer-filters">
     <div class="drawer-search-row">
@@ -3035,9 +3075,15 @@ function openInlineEdit(type, idx, evt) {
   const html = `
     <div class="pop-header">
       <div class="pop-title">${iconEdit} Edit ${typeLabel}</div>
-      <button class="btn-pop-close" onclick="_closePopover()" title="Close">
-        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+      <div style="display:flex;gap:5px;align-items:center">
+        <button class="btn-home" onclick="window.location.href='/'"  title="Back to Main Dashboard" style="height:26px;padding:0 8px;font-size:11px">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Home
+        </button>
+        <button class="btn-pop-close" onclick="_closePopover()" title="Close">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
     </div>
     <div class="pop-body" id="edit-pop-body"></div>
     <div class="pop-footer">
