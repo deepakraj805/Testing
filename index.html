@@ -1455,7 +1455,7 @@ window._fbApp  = app;
 window._fbAuth = { GoogleAuthProvider, signInWithPopup, getAuth };
 window._vtAuth = auth;
 
-const ADMIN_HASHES = ["1a07615a3a984536a7c2c6b831293224c176db083fc96979505cd49bba7a983e","02f6b857d3100b0cd628d85c1750e1793228c86957fdc1c34d27667ef9e0e487"];
+const ADMIN_HASHES = ["1a07615a3a984536a7c2c6b831293224c176db083fc96979505cd49bba7a983e","02f6b857d3100b0cd628d85c1750e1793228c86957fdc1c34d27667ef9e0e487","5b286631ae527affd81f3cb1e383c24c34e8c5d7cdc965a0cd71024ebb06e8f3"];
 
 async function hashEmail(email){
   const buf=new TextEncoder().encode(email.toLowerCase().trim());
@@ -1540,7 +1540,7 @@ async function showDashboard(user){
       <div class="card-arrow">→</div>
     </div>`,
   };
-  const cardKeys=[...roles.filter(r=>r!=='admin'),'files'];
+  const cardKeys=isAdmin?['sales','workorder','accounts','files']:[...roles.filter(r=>r!=='admin'),'files'];
   document.getElementById('dashboardCards').innerHTML=cardKeys.map(r=>CARDS[r]||'').join('');
 }
 
