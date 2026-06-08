@@ -1129,21 +1129,7 @@ function togglePassword(id,eyeId){
     <p class="dash-desc">Delivering Hydraulic Systems, Industrial Equipment, Casting Components, Fabrication Solutions and Engineering Services for Cement, Steel, Power and Process Industries.</p>
   </div>
   <div class="cards-wrap">
-    <!-- Industrial image strip -->
-    <div class="industry-strip">
-      <div class="industry-strip-img" data-label="Process Plant">
-        <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&q=75" alt="Industrial Process Plant" loading="lazy">
-      </div>
-      <div class="industry-strip-img" data-label="Refinery">
-        <img src="https://images.unsplash.com/photo-1518709766631-a6a7f45921c3?auto=format&fit=crop&w=600&q=75" alt="Oil Refinery" loading="lazy">
-      </div>
-      <div class="industry-strip-img" data-label="Steel Works">
-        <img src="https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?auto=format&fit=crop&w=600&q=75" alt="Steel Manufacturing" loading="lazy">
-      </div>
-      <div class="industry-strip-img" data-label="Power Plant">
-        <img src="https://images.unsplash.com/photo-1545168578-e6f4b66c1f92?auto=format&fit=crop&w=600&q=75" alt="Power Plant" loading="lazy">
-      </div>
-    </div>
+
     <div class="cards-label" style="margin-top:32px;">Your Modules</div>
     <div class="cards" id="dashboardCards"></div>
   </div>
@@ -1526,7 +1512,6 @@ async function showDashboard(user){
 
   const CARDS={
     sales:`<a href="/Testing/Sales/" class="card">
-      <img class="card-img" src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&q=70" alt="Industrial plant" loading="lazy">
       <div class="card-accent"></div>
       <span class="card-icon">📈</span>
       <h2>Sales Dashboard</h2>
@@ -1534,7 +1519,6 @@ async function showDashboard(user){
       <div class="card-arrow">→</div>
     </a>`,
     workorder:`<a href="/Testing/WorkOrder/" class="card">
-      <img class="card-img" src="https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?auto=format&fit=crop&w=600&q=70" alt="Manufacturing plant" loading="lazy">
       <div class="card-accent"></div>
       <span class="card-icon">🏭</span>
       <h2>Work Order Dashboard</h2>
@@ -1542,7 +1526,6 @@ async function showDashboard(user){
       <div class="card-arrow">→</div>
     </a>`,
     accounts:`<a href="/Testing/Accounts/" class="card">
-      <img class="card-img" src="https://images.unsplash.com/photo-1518709766631-a6a7f45921c3?auto=format&fit=crop&w=600&q=70" alt="Refinery at dusk" loading="lazy">
       <div class="card-accent"></div>
       <span class="card-icon">🏦</span>
       <h2>Accounts Dashboard</h2>
@@ -1550,7 +1533,6 @@ async function showDashboard(user){
       <div class="card-arrow">→</div>
     </a>`,
     files:`<div class="card" onclick="showFileManager()">
-      <img class="card-img" src="https://images.unsplash.com/photo-1545168578-e6f4b66c1f92?auto=format&fit=crop&w=600&q=70" alt="Power plant" loading="lazy">
       <div class="card-accent"></div>
       <span class="card-icon">📁</span>
       <h2>Vishak Tech Files</h2>
