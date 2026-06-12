@@ -1511,21 +1511,21 @@ async function showDashboard(user){
   roleBadgeEl.innerHTML=allRoles.map(r=>roleBadgeHtml(r)).join('');
 
   const CARDS={
-    sales:`<a href="/EnterprisePortal/Sales/" class="card">
+    sales:`<a href="./Sales/" class="card">
       <div class="card-accent"></div>
       <span class="card-icon">📈</span>
       <h2>Sales Dashboard</h2>
       <p>Manage Leads, RFQs, Quotations, Purchase Requests, Purchase Orders and Customer Follow-ups.</p>
       <div class="card-arrow">→</div>
     </a>`,
-    workorder:`<a href="/EnterprisePortal/WorkOrder/" class="card">
+    workorder:`<a href="./WorkOrder/" class="card">
       <div class="card-accent"></div>
       <span class="card-icon">🏭</span>
       <h2>Work Order Dashboard</h2>
       <p>Track Fabrication, Casting, Production Progress, Quality Control, Packing and Dispatch.</p>
       <div class="card-arrow">→</div>
     </a>`,
-    accounts:`<a href="/EnterprisePortal/Accounts/" class="card">
+    accounts:`<a href="./Accounts/" class="card">
       <div class="card-accent"></div>
       <span class="card-icon">🏦</span>
       <h2>Accounts Dashboard</h2>
@@ -1539,14 +1539,14 @@ async function showDashboard(user){
       <p>Shared company file manager — saved directly to company Google Drive. Connect your Google account inside.</p>
       <div class="card-arrow">→</div>
     </div>`,
-    production:`<a href="/EnterprisePortal/Production/" class="card">
+    production:`<a href="./Production/" class="card">
       <div class="card-accent"></div>
       <span class="card-icon">🏭</span>
       <h2>PRODUCTION DASHBOARD</h2>
       <p>Manage Production Planning, Job Cards, Daily Progress, Material Consumption and Output.</p>
       <div class="card-arrow">→</div>
     </a>`,
-    purchase:`<a href="/EnterprisePortal/Purchase/" class="card">
+    purchase:`<a href="./Purchase/" class="card">
       <div class="card-accent"></div>
       <span class="card-icon">🛒</span>
       <h2>PURCHASE DASHBOARD</h2>
