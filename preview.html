@@ -1,0 +1,1414 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V4 - Vishak Tech Automation Suite</title>
+<style>
+:root{
+  --color-background-primary:#fff;
+  --color-background-secondary:#F7F4EF;
+  --color-border-secondary:#D8CDC3;
+  --color-border-tertiary:#E5DDD4;
+  --color-text-primary:#17211D;
+  --color-text-secondary:#4F5F58;
+  --color-text-tertiary:#7D8A84;
+  --color-brand:#003F34;
+  --color-brand-2:#065447;
+  --color-accent:#006B5A;
+  --color-accent-strong:#003F34;
+  --color-accent-soft:#E1F1EC;
+  --color-gold:#C8A36C;
+  --color-peach:#F0D6CE;
+  --color-success:#0B6B5E;
+  --color-success-soft:#DDEFEA;
+  --color-danger:#B42318;
+  --color-danger-soft:#FEE4E2;
+  --color-warning:#B54708;
+  --color-warning-soft:#FEF0C7;
+  --border-radius-md:6px;
+  --border-radius-lg:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;background:#ECE6DD;color:var(--color-text-primary);font-family:Inter,Segoe UI,Arial,sans-serif}
+body{padding:16px}
+button,input,select{font:inherit}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #7F77DD;outline-offset:1px}
+.ti{display:inline-flex;align-items:center;justify-content:center;font-style:normal;line-height:1}
+.ti:before{content:"\2022"}
+.ti-layout-dashboard:before{content:"\25A6"}.ti-bolt:before{content:"\26A1"}.ti-bell:before{content:"\25CF"}.ti-users:before{content:"\25C9"}.ti-message-question:before{content:"?"}.ti-file-text:before{content:"\25A4"}.ti-shopping-cart:before{content:"\25B1"}.ti-package:before{content:"\25A3"}.ti-receipt:before{content:"\2261"}.ti-cash:before{content:"\20B9"}.ti-truck:before{content:"\25B7"}.ti-clipboard-list:before{content:"\2630"}.ti-folder:before{content:"\25B0"}.ti-chart-bar:before{content:"\25A5"}.ti-plus:before{content:"+"}.ti-download:before{content:"\2193"}.ti-upload:before{content:"\2191"}.ti-printer:before{content:"\2399"}.ti-alert-triangle:before{content:"!"}.ti-alert-circle:before{content:"!"}.ti-check:before{content:"\2713"}.ti-star:before{content:"*"}.ti-edit:before{content:"\270E"}.ti-trash:before{content:"\00D7"}.ti-file:before{content:"\25A4"}.ti-certificate:before{content:"\25C8"}.ti-arrow-right:before{content:"\2192"}
+.app{display:flex;height:min(760px,calc(100vh - 32px));min-height:660px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;background:var(--color-background-primary);box-shadow:0 18px 50px rgba(22,31,28,.16)}
+.sb{width:210px;border-right:0.5px solid rgba(255,255,255,.1);background:var(--color-brand);display:flex;flex-direction:column;flex-shrink:0;color:#fff}
+.sb-logo{padding:13px 14px;border-bottom:0.5px solid rgba(255,255,255,.12);display:flex;align-items:center;gap:10px;background:#00382F}
+.brand-logo{width:128px;height:36px;object-fit:contain;display:block}
+.sb-logo-text{font-size:10px;color:#EACEC6;margin-top:2px;letter-spacing:.02em}
+.sb-icon{width:30px;height:30px;border-radius:7px;background:rgba(240,214,206,.12);display:flex;align-items:center;justify-content:center;border:0.5px solid rgba(240,214,206,.35)}
+.sb-nav{flex:1;overflow-y:auto;padding:6px 0}
+.sb-group{padding:8px 0 2px}
+.sb-glabel{font-size:10px;color:#A5C0B8;padding:0 14px 3px;text-transform:uppercase;letter-spacing:.05em}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 14px;font-size:12px;cursor:pointer;color:#D6E6E1;border-left:2px solid transparent}
+.ni:hover{background:rgba(255,255,255,.08);color:#fff}
+.ni.active{background:rgba(240,214,206,.14);color:#F2D8D1;border-left-color:var(--color-peach);font-weight:600}
+.ni i{font-size:14px;width:15px;flex-shrink:0}
+.nb{margin-left:auto;background:rgba(240,214,206,.16);color:#F2D8D1;font-size:10px;font-weight:600;padding:1px 5px;border-radius:8px}
+.nb-red{background:#FCEBEB;color:#A32D2D}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;border-bottom:0.5px solid var(--color-border-tertiary);flex-shrink:0;gap:10px;background:#FFFDF9}
+.tb-left{display:flex;align-items:center;gap:10px;min-width:0}
+.tb-right{display:flex;gap:7px;align-items:center;flex-shrink:0}
+.btn{padding:5px 11px;font-size:11px;border-radius:var(--border-radius-md);cursor:pointer;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);display:inline-flex;align-items:center;gap:4px}
+.btn:hover{background:var(--color-background-secondary)}
+.btn-p{background:var(--color-brand);color:#fff;border-color:var(--color-brand)}
+.btn-p:hover{background:var(--color-accent-strong)}
+.btn-g{background:#0B6B5E;color:#fff;border-color:#0B6B5E}
+.btn-g:hover{background:#044C42}
+.btn-sm{padding:3px 8px;font-size:10px}
+.btn-icon{width:26px;height:26px;padding:0;justify-content:center}
+.btn-print{color:var(--color-accent);border-color:#B8D0E5;background:#F7FBFF}
+.btn-print:hover{background:var(--color-accent-soft)}
+.btn-danger{color:var(--color-danger);border-color:#F5B9B3;background:#FFF7F6}
+.btn-danger:hover{background:var(--color-danger-soft)}
+.action-group{display:inline-flex;align-items:center;gap:4px}
+.table-wrap{overflow:auto;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg)}
+.content{flex:1;overflow:auto;padding:16px 18px}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:15px}
+.mc{background:#FFFCF7;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px}
+.mc-lbl{font-size:10px;color:var(--color-text-tertiary);margin-bottom:4px}
+.mc-val{font-size:19px;font-weight:500;color:var(--color-text-primary)}
+.mc-sub{font-size:10px;color:var(--color-text-tertiary);margin-top:2px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px}
+.sec{font-size:11px;font-weight:500;color:var(--color-text-tertiary);margin-bottom:9px;text-transform:uppercase;letter-spacing:.04em}
+table{width:100%;font-size:11px;border-collapse:collapse;table-layout:fixed}
+th{text-align:left;padding:8px 9px;font-size:10px;font-weight:600;color:var(--color-text-tertiary);border-bottom:0.5px solid var(--color-border-tertiary);text-transform:uppercase;letter-spacing:.04em;background:#FBF7F0}
+td{padding:8px 9px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--color-background-secondary)}
+.pill{display:inline-flex;align-items:center;gap:3px;font-size:10px;padding:2px 7px;border-radius:8px;font-weight:500;white-space:nowrap}
+.p-new{background:var(--color-accent-soft);color:var(--color-accent)}.p-prog{background:var(--color-warning-soft);color:#7A2E0E}.p-done{background:#EAF3DE;color:#173404}.p-paid{background:var(--color-success-soft);color:#04342C}.p-over{background:var(--color-danger-soft);color:#501313}.p-pend{background:#FAECE7;color:#4A1B0C}.p-info{background:#E6F1FB;color:#042C53}.p-auto{background:var(--color-accent-soft);color:var(--color-accent-strong)}
+.dot{width:4px;height:4px;border-radius:50%;background:currentColor}
+.srch{padding:5px 9px;font-size:11px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);width:140px}
+.fi{padding:6px 9px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);width:100%}
+.fi:focus{outline:none;border-color:#7F77DD}
+.fl{font-size:11px;font-weight:500;color:var(--color-text-secondary);display:block;margin-bottom:3px}
+.fg{display:flex;flex-direction:column}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:11px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin-bottom:11px}
+.auto-badge{display:inline-flex;align-items:center;gap:4px;background:var(--color-accent-soft);color:var(--color-accent);font-size:10px;padding:2px 8px;border-radius:8px;font-weight:500}
+.sync-badge{display:inline-flex;align-items:center;gap:4px;background:#F8F0E9;color:#6A4B2E;font-size:10px;padding:2px 8px;border-radius:8px;font-weight:600;white-space:nowrap}
+.sync-badge.cloud{background:var(--color-accent-soft);color:var(--color-accent)}
+.sync-badge.error{background:var(--color-danger-soft);color:var(--color-danger)}
+.sync-badge.firebase{background:#FFF3E0;color:#E65100}
+.toast{position:absolute;top:10px;right:10px;background:var(--color-brand);color:#fff;padding:8px 14px;border-radius:var(--border-radius-md);font-size:12px;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;z-index:99}
+.workflow-step{display:flex;align-items:center;gap:10px;padding:10px 12px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);margin-bottom:8px;background:var(--color-background-primary)}
+.ws-num{width:24px;height:24px;border-radius:50%;background:var(--color-accent-soft);color:var(--color-accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0}
+.ws-active{border-color:#9EC3E1;background:var(--color-accent-soft)}
+.ws-done{border-color:#1D9E75;opacity:.7}
+.notif{display:flex;align-items:flex-start;gap:10px;padding:10px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);margin-bottom:8px}
+.notif-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.avatar{width:26px;height:26px;border-radius:50%;background:var(--color-accent-soft);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;color:var(--color-accent);flex-shrink:0}
+.prog-bar{background:var(--color-background-secondary);border-radius:4px;height:4px}
+.prog-fill{background:var(--color-accent);height:4px;border-radius:4px}
+[style*="#3C3489"]{color:var(--color-accent)!important}
+[style*="#EEEDFE"]{background:var(--color-accent-soft)!important}
+[style*="#AFA9EC"]{border-color:#B8D0E5!important}
+@media(max-width:900px){
+  body{padding:10px}
+  .app{height:calc(100vh - 20px);min-height:620px}
+  .sb{width:172px}
+  .metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .g2,.g3{grid-template-columns:1fr}
+  table{min-width:780px}
+}
+@media(max-width:640px){
+  body{padding:0}
+  .app{height:100vh;min-height:100vh;border:0;border-radius:0;flex-direction:column}
+  .sb{width:100%;max-height:210px;border-right:0;border-bottom:0.5px solid var(--color-border-tertiary)}
+  .sb-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;overflow:auto}
+  .sb-group{padding:6px 0}
+  .topbar{align-items:flex-start;flex-wrap:wrap;padding:10px 12px}
+  .tb-right{width:100%;flex-wrap:wrap}
+  .srch{flex:1;min-width:130px}
+  .content{padding:12px}
+  .metrics{grid-template-columns:1fr!important}
+}
+</style>
+</head>
+<body><div style='position:fixed;top:5px;right:5px;background:#0b6b5e;color:white;padding:6px 10px;border-radius:6px;z-index:9999'>ERP V4 Upgrade</div>
+
+<h2 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Vishak Tech automated business management system with workflows connecting CRM, enquiries, quotations, orders, packing lists, invoices, payments, vendors, documents and reports</h2>
+
+<div class="app" style="position:relative">
+<div id="toast" class="toast"></div>
+
+<div class="sb">
+  <div class="sb-logo">
+    <div class="sb-icon"><i class="ti ti-bolt" style="color:#F2D8D1;font-size:14px" aria-hidden="true"></i></div>
+    <div>
+      <img class="brand-logo" src="assets/vishaktech-logo.jpeg" alt="Vishak Tech">
+      <div class="sb-logo-text">Business Automation Suite</div>
+    </div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-group">
+      <div class="sb-glabel">Overview</div>
+      <div class="ni active" onclick="nav('dashboard')"><i class="ti ti-layout-dashboard"></i>Dashboard</div>
+      <div class="ni" onclick="nav('automation')"><i class="ti ti-bolt"></i>Automation<span class="nb">Live</span></div>
+      <div class="ni" onclick="nav('notifications')"><i class="ti ti-bell"></i>Alerts<span class="nb nb-red" id="nb-notif">7</span></div>
+    </div>
+    <div class="sb-group">
+      <div class="sb-glabel">CRM & Sales</div>
+      <div class="ni" onclick="nav('customers')"><i class="ti ti-users"></i>Customers<span class="nb" id="nb-cust">12</span></div>
+      <div class="ni" onclick="nav('enquiries')"><i class="ti ti-message-question"></i>Enquiries<span class="nb" id="nb-enq">5</span></div>
+      <div class="ni" onclick="nav('quotations')"><i class="ti ti-file-text"></i>Quotations<span class="nb" id="nb-qt">7</span></div>
+      <div class="ni" onclick="nav('sales-orders')"><i class="ti ti-shopping-cart"></i>Sales Orders<span class="nb" id="nb-so">8</span></div>
+      <div class="ni" onclick="nav('packing-lists')"><i class="ti ti-package"></i>Packing Lists<span class="nb" id="nb-pkl">3</span></div>
+      <div class="ni"><i class="ti ti-truck"></i>Delivery Challans<span class="nb">0</span></div>
+    </div>
+    <div class="sb-group">
+      <div class="sb-glabel">Finance</div>
+      <div class="ni" onclick="nav('invoices')"><i class="ti ti-receipt"></i>Invoices<span class="nb" id="nb-inv">6</span></div>
+      <div class="ni" onclick="nav('payments')"><i class="ti ti-cash"></i>Payments<span class="nb" id="nb-pay">4</span></div>
+    </div>
+    <div class="sb-group">
+      <div class="sb-glabel">Procurement</div>
+      <div class="ni" onclick="nav('vendors')"><i class="ti ti-truck"></i>Vendors<span class="nb" id="nb-ven">8</span></div>
+      <div class="ni" onclick="nav('purchase-orders')"><i class="ti ti-clipboard-list"></i>Purchase Orders<span class="nb" id="nb-po">5</span></div>
+    </div>
+    <div class="sb-group">
+      <div class="sb-glabel">System</div>
+      <div class="ni" onclick="nav('documents')"><i class="ti ti-folder"></i>Documents<span class="nb" id="nb-doc">15</span></div>
+      <div class="ni" onclick="nav('reports')"><i class="ti ti-chart-bar"></i>Reports</div>
+    </div>
+  </div>
+  <div style="padding:10px 14px;border-top:0.5px solid var(--color-border-tertiary)">
+    <div style="display:flex;align-items:center;gap:7px">
+      <div class="avatar" style="width:26px;height:26px">AD</div>
+      <div style="flex:1;min-width:0"><div style="font-size:11px;font-weight:500;color:var(--color-text-primary)">Admin</div><div style="font-size:10px;color:var(--color-text-tertiary)">Super User</div></div>
+      <div style="width:7px;height:7px;border-radius:50%;background:#1D9E75;flex-shrink:0" title="Online"></div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <div class="tb-left">
+      <h2 id="page-title" style="font-size:14px;font-weight:500;white-space:nowrap">Dashboard</h2>
+      <span class="auto-badge"><i class="ti ti-bolt" style="font-size:11px" aria-hidden="true"></i>Auto mode on</span>
+      <span class="sync-badge" id="sync-badge">Local database</span>
+    </div>
+    <div class="tb-right">
+      <input class="srch" placeholder="Search..." id="srch" oninput="liveSearch(this.value)">
+      <button class="btn btn-g" id="auto-btn" onclick="runAutoFlow()" style="display:none"><i class="ti ti-bolt" style="font-size:12px"></i><span id="auto-lbl">Auto-create</span></button>
+      <button class="btn btn-p" id="add-btn" onclick="handleAdd()" style="display:none"><i class="ti ti-plus" style="font-size:12px"></i><span id="add-lbl">Add</span></button>
+      <button class="btn" id="export-btn" onclick="exportCSV()" style="display:none" title="Export table to CSV"><i class="ti ti-download" style="font-size:12px"></i>CSV</button>
+    </div>
+  </div>
+  <div class="content" id="content"></div>
+</div>
+</div>
+
+<script src="firebase-config.js"></script>
+<script>
+const today='2026-06-11';
+function nextId(prefix,arr){return prefix+'-'+String(arr.length+1).padStart(3,'0');}
+function fmt(n){return '₹'+Number(Math.round(n)).toLocaleString('en-IN');}
+function fmtD(d){return d||today;}
+function addDays(d,n){const dt=new Date(d);dt.setDate(dt.getDate()+n);return dt.toISOString().split('T')[0];}
+
+const DB={
+  customers:[
+    {id:'CUS-001',name:'Aravind Industries',contact:'Suresh Kumar',phone:'9876543210',email:'suresh@aravind.com',city:'Coimbatore',type:'Manufacturer',status:'active',orders:4,value:341500},
+    {id:'CUS-002',name:'Kovai Traders',contact:'Priya Rajan',phone:'9843210987',email:'priya@kovai.com',city:'Erode',type:'Trader',status:'active',orders:2,value:88000},
+    {id:'CUS-003',name:'Lakshmi Textiles',contact:'Anand S',phone:'9988776655',email:'anand@lakshmitex.com',city:'Tiruppur',type:'Manufacturer',status:'active',orders:3,value:96000},
+    {id:'CUS-004',name:'Sri Ram Constructions',contact:'Ramesh P',phone:'9123456780',email:'ramesh@sriram.com',city:'Salem',type:'Contractor',status:'active',orders:1,value:156000},
+    {id:'CUS-005',name:'Brindha Builders',contact:'Karthik M',phone:'9876501234',email:'karthik@brindha.com',city:'Chennai',type:'Contractor',status:'active',orders:2,value:210000},
+    {id:'CUS-006',name:'Delta Engineering',contact:'Nathan S',phone:'9321098765',email:'nathan@delta.com',city:'Chennai',type:'Manufacturer',status:'active',orders:3,value:187000},
+    {id:'CUS-007',name:'Green Valley Ltd',contact:'Vijay K',phone:'9543210876',email:'vijay@gv.com',city:'Coimbatore',type:'Manufacturer',status:'active',orders:2,value:68500},
+    {id:'CUS-008',name:'Sakthi Castings',contact:'Divya R',phone:'9432109876',email:'divya@sakthi.com',city:'Erode',type:'Manufacturer',status:'active',orders:1,value:72000},
+    {id:'CUS-009',name:'Royal Pipes',contact:'Ravi T',phone:'9210987654',email:'ravi@royalpipes.com',city:'Tiruppur',type:'Trader',status:'active',orders:2,value:54000},
+    {id:'CUS-010',name:'Sun Enterprises',contact:'Meena V',phone:'9654321098',email:'meena@sun.com',city:'Madurai',type:'Trader',status:'inactive',orders:1,value:21600},
+    {id:'CUS-011',name:'Pioneer Metals',contact:'Siva N',phone:'9109876543',email:'siva@pioneer.com',city:'Salem',type:'Manufacturer',status:'active',orders:1,value:38000},
+    {id:'CUS-012',name:'Apex Foundry',contact:'Kavitha B',phone:'9098765432',email:'kavitha@apex.com',city:'Coimbatore',type:'Manufacturer',status:'inactive',orders:0,value:0},
+  ],
+  enquiries:[
+    {id:'ENQ-001',customer:'Aravind Industries',customerId:'CUS-001',product:'Steel Rods 10mm',qty:500,unitPrice:175,date:today,source:'Phone',status:'converted',gst:18,notes:'Urgent requirement',autoFlow:true},
+    {id:'ENQ-002',customer:'Kovai Traders',customerId:'CUS-002',product:'MS Pipe 2 inch',qty:200,unitPrice:220,date:today,source:'Email',status:'quoted',gst:18,notes:'',autoFlow:true},
+    {id:'ENQ-003',customer:'Lakshmi Textiles',customerId:'CUS-003',product:'Hex Bolts M12',qty:1000,unitPrice:32,date:addDays(today,-5),source:'Walk-in',status:'converted',gst:12,notes:'Regular buyer',autoFlow:true},
+    {id:'ENQ-004',customer:'Sri Ram Constructions',customerId:'CUS-004',product:'Angle Iron 50×50',qty:300,unitPrice:180,date:today,source:'Referral',status:'new',gst:18,notes:'',autoFlow:false},
+    {id:'ENQ-005',customer:'Delta Engineering',customerId:'CUS-006',product:'TMT Bar 16mm',qty:600,unitPrice:195,date:today,source:'Email',status:'new',gst:18,notes:'Need delivery in 5 days',autoFlow:false},
+  ],
+  quotations:[
+    {id:'QT-001',customer:'Aravind Industries',customerId:'CUS-001',enquiryId:'ENQ-001',product:'Steel Rods 10mm',qty:500,unitPrice:175,amount:87500,gst:18,total:103250,date:addDays(today,-8),valid:addDays(today,6),status:'accepted',autoCreated:true},
+    {id:'QT-002',customer:'Kovai Traders',customerId:'CUS-002',enquiryId:'ENQ-002',product:'MS Pipe 2 inch',qty:200,unitPrice:220,amount:44000,gst:18,total:51920,date:addDays(today,-7),valid:addDays(today,8),status:'sent',autoCreated:true},
+    {id:'QT-003',customer:'Lakshmi Textiles',customerId:'CUS-003',enquiryId:'ENQ-003',product:'Hex Bolts M12',qty:1000,unitPrice:32,amount:32000,gst:12,total:35840,date:addDays(today,-5),valid:addDays(today,10),status:'accepted',autoCreated:true},
+    {id:'QT-004',customer:'Brindha Builders',customerId:'CUS-005',enquiryId:'',product:'TMT Bar 12mm',qty:800,unitPrice:195,amount:156000,gst:18,total:184080,date:addDays(today,-2),valid:addDays(today,12),status:'draft',autoCreated:false},
+    {id:'QT-005',customer:'Green Valley Ltd',customerId:'CUS-007',enquiryId:'',product:'GI Wire 8G',qty:250,unitPrice:75,amount:18750,gst:18,total:22125,date:addDays(today,-1),valid:addDays(today,13),status:'expired',autoCreated:false},
+    {id:'QT-006',customer:'Sakthi Castings',customerId:'CUS-008',enquiryId:'',product:'Cast Iron Plate',qty:50,unitPrice:1440,amount:72000,gst:18,total:84960,date:today,valid:addDays(today,14),status:'draft',autoCreated:false},
+    {id:'QT-007',customer:'Delta Engineering',customerId:'CUS-006',enquiryId:'',product:'Mild Steel Sheet 3mm',qty:400,unitPrice:240,amount:96000,gst:18,total:113280,date:today,valid:addDays(today,15),status:'sent',autoCreated:false},
+  ],
+  salesOrders:[
+    {id:'SO-001',customer:'Aravind Industries',customerId:'CUS-001',quotationId:'QT-001',product:'Steel Rods 10mm',qty:500,amount:87500,gst:18,total:103250,date:addDays(today,-7),delivery:addDays(today,-1),status:'delivered',autoCreated:true},
+    {id:'SO-002',customer:'Kovai Traders',customerId:'CUS-002',quotationId:'QT-002',product:'MS Pipe 2 inch',qty:200,amount:44000,gst:18,total:51920,date:addDays(today,-5),delivery:addDays(today,2),status:'dispatched',autoCreated:true},
+    {id:'SO-003',customer:'Lakshmi Textiles',customerId:'CUS-003',quotationId:'QT-003',product:'Hex Bolts M12',qty:1000,amount:32000,gst:12,total:35840,date:addDays(today,-3),delivery:addDays(today,4),status:'processing',autoCreated:true},
+    {id:'SO-004',customer:'Brindha Builders',customerId:'CUS-005',quotationId:'',product:'TMT Bar 12mm',qty:800,amount:156000,gst:18,total:184080,date:addDays(today,-2),delivery:addDays(today,5),status:'confirmed',autoCreated:false},
+    {id:'SO-005',customer:'Sun Enterprises',customerId:'CUS-010',quotationId:'',product:'Wire Mesh 6×6',qty:120,amount:21600,gst:18,total:25488,date:addDays(today,-1),delivery:addDays(today,6),status:'confirmed',autoCreated:false},
+    {id:'SO-006',customer:'Delta Engineering',customerId:'CUS-006',quotationId:'',product:'MS Flat Bar',qty:300,amount:54000,gst:18,total:63720,date:addDays(today,-1),delivery:addDays(today,7),status:'processing',autoCreated:false},
+    {id:'SO-007',customer:'Royal Pipes',customerId:'CUS-009',quotationId:'',product:'ERW Pipe 1.5 inch',qty:180,amount:36000,gst:18,total:42480,date:today,delivery:addDays(today,8),status:'confirmed',autoCreated:false},
+    {id:'SO-008',customer:'Pioneer Metals',customerId:'CUS-011',quotationId:'',product:'HR Coil 3mm',qty:50,amount:38000,gst:18,total:44840,date:today,delivery:addDays(today,9),status:'confirmed',autoCreated:false},
+  ],
+  packingLists:[
+    {id:'PKL-2026-0001',orderId:'SO-001',customer:'Aravind Industries',customerId:'CUS-001',date:today,dispatchDate:today,vehicleNo:'TN-37-AB-1298',driver:'Kumar',status:'delivered',signature:'Stores In-charge',autoCreated:true,items:[{product:'Steel Rods 10mm',qty:500,unitWeight:1.35,packages:15}]},
+    {id:'PKL-2026-0002',orderId:'SO-002',customer:'Kovai Traders',customerId:'CUS-002',date:today,dispatchDate:today,vehicleNo:'TN-33-CD-4421',driver:'Muthu',status:'dispatched',signature:'Dispatch In-charge',autoCreated:true,items:[{product:'MS Pipe 2 inch',qty:200,unitWeight:5.2,packages:8}]},
+    {id:'PKL-2026-0003',orderId:'SO-003',customer:'Lakshmi Textiles',customerId:'CUS-003',date:today,dispatchDate:addDays(today,1),vehicleNo:'TN-39-EF-1190',driver:'Kumar',status:'ready',signature:'Stores In-charge',autoCreated:true,items:[{product:'Hex Bolts M12',qty:1000,unitWeight:0.05,packages:4}]},
+  ],
+  invoices:[
+    {id:'INV-001',customer:'Aravind Industries',customerId:'CUS-001',orderId:'SO-001',product:'Steel Rods 10mm',amount:87500,gst:15750,total:103250,date:addDays(today,-1),due:addDays(today,14),status:'paid',autoCreated:true},
+    {id:'INV-002',customer:'Kovai Traders',customerId:'CUS-002',orderId:'SO-002',product:'MS Pipe 2 inch',amount:44000,gst:7920,total:51920,date:today,due:addDays(today,15),status:'sent',autoCreated:true},
+    {id:'INV-003',customer:'Brindha Builders',customerId:'CUS-005',orderId:'SO-004',product:'TMT Bar 12mm',amount:156000,gst:28080,total:184080,date:addDays(today,-2),due:addDays(today,-2),status:'overdue',autoCreated:false},
+    {id:'INV-004',customer:'Lakshmi Textiles',customerId:'CUS-003',orderId:'SO-003',product:'Hex Bolts M12',amount:32000,gst:3840,total:35840,date:addDays(today,-3),due:addDays(today,12),status:'pending',autoCreated:true},
+    {id:'INV-005',customer:'Sun Enterprises',customerId:'CUS-010',orderId:'SO-005',product:'Wire Mesh 6×6',amount:21600,gst:3888,total:25488,date:addDays(today,-1),due:addDays(today,14),status:'draft',autoCreated:false},
+    {id:'INV-006',customer:'Delta Engineering',customerId:'CUS-006',orderId:'SO-006',product:'MS Flat Bar',amount:54000,gst:9720,total:63720,date:today,due:addDays(today,15),status:'sent',autoCreated:false},
+  ],
+  payments:[
+    {id:'PAY-001',customer:'Aravind Industries',customerId:'CUS-001',invoiceId:'INV-001',amount:103250,date:addDays(today,-1),mode:'NEFT',ref:'TXN98765',status:'cleared',autoApplied:true},
+    {id:'PAY-002',customer:'Lakshmi Textiles',customerId:'CUS-003',invoiceId:'INV-004',amount:17920,date:today,mode:'Cheque',ref:'CHQ112233',status:'cleared',autoApplied:true},
+    {id:'PAY-003',customer:'Royal Pipes',customerId:'CUS-009',invoiceId:'—',amount:18000,date:today,mode:'UPI',ref:'UPI776655',status:'advance',autoApplied:false},
+    {id:'PAY-004',customer:'Pioneer Metals',customerId:'CUS-011',invoiceId:'—',amount:10000,date:today,mode:'Cash',ref:'—',status:'advance',autoApplied:false},
+  ],
+  vendors:[
+    {id:'VEN-001',name:'JSW Steel Ltd',contact:'Rajesh B',phone:'9876543001',city:'Mumbai',category:'Raw Material',rating:5,status:'active',pos:3},
+    {id:'VEN-002',name:'Tata Metaliks',contact:'Sundar K',phone:'9876543002',city:'Kolkata',category:'Raw Material',rating:4,status:'active',pos:2},
+    {id:'VEN-003',name:'National Pipes',contact:'Ganesh R',phone:'9876543005',city:'Chennai',category:'Pipes',rating:5,status:'active',pos:2},
+    {id:'VEN-004',name:'R K Bolts',contact:'Kumar P',phone:'9876543004',city:'Coimbatore',category:'Fasteners',rating:3,status:'active',pos:1},
+    {id:'VEN-005',name:'Shree Cements',contact:'Aarav M',phone:'9876543003',city:'Jaipur',category:'Construction',rating:4,status:'active',pos:1},
+    {id:'VEN-006',name:'Bharat Wire Mesh',contact:'Latha V',phone:'9876543006',city:'Pune',category:'Wire Products',rating:4,status:'active',pos:1},
+    {id:'VEN-007',name:'Southern Traders',contact:'Mani S',phone:'9876543007',city:'Erode',category:'General',rating:3,status:'inactive',pos:0},
+    {id:'VEN-008',name:'Prime Alloys',contact:'Venkat T',phone:'9876543008',city:'Hyderabad',category:'Raw Material',rating:4,status:'active',pos:2},
+  ],
+  purchaseOrders:[
+    {id:'PO-001',vendor:'JSW Steel Ltd',vendorId:'VEN-001',product:'MS Rods 10mm',qty:2000,unitPrice:160,amount:320000,gst:18,total:377600,date:addDays(today,-9),expected:addDays(today,-2),status:'received',autoCreated:true},
+    {id:'PO-002',vendor:'National Pipes',vendorId:'VEN-003',product:'MS Pipe 2 inch',qty:500,unitPrice:220,amount:110000,gst:18,total:129800,date:addDays(today,-7),expected:addDays(today,0),status:'transit',autoCreated:true},
+    {id:'PO-003',vendor:'R K Bolts',vendorId:'VEN-004',product:'Hex Bolts M12',qty:100,unitPrice:450,amount:45000,gst:12,total:50400,date:addDays(today,-5),expected:addDays(today,2),status:'confirmed',autoCreated:true},
+    {id:'PO-004',vendor:'Tata Metaliks',vendorId:'VEN-002',product:'HR Coil 3mm',qty:3000,unitPrice:140,amount:420000,gst:18,total:495600,date:addDays(today,-2),expected:addDays(today,5),status:'draft',autoCreated:false},
+    {id:'PO-005',vendor:'Bharat Wire Mesh',vendorId:'VEN-006',product:'Wire Mesh 6×6',qty:200,unitPrice:160,amount:32000,gst:18,total:37760,date:addDays(today,-1),expected:addDays(today,6),status:'confirmed',autoCreated:false},
+  ],
+  documents:[
+    {id:'DOC-001',name:'PO_JSW_June2026.pdf',type:'Purchase Order',ref:'PO-001',size:'245 KB',date:addDays(today,-9),category:'procurement',autoGenerated:true},
+    {id:'DOC-002',name:'ISO_9001_Certificate.pdf',type:'Certificate',ref:'—',size:'1.2 MB',date:'2025-01-15',category:'certificates',autoGenerated:false},
+    {id:'DOC-003',name:'INV-001_Aravind.pdf',type:'Invoice',ref:'INV-001',size:'180 KB',date:addDays(today,-1),category:'invoices',autoGenerated:true},
+    {id:'DOC-004',name:'SO-001_AravindInd.pdf',type:'Sales Order',ref:'SO-001',size:'210 KB',date:addDays(today,-7),category:'sales',autoGenerated:true},
+    {id:'DOC-005',name:'MSDS_SteelRods.pdf',type:'Certificate',ref:'—',size:'540 KB',date:'2025-03-20',category:'certificates',autoGenerated:false},
+    {id:'DOC-006',name:'PO_NationalPipes.pdf',type:'Purchase Order',ref:'PO-002',size:'198 KB',date:addDays(today,-7),category:'procurement',autoGenerated:true},
+    {id:'DOC-007',name:'QT-001_Aravind.pdf',type:'Quotation',ref:'QT-001',size:'165 KB',date:addDays(today,-8),category:'sales',autoGenerated:true},
+    {id:'DOC-008',name:'GST_Registration.pdf',type:'Certificate',ref:'—',size:'320 KB',date:'2024-04-01',category:'certificates',autoGenerated:false},
+    {id:'DOC-009',name:'INV-002_Kovai.pdf',type:'Invoice',ref:'INV-002',size:'175 KB',date:today,category:'invoices',autoGenerated:true},
+    {id:'DOC-010',name:'SO-003_Lakshmi.pdf',type:'Sales Order',ref:'SO-003',size:'215 KB',date:addDays(today,-3),category:'sales',autoGenerated:true},
+    {id:'DOC-011',name:'QT-003_Lakshmi.pdf',type:'Quotation',ref:'QT-003',size:'170 KB',date:addDays(today,-5),category:'sales',autoGenerated:true},
+    {id:'DOC-012',name:'Vendor_Approval_JSW.pdf',type:'Certificate',ref:'VEN-001',size:'410 KB',date:'2025-11-10',category:'certificates',autoGenerated:false},
+    {id:'DOC-013',name:'PKL-2026-0001_Aravind.pdf',type:'Packing List',ref:'PKL-2026-0001',size:'145 KB',date:today,category:'logistics',autoGenerated:true},
+    {id:'DOC-014',name:'PKL-2026-0002_Kovai.pdf',type:'Packing List',ref:'PKL-2026-0002',size:'142 KB',date:today,category:'logistics',autoGenerated:true},
+    {id:'DOC-015',name:'PKL-2026-0003_Lakshmi.pdf',type:'Packing List',ref:'PKL-2026-0003',size:'140 KB',date:today,category:'logistics',autoGenerated:true},
+  ],
+  notifications:[
+    {id:'N-001',type:'auto',title:'Quotation auto-generated',msg:'QT-001 created from ENQ-001 for Aravind Industries',time:'2 hrs ago',read:false,icon:'ti-file-text'},
+    {id:'N-002',type:'alert',title:'Invoice overdue',msg:'INV-003 for Brindha Builders — ₹1,84,080 overdue',time:'1 hr ago',read:false,icon:'ti-alert-triangle'},
+    {id:'N-003',type:'auto',title:'Sales order auto-confirmed',msg:'SO-001 confirmed and dispatched for Aravind Industries',time:'1 hr ago',read:false,icon:'ti-shopping-cart'},
+    {id:'N-004',type:'auto',title:'Invoice auto-generated',msg:'INV-001 created and sent to Aravind Industries',time:'45 min ago',read:false,icon:'ti-receipt'},
+    {id:'N-005',type:'alert',title:'Low stock detected',msg:'MS Pipe 2 inch stock at 40 units — PO suggested',time:'30 min ago',read:false,icon:'ti-alert-circle'},
+    {id:'N-006',type:'auto',title:'Payment auto-applied',msg:'₹1,03,250 from Aravind Industries applied to INV-001',time:'10 min ago',read:false,icon:'ti-cash'},
+    {id:'N-007',type:'auto',title:'Packing list ready',msg:'PKL-2026-0003 created from SO-003 for Lakshmi Textiles',time:'5 min ago',read:false,icon:'ti-package'},
+  ],
+  automationLog:[
+    {id:'AL-001',trigger:'Enquiry ENQ-001 created',action:'Auto-generated Quotation QT-001',result:'success',time:addDays(today,-8)+' 09:15'},
+    {id:'AL-002',trigger:'Quotation QT-001 accepted',action:'Auto-created Sales Order SO-001',result:'success',time:addDays(today,-7)+' 11:30'},
+    {id:'AL-003',trigger:'Sales Order SO-001 ready to dispatch',action:'Auto-created Packing List PKL-2026-0001 + PDF',result:'success',time:addDays(today,-1)+' 10:30'},
+    {id:'AL-004',trigger:'Packing List PKL-2026-0001 dispatched',action:'Auto-generated Invoice INV-001 + Document INV-001.pdf',result:'success',time:addDays(today,-1)+' 14:00'},
+    {id:'AL-005',trigger:'Payment ₹1,03,250 received',action:'Auto-applied to INV-001 → marked Paid',result:'success',time:addDays(today,-1)+' 16:45'},
+    {id:'AL-006',trigger:'Enquiry ENQ-002 created',action:'Auto-generated Quotation QT-002',result:'success',time:addDays(today,-7)+' 10:00'},
+    {id:'AL-007',trigger:'PO-001 delivery confirmed',action:'Updated stock, auto-triggered SO-001 fulfillment',result:'success',time:addDays(today,-2)+' 09:00'},
+    {id:'AL-008',trigger:'INV-003 due date passed',action:'Sent overdue alert, escalation to admin',result:'alert',time:today+' 08:00'},
+    {id:'AL-009',trigger:'Enquiry ENQ-003 created',action:'Auto-generated Quotation QT-003',result:'success',time:addDays(today,-5)+' 13:20'},
+  ],
+};
+
+let curPage='dashboard';
+let autoFlowActive=false;
+const pageLabels={dashboard:'Dashboard',automation:'Automation Engine',notifications:'Alerts & Notifications',customers:'Customer Management',enquiries:'Enquiry Management',quotations:'Quotations',
+'sales-orders':'Sales Orders','packing-lists':'Packing Lists',invoices:'Invoice Generation',payments:'Payment Tracking',vendors:'Vendor Management','purchase-orders':'Purchase Orders',documents:'Document Storage',reports:'Reports & Analytics'};
+const addLbls={customers:'Add Customer',enquiries:'New Enquiry',quotations:'New Quotation','sales-orders':'New Order','packing-lists':'New Packing List',invoices:'New Invoice',payments:'Record Payment',vendors:'Add Vendor','purchase-orders':'New PO',documents:'Upload'};
+const autoLbls={enquiries:'Auto-quote',quotations:'Auto-convert to SO','sales-orders':'Auto-create PKL','packing-lists':'Auto-invoice',invoices:'Send & track',payments:'Auto-reconcile','purchase-orders':'Auto-reorder'};
+
+function toast(msg,dur){
+  const el=document.getElementById('toast');
+  if(!el)return;
+  el.textContent=msg;el.style.opacity='1';
+  setTimeout(()=>{el.style.opacity='0';},dur||2500);
+}
+
+function pill(s){
+  const m={new:'p-new',quoted:'p-new',converted:'p-done',sent:'p-info',accepted:'p-done',draft:'p-pend',expired:'p-over',delivered:'p-done',dispatched:'p-prog',processing:'p-prog',confirmed:'p-new',ready:'p-info',paid:'p-paid',pending:'p-pend',overdue:'p-over',cleared:'p-done',advance:'p-prog',received:'p-done',transit:'p-prog',active:'p-done',inactive:'p-pend',success:'p-done',alert:'p-over'};
+  const l={new:'New',quoted:'Quoted',converted:'Converted',sent:'Sent',accepted:'Accepted',draft:'Draft',expired:'Expired',delivered:'Delivered',dispatched:'Dispatched',processing:'Processing',confirmed:'Confirmed',ready:'Ready',paid:'Paid',pending:'Pending',overdue:'Overdue',cleared:'Cleared',advance:'Advance',received:'Received',transit:'In Transit',active:'Active',inactive:'Inactive',success:'Success',alert:'Alert'};
+  return `<span class="pill ${m[s]||'p-new'}"><span class="dot"></span>${l[s]||s}</span>`;
+}
+function autoBadge(yes){return yes?`<span class="pill p-auto" style="font-size:9px"><i class="ti ti-bolt" style="font-size:9px" aria-hidden="true"></i>Auto</span>`:'';}
+function stars(n){return Array.from({length:5},(_,i)=>`<i class="ti ti-star" style="font-size:10px;color:${i<n?'#BA7517':'var(--color-border-secondary)'}"></i>`).join('');}
+function ini(name){return (name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
+
+const customerProfiles={
+  'CUS-001':{address:'Coimbatore, Tamil Nadu',gstin:'33AARCA1234F1Z5'},
+  'CUS-002':{address:'Erode, Tamil Nadu',gstin:'33AABCK4321Q1Z8'},
+  'CUS-003':{address:'Tiruppur, Tamil Nadu',gstin:'33AABCL7890M1Z3'},
+  'CUS-004':{address:'Salem, Tamil Nadu',gstin:'33AABCS3210P1Z7'},
+  'CUS-005':{address:'Chennai, Tamil Nadu',gstin:'33AABCB6543R1Z1'},
+  'CUS-006':{address:'Chennai, Tamil Nadu',gstin:'33AABCD9876N1Z2'},
+  'CUS-009':{address:'Tiruppur, Tamil Nadu',gstin:'33AABCR2468D1Z9'},
+  'CUS-010':{address:'Madurai, Tamil Nadu',gstin:'33AABCS1357H1Z4'},
+  'CUS-011':{address:'Salem, Tamil Nadu',gstin:'33AABCP8642K1Z6'}
+};
+
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function fmtDateIN(d){const [y,m,day]=String(d||today).split('-');return `${day}-${m}-${y}`;}
+function nextYearId(prefix,arr){return `${prefix}-${today.slice(0,4)}-${String(arr.length+1).padStart(4,'0')}`;}
+function customerInfo(customerId,fallbackName){
+  const c=DB.customers.find(x=>x.id===customerId)||{};
+  const extra=customerProfiles[customerId]||{};
+  return {name:fallbackName||c.name||'-',address:extra.address||c.city||'-',gstin:extra.gstin||'Unregistered'};
+}
+function clean(v){return String(v??'').replace(/[<>]/g,'').trim();}
+function formValues(){return [...document.querySelectorAll('#content .fi')].map(el=>clean(el.value));}
+function pickCustomer(name){return DB.customers.find(c=>c.name===name)||DB.customers[0];}
+function pickVendor(name){return DB.vendors.find(v=>v.name===name)||DB.vendors.find(v=>v.status==='active')||DB.vendors[0];}
+function token(v){return String(v||'').split(/\s+/)[0];}
+function num(v,fallback=0){const n=Number(String(v??'').replace(/[^0-9.-]/g,''));return Number.isFinite(n)?n:fallback;}
+function moneyParts(amount,gstRate){const base=Math.max(0,num(amount));const rate=Math.max(0,num(gstRate));const gst=Math.round(base*rate/100);return {amount:base,gst,total:base+gst};}
+function kg(n){return `${Number(n||0).toLocaleString('en-IN',{maximumFractionDigits:2})} kg`;}
+function itemWeight(item){return Number(item.totalWeight||((Number(item.qty)||0)*(Number(item.unitWeight)||0)));}
+function packingTotals(p){
+  return {
+    packages:p.items.reduce((sum,item)=>sum+(Number(item.packages)||0),0),
+    weight:p.items.reduce((sum,item)=>sum+itemWeight(item),0)
+  };
+}
+function estimateUnitWeight(product){
+  const p=String(product||'').toLowerCase();
+  if(p.includes('pipe'))return 5.2;
+  if(p.includes('bolt'))return 0.05;
+  if(p.includes('coil'))return 42;
+  if(p.includes('mesh'))return 2.4;
+  if(p.includes('sheet'))return 9.5;
+  if(p.includes('bar')||p.includes('rod'))return 1.35;
+  return 1;
+}
+function packageCount(product,qty){
+  const p=String(product||'').toLowerCase();
+  const bundleSize=p.includes('bolt')?250:p.includes('coil')?5:p.includes('mesh')?20:50;
+  return Math.max(1,Math.ceil((Number(qty)||1)/bundleSize));
+}
+function packingItemsFromOrder(order){
+  return [{product:order.product,qty:order.qty,unitWeight:estimateUnitWeight(order.product),packages:packageCount(order.product,order.qty)}];
+}
+function createPackingListFromOrder(order,autoCreated=true){
+  const existing=DB.packingLists.find(p=>p.orderId===order.id);
+  if(existing)return existing;
+  const id=nextYearId('PKL',DB.packingLists);
+  const pkl={id,orderId:order.id,customer:order.customer,customerId:order.customerId,date:today,dispatchDate:order.delivery||today,vehicleNo:'Assign vehicle',driver:'Assign driver',status:'ready',signature:'Stores In-charge',autoCreated,items:packingItemsFromOrder(order)};
+  DB.packingLists.push(pkl);
+  DB.documents.push({id:nextId('DOC',DB.documents),name:`${id}_${order.customer.split(' ')[0]}.pdf`,type:'Packing List',ref:id,size:'145 KB',date:today,category:'logistics',autoGenerated:true});
+  DB.automationLog.unshift({id:nextId('AL',DB.automationLog),trigger:`Sales Order ${order.id} confirmed`,action:`Auto-created Packing List ${id} + PDF`,result:'success',time:today+' now'});
+  return pkl;
+}
+function createInvoiceFromPackingList(pkl){
+  const order=DB.salesOrders.find(o=>o.id===pkl.orderId);
+  if(!order||DB.invoices.find(i=>i.orderId===order.id))return null;
+  const gstAmt=Math.round(order.amount*order.gst/100);
+  const id=nextId('INV',DB.invoices);
+  DB.invoices.push({id,customer:order.customer,customerId:order.customerId,orderId:order.id,product:pkl.items.map(i=>i.product).join(', '),amount:order.amount,gst:gstAmt,total:order.amount+gstAmt,date:today,due:addDays(today,15),status:'sent',autoCreated:true});
+  DB.documents.push({id:nextId('DOC',DB.documents),name:`${id}_${order.customer.split(' ')[0]}.pdf`,type:'Invoice',ref:id,size:'172 KB',date:today,category:'invoices',autoGenerated:true});
+  DB.automationLog.unshift({id:nextId('AL',DB.automationLog),trigger:`Packing List ${pkl.id} dispatched`,action:`Auto-generated ${id} + PDF sent`,result:'success',time:today+' now'});
+  return id;
+}
+const STORAGE_KEY='vishaktech-bizflow-db-v1';
+const FIREBASE_SDK_VERSION='12.14.0';
+let firebaseReady=false;
+let firebaseDocRef=null;
+let firebaseSetDoc=null;
+let firebaseServerTimestamp=null;
+let firebaseSaveTimer=null;
+let applyingRemoteDb=false;
+function dbPayload(){
+  const payload={};
+  Object.keys(DB).forEach(key=>{if(Array.isArray(DB[key]))payload[key]=DB[key];});
+  return payload;
+}
+function applyDbPayload(payload){
+  if(!payload||typeof payload!=='object')return;
+  Object.keys(DB).forEach(key=>{
+    if(Array.isArray(DB[key])&&Array.isArray(payload[key]))DB[key]=payload[key];
+  });
+}
+function persistLocalDb(){
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(DB));}catch(e){}
+}
+function persistDb(){
+  persistLocalDb();
+  if(firebaseReady&&!applyingRemoteDb)queueFirebaseSave();
+}
+function hydrateDb(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
+    if(!saved||typeof saved!=='object')return;
+    applyDbPayload(saved);
+  }catch(e){}
+}
+function updateSyncBadge(text,state='local'){
+  const el=document.getElementById('sync-badge');
+  if(!el)return;
+  el.textContent=text;
+  el.className=`sync-badge ${state}`;
+}
+function firebaseConfig(){
+  return window.VISHAKTECH_FIREBASE_CONFIG||{};
+}
+function firebaseConfigured(){
+  const cfg=firebaseConfig();
+  return Boolean(cfg&&cfg.apiKey&&cfg.projectId&&!String(cfg.apiKey).includes('PASTE_')&&!String(cfg.projectId).includes('PASTE_'));
+}
+function queueFirebaseSave(){
+  if(!firebaseReady||!firebaseDocRef||!firebaseSetDoc)return;
+  updateSyncBadge('Saving to Firebase...','cloud');
+  clearTimeout(firebaseSaveTimer);
+  firebaseSaveTimer=setTimeout(saveFirebaseDb,650);
+}
+async function saveFirebaseDb(){
+  if(!firebaseReady||!firebaseDocRef||!firebaseSetDoc)return;
+  try{
+    await firebaseSetDoc(firebaseDocRef,{data:dbPayload(),updatedAt:firebaseServerTimestamp()},{merge:true});
+    updateSyncBadge('Firebase synced','cloud');
+  }catch(error){
+    console.error('Firebase save failed',error);
+    updateSyncBadge('Firebase error','error');
+  }
+}
+async function initFirebaseSync(){
+  if(!firebaseConfigured()){updateSyncBadge('Local database');return;}
+  updateSyncBadge('Connecting Firebase...','cloud');
+  try{
+    const [appMod,firestoreMod]=await Promise.all([
+      import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK_VERSION}/firebase-app.js`),
+      import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK_VERSION}/firebase-firestore.js`)
+    ]);
+    const app=appMod.initializeApp(firebaseConfig());
+    const db=firestoreMod.getFirestore(app);
+    const collectionName=window.VISHAKTECH_FIREBASE_COLLECTION||'businessApps';
+    const docId=window.VISHAKTECH_FIREBASE_DOC_ID||'vishaktech-main';
+    firebaseDocRef=firestoreMod.doc(db,collectionName,docId);
+    firebaseSetDoc=firestoreMod.setDoc;
+    firebaseServerTimestamp=firestoreMod.serverTimestamp;
+    const snapshot=await firestoreMod.getDoc(firebaseDocRef);
+    firebaseReady=true;
+    if(snapshot.exists()&&snapshot.data()?.data){
+      applyingRemoteDb=true;
+      applyDbPayload(snapshot.data().data);
+      persistLocalDb();
+      render(curPage);
+      applyingRemoteDb=false;
+    }else{
+      await firebaseSetDoc(firebaseDocRef,{data:dbPayload(),createdAt:firebaseServerTimestamp(),updatedAt:firebaseServerTimestamp()},{merge:true});
+    }
+    firestoreMod.onSnapshot(firebaseDocRef,(snap)=>{
+      const remote=snap.data()?.data;
+      if(!remote||applyingRemoteDb)return;
+      applyingRemoteDb=true;
+      applyDbPayload(remote);
+      persistLocalDb();
+      render(curPage);
+      applyingRemoteDb=false;
+      updateSyncBadge('Firebase synced','cloud');
+    },(error)=>{
+      console.error('Firebase realtime sync failed',error);
+      updateSyncBadge('Firebase error','error');
+    });
+    updateSyncBadge('Firebase synced','cloud');
+  }catch(error){
+    console.error('Firebase sync failed',error);
+    updateSyncBadge('Firebase error','error');
+  }
+}
+function liveSearch(q){
+  const term=q.toLowerCase().trim();
+  document.querySelectorAll('.table-wrap table tbody tr').forEach(row=>{
+    row.style.display=(!term||row.textContent.toLowerCase().includes(term))?'':'none';
+  });
+  const visible=[...document.querySelectorAll('.table-wrap table tbody tr')].filter(r=>r.style.display!=='none').length;
+  const total=document.querySelectorAll('.table-wrap table tbody tr').length;
+  let info=document.getElementById('search-info');
+  if(term){
+    if(!info){info=document.createElement('div');info.id='search-info';info.style.cssText='font-size:11px;color:var(--color-text-tertiary);padding:4px 0 2px';const wrap=document.querySelector('.table-wrap');if(wrap)wrap.parentNode.insertBefore(info,wrap);}
+    info.textContent=visible+' of '+total+' records match "'+q+'"';
+  } else {if(info)info.remove();}
+}
+
+window.exportCSV=function(){
+  const moduleKeyMap={customers:'customers',enquiries:'enquiries',quotations:'quotations','sales-orders':'salesOrders','packing-lists':'packingLists',invoices:'invoices',payments:'payments',vendors:'vendors','purchase-orders':'purchaseOrders',documents:'documents'};
+  const key=moduleKeyMap[curPage];
+  if(!key){toast('Export not available here');return;}
+  const rows=DB[key];if(!rows||!rows.length){toast('No data to export');return;}
+  const headers=Object.keys(rows[0]).filter(k=>typeof rows[0][k]!=='object'&&!Array.isArray(rows[0][k]));
+  const escape=v=>{const s=String(v??'');return s.includes(',')||s.includes('"')||s.includes('\n')?'"'+s.replace(/"/g,'""')+'"':s;};
+  const csv=[headers.join(','),...rows.map(r=>headers.map(h=>escape(r[h])).join(','))].join('\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='vishaktech_'+key+'_'+today+'.csv';a.click();
+  URL.revokeObjectURL(url);
+  toast(rows.length+' rows exported to CSV');
+};
+
+function syncBadges(){
+  persistDb();
+  const srch=document.getElementById('srch');if(srch&&document.activeElement!==srch)srch.value='';
+  const info=document.getElementById('search-info');if(info&&document.activeElement!==document.getElementById('srch'))info.remove();
+  const values={
+    'nb-cust':DB.customers.length,'nb-enq':DB.enquiries.length,'nb-qt':DB.quotations.length,'nb-so':DB.salesOrders.length,
+    'nb-pkl':DB.packingLists.length,'nb-inv':DB.invoices.length,'nb-pay':DB.payments.length,'nb-ven':DB.vendors.length,
+    'nb-po':DB.purchaseOrders.length,'nb-doc':DB.documents.length,'nb-notif':DB.notifications.filter(n=>!n.read).length
+  };
+  Object.entries(values).forEach(([id,value])=>{const el=document.getElementById(id);if(el)el.textContent=value;});
+}
+
+const moduleMap={
+  customers:{key:'customers',label:'Customer',id:'id'},
+  enquiries:{key:'enquiries',label:'Enquiry',id:'id'},
+  quotations:{key:'quotations',label:'Quotation',id:'id'},
+  'sales-orders':{key:'salesOrders',label:'Sales Order',id:'id'},
+  'packing-lists':{key:'packingLists',label:'Packing List',id:'id'},
+  invoices:{key:'invoices',label:'Invoice',id:'id'},
+  payments:{key:'payments',label:'Payment',id:'id'},
+  vendors:{key:'vendors',label:'Vendor',id:'id'},
+  'purchase-orders':{key:'purchaseOrders',label:'Purchase Order',id:'id'},
+  documents:{key:'documents',label:'Document',id:'id'}
+};
+function tableWrap(markup){return `<div class="table-wrap">${markup}</div>`;}
+function actionButtons(module,id,extra=''){
+  return `<div class="action-group">
+    ${extra}
+    <button class="btn btn-sm btn-icon" onclick="event.stopPropagation();editRecord('${module}','${id}')" aria-label="Edit ${id}" title="Edit"><i class="ti ti-edit" aria-hidden="true"></i></button>
+    <button class="btn btn-sm btn-icon btn-print" onclick="event.stopPropagation();printRecord('${module}','${id}')" aria-label="Print ${id}" title="Print"><i class="ti ti-printer" aria-hidden="true"></i></button>
+    <button class="btn btn-sm btn-icon btn-danger" onclick="event.stopPropagation();deleteRecord('${module}','${id}')" aria-label="Delete ${id}" title="Delete"><i class="ti ti-trash" aria-hidden="true"></i></button>
+  </div>`;
+}
+function findRecord(module,id){
+  const cfg=moduleMap[module];
+  if(!cfg)return null;
+  return DB[cfg.key].find(item=>item[cfg.id]===id)||null;
+}
+function documentForRecord(type,id){
+  const docType={quotations:'Quotation','sales-orders':'Sales Order','packing-lists':'Packing List',invoices:'Invoice','purchase-orders':'Purchase Order'}[type];
+  if(!docType)return null;
+  return DB.documents.find(d=>d.type===docType&&d.ref===id)||null;
+}
+function printableFields(record,module){
+  const skip=new Set(['items','notes','autoCreated','autoFlow','autoApplied']);
+  const fields=Object.entries(record).filter(([key,value])=>!skip.has(key)&&typeof value!=='object'&&typeof value!=='function');
+  if(module==='packing-lists'){
+    const totals=packingTotals(record);
+    fields.push(['totalPackages',totals.packages],['totalWeight',kg(totals.weight)]);
+  }
+  return fields;
+}
+function printPopup(title,subtitle,body){
+  const popup=window.open('','_blank','width=820,height=900');
+  if(!popup){toast('Allow popups to print');return;}
+  popup.document.write(`<!doctype html><html><head><title>V4 - ${esc(title)}</title><style>
+    *{box-sizing:border-box}body{font-family:Arial,sans-serif;color:#202124;margin:0;padding:30px;background:#f4f6f8}.sheet{max-width:760px;margin:0 auto;background:#fff;padding:34px;border:1px solid #d8dce3}.brand{font-size:22px;font-weight:700;letter-spacing:.04em;color:#153E63}.subtitle{text-transform:uppercase;font-size:11px;letter-spacing:.08em;color:#667085;margin-top:4px}.title{text-align:center;font-size:18px;font-weight:700;margin:24px 0 18px;color:#153E63}table{width:100%;border-collapse:collapse;margin-top:14px;font-size:13px}th,td{border:1px solid #D0D5DD;padding:9px;text-align:left;vertical-align:top}th{background:#F2F4F7;text-transform:uppercase;font-size:11px;letter-spacing:.04em;color:#475467}.sign{margin-top:56px;text-align:right;font-size:13px}.line{display:inline-block;border-top:1px solid #202124;padding-top:8px;min-width:190px;text-align:center}@media print{body{background:#fff;padding:0}.sheet{border:0;max-width:none}}
+  </style></head><body><div class="sheet"><div class="brand">Vishak Tech</div><div class="subtitle">${esc(subtitle)}</div><div class="title">${esc(title)}</div>${body}<div class="sign"><span class="line">Authorized Signatory</span></div></div><script>window.onload=function(){setTimeout(function(){window.print();},250);};<\/script></body></html>`);
+  popup.document.close();
+  popup.focus();
+}
+window.printRecord=function(module,id){
+  if(module==='packing-lists'){printPackingList(id);return;}
+  const cfg=moduleMap[module];
+  const record=findRecord(module,id);
+  if(!cfg||!record){toast('Record not found');return;}
+  const linked=documentForRecord(module,id);
+  const rows=printableFields(record,module).map(([key,value])=>`<tr><th>${esc(key.replace(/([A-Z])/g,' $1'))}</th><td>${esc(value)}</td></tr>`).join('');
+  const documentRow=linked?`<tr><th>Document</th><td>${esc(linked.name)} (${esc(linked.size)})</td></tr>`:'';
+  printPopup(`${cfg.label} ${id}`,`Generated on ${fmtDateIN(today)}`,`<table><tbody>${rows}${documentRow}</tbody></table>`);
+  toast(`Preparing ${id} print view...`);
+};
+window.deleteRecord=function(module,id){
+  const cfg=moduleMap[module];
+  if(!cfg){toast('Delete not available');return;}
+  const list=DB[cfg.key];
+  const index=list.findIndex(item=>item[cfg.id]===id);
+  if(index<0){toast('Record not found');return;}
+  if(typeof confirm==='function'&&!confirm(`Delete ${cfg.label} ${id}?`))return;
+  const [removed]=list.splice(index,1);
+  DB.documents=DB.documents.filter(d=>d.id!==id&&d.ref!==id);
+  if(module==='documents'&&removed.ref){
+    DB.documents=DB.documents.filter(d=>d.id!==removed.id);
+  }
+  DB.automationLog.unshift({id:nextId('AL',DB.automationLog),trigger:`${cfg.label} ${id} deleted`,action:'Manual delete from module table',result:'success',time:today+' now'});
+  syncBadges();
+  toast(`${cfg.label} ${id} deleted`);
+  render(curPage);
+};
+
+function editInput(key,value){
+  const label=key.replace(/([A-Z])/g,' $1').replace(/^./,c=>c.toUpperCase());
+  const type=typeof value;
+  const disabled=key==='id'?' disabled':'';
+  const common=`class="fi" data-edit-key="${esc(key)}" data-edit-type="${type}"${disabled}`;
+  if(type==='boolean'){
+    return `<div class="fg"><label class="fl">${esc(label)}</label><select ${common}><option value="true"${value?' selected':''}>True</option><option value="false"${!value?' selected':''}>False</option></select></div>`;
+  }
+  if(type==='number'){
+    return `<div class="fg"><label class="fl">${esc(label)}</label><input ${common} type="number" value="${esc(value)}"></div>`;
+  }
+  const inputType=/date|due|valid|expected|delivery/i.test(key)?'date':'text';
+  return `<div class="fg"><label class="fl">${esc(label)}</label><input ${common} type="${inputType}" value="${esc(value)}"></div>`;
+}
+
+window.editRecord=function(module,id){
+  const cfg=moduleMap[module];
+  const record=findRecord(module,id);
+  if(!cfg||!record){toast('Record not found');return;}
+  curPage=module;
+  const fields=Object.entries(record)
+    .filter(([key,value])=>typeof value!=='object'||value===null)
+    .map(([key,value])=>editInput(key,value))
+    .join('');
+  document.getElementById('page-title').textContent=`Edit ${cfg.label}`;
+  document.getElementById('content').innerHTML=`<div style="max-width:640px">
+    <div style="font-size:13px;font-weight:600;color:var(--color-text-primary);margin-bottom:12px">${esc(cfg.label)} ${esc(id)}</div>
+    <div class="g2">${fields}</div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn btn-p" onclick="saveEditedRecord('${module}','${id}')"><i class="ti ti-check" aria-hidden="true"></i> Save changes</button>
+      <button class="btn" onclick="nav('${module}')">Cancel</button>
+    </div>
+  </div>`;
+};
+
+window.saveEditedRecord=function(module,id){
+  const record=findRecord(module,id);
+  if(!record){toast('Record not found');return;}
+  document.querySelectorAll('[data-edit-key]').forEach(input=>{
+    const key=input.getAttribute('data-edit-key');
+    if(key==='id')return;
+    const type=input.getAttribute('data-edit-type');
+    if(type==='number')record[key]=num(input.value,record[key]);
+    else if(type==='boolean')record[key]=input.value==='true';
+    else record[key]=clean(input.value);
+  });
+  persistDb();
+  toast(`${id} updated`);
+  nav(module);
+};
+
+window.printPackingList=function(id){
+  const pkl=DB.packingLists.find(p=>p.id===id);
+  if(!pkl){toast('Packing list not found');return;}
+  const customer=customerInfo(pkl.customerId,pkl.customer);
+  const totals=packingTotals(pkl);
+  const rows=pkl.items.map(item=>`<tr><td>${esc(item.product)}</td><td>${esc(item.qty)}</td><td>${kg(item.unitWeight)}</td><td>${kg(itemWeight(item))}</td><td>${esc(item.packages)}</td></tr>`).join('');
+  const popup=window.open('','_blank','width=820,height=900');
+  if(!popup){toast('Allow popups to print the PDF');return;}
+  popup.document.write(`<!doctype html><html><head><title>V4 - ${esc(pkl.id)} Packing List</title><style>
+    *{box-sizing:border-box}body{font-family:Arial,sans-serif;color:#202124;margin:0;padding:30px;background:#f4f5f7}.sheet{max-width:760px;margin:0 auto;background:#fff;padding:34px;border:1px solid #d8dce3}.brand{font-size:22px;font-weight:700;letter-spacing:.04em}.title{text-align:center;font-size:18px;font-weight:700;margin:12px 0 22px}.meta{display:grid;grid-template-columns:1fr 1fr;gap:8px 28px;font-size:13px;margin-bottom:18px}.label{font-weight:700;color:#333}table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13px}th,td{border:1px solid #cfd4dc;padding:9px;text-align:left}th{background:#f1f3f6;text-transform:uppercase;font-size:11px;letter-spacing:.04em}.summary{display:grid;grid-template-columns:1fr 1fr;gap:8px 28px;font-size:13px;margin-top:16px}.sign{margin-top:56px;text-align:right;font-size:13px}.line{display:inline-block;border-top:1px solid #202124;padding-top:8px;min-width:190px;text-align:center}@media print{body{background:#fff;padding:0}.sheet{border:0;max-width:none}}
+  </style></head><body><div class="sheet">
+    <div class="brand">Vishak Tech</div>
+    <div class="title">PACKING LIST</div>
+    <div class="meta">
+      <div><span class="label">PKL No:</span> ${esc(pkl.id)}</div>
+      <div><span class="label">Date:</span> ${fmtDateIN(pkl.date)}</div>
+      <div><span class="label">Customer:</span> ${esc(customer.name)}</div>
+      <div><span class="label">GSTIN:</span> ${esc(customer.gstin)}</div>
+      <div><span class="label">Address:</span> ${esc(customer.address)}</div>
+      <div><span class="label">Sales Order:</span> ${esc(pkl.orderId)}</div>
+    </div>
+    <table><thead><tr><th>Item</th><th>Qty</th><th>Unit Weight</th><th>Total Weight</th><th>Bundles/Packages</th></tr></thead><tbody>${rows}</tbody></table>
+    <div class="summary">
+      <div><span class="label">Vehicle No:</span> ${esc(pkl.vehicleNo)}</div>
+      <div><span class="label">Driver:</span> ${esc(pkl.driver)}</div>
+      <div><span class="label">Dispatch Date:</span> ${fmtDateIN(pkl.dispatchDate)}</div>
+      <div><span class="label">Total Packages:</span> ${totals.packages}</div>
+      <div><span class="label">Total Weight:</span> ${kg(totals.weight)}</div>
+      <div><span class="label">Status:</span> ${esc(pkl.status)}</div>
+    </div>
+    <div class="sign"><span class="line">${esc(pkl.signature||'Authorized Signatory')}</span><div style="margin-top:5px">Authorized Signatory</div></div>
+  </div><script>window.onload=function(){setTimeout(function(){window.print();},250);};<\/script></body></html>`);
+  popup.document.close();
+  popup.focus();
+  toast(`Preparing ${pkl.id} PDF...`);
+};
+
+function nav(p){
+  curPage=p;
+  document.querySelectorAll('.ni').forEach(el=>el.classList.toggle('active',el.getAttribute('onclick')===`nav('${p}')`));
+  document.getElementById('page-title').textContent=pageLabels[p]||p;
+  const showAdd=['customers','enquiries','quotations','sales-orders','packing-lists','invoices','payments','vendors','purchase-orders','documents'].includes(p);
+  const showAuto=['enquiries','quotations','sales-orders','packing-lists','invoices','payments','purchase-orders'].includes(p);
+  document.getElementById('add-btn').style.display=showAdd?'inline-flex':'none';
+  const exportPages=['customers','enquiries','quotations','sales-orders','packing-lists','invoices','payments','vendors','purchase-orders','documents'];
+  const expBtn=document.getElementById('export-btn');if(expBtn)expBtn.style.display=exportPages.includes(p)?'inline-flex':'none';
+  document.getElementById('auto-btn').style.display=showAuto?'inline-flex':'none';
+  document.getElementById('add-lbl').textContent=addLbls[p]||'Add';
+  document.getElementById('auto-lbl').textContent=autoLbls[p]||'Auto-run';
+  render(p);
+}
+
+function render(p){
+  syncBadges();
+  const c=document.getElementById('content');
+  const fn={dashboard:rDash,automation:rAutomation,notifications:rNotifs,customers:rCustomers,enquiries:rEnquiries,quotations:rQuotations,'sales-orders':rSalesOrders,'packing-lists':rPackingLists,invoices:rInvoices,payments:rPayments,vendors:rVendors,'purchase-orders':rPOs,documents:rDocs,reports:rReports};
+  if(fn[p]) c.innerHTML=fn[p]();
+}
+
+function runAutoFlow(){
+  const flows={
+    enquiries(){
+      const pending=DB.enquiries.filter(e=>e.status==='new');
+      let n=0;
+      pending.forEach(e=>{
+        if(!DB.quotations.find(q=>q.enquiryId===e.id)){
+          const amt=e.qty*e.unitPrice;
+          const gstAmt=Math.round(amt*e.gst/100);
+          const id=nextId('QT',DB.quotations);
+          DB.quotations.push({id,customer:e.customer,customerId:e.customerId,enquiryId:e.id,product:e.product,qty:e.qty,unitPrice:e.unitPrice,amount:amt,gst:e.gst,total:amt+gstAmt,date:today,valid:addDays(today,14),status:'sent',autoCreated:true});
+          DB.documents.push({id:nextId('DOC',DB.documents),name:`${id}_${e.customer.split(' ')[0]}.pdf`,type:'Quotation',ref:id,size:'162 KB',date:today,category:'sales',autoGenerated:true});
+          DB.automationLog.unshift({id:nextId('AL',DB.automationLog),trigger:`Enquiry ${e.id} pending`,action:`Auto-generated ${id} + PDF`,result:'success',time:today+' now'});
+          e.status='quoted';n++;
+        }
+      });
+      if(n>0){toast(`${n} quotation${n>1?'s':''} auto-generated`);render('enquiries');}
+      else toast('All enquiries already quoted');
+    },
+    quotations(){
+      const accepted=DB.quotations.filter(q=>q.status==='accepted'&&!DB.salesOrders.find(s=>s.quotationId===q.id));
+      let n=0;
+      accepted.forEach(q=>{
+        const id=nextId('SO',DB.salesOrders);
+        DB.salesOrders.push({id,customer:q.customer,customerId:q.customerId,quotationId:q.id,product:q.product,qty:q.qty,amount:q.amount,gst:q.gst,total:q.total,date:today,delivery:addDays(today,7),status:'confirmed',autoCreated:true});
+        DB.documents.push({id:nextId('DOC',DB.documents),name:`${id}_${q.customer.split(' ')[0]}.pdf`,type:'Sales Order',ref:id,size:'195 KB',date:today,category:'sales',autoGenerated:true});
+        DB.automationLog.unshift({id:nextId('AL',DB.automationLog),trigger:`Quotation ${q.id} accepted`,action:`Auto-created ${id} + PDF`,result:'success',time:today+' now'});
+        n++;
+      });
+      if(n>0){toast(`${n} sales order${n>1?'s':''} auto-created`);render('quotations');}
+      else toast('No accepted quotations pending conversion');
+    },
+    'sales-orders'(){
+      const ready=DB.salesOrders.filter(s=>['confirmed','processing','ready'].includes(s.status)&&!DB.packingLists.find(p=>p.orderId===s.id));
+      let n=0;
+      ready.forEach(s=>{
+        createPackingListFromOrder(s,true);
+        n++;
+      });
+      if(n>0){toast(`${n} packing list${n>1?'s':''} auto-created`);render('sales-orders');}
+      else toast('No confirmed orders pending packing list');
+    },
+    'packing-lists'(){
+      const ready=DB.packingLists.filter(p=>['dispatched','delivered'].includes(p.status)&&!DB.invoices.find(i=>i.orderId===p.orderId));
+      let n=0;
+      ready.forEach(p=>{
+        if(createInvoiceFromPackingList(p))n++;
+      });
+      if(n>0){toast(`${n} invoice${n>1?'s':''} auto-generated from packing lists`);render('packing-lists');}
+      else toast('No dispatched packing lists without invoices');
+    },
+    invoices(){
+      const pending=DB.invoices.filter(i=>['pending','sent'].includes(i.status));
+      pending.forEach(i=>{i.status='pending';});
+      toast(`${pending.length} invoice${pending.length!==1?'s':''} tracked & reminder sent`);
+      DB.automationLog.unshift({id:nextId('AL',DB.automationLog),trigger:`${pending.length} unpaid invoices`,action:'Auto-sent payment reminders via email',result:'success',time:today+' now'});
+      render('invoices');
+    },
+    payments(){
+      const advances=DB.payments.filter(p=>p.status==='advance');
+      let n=0;
+      advances.forEach(p=>{
+        const inv=DB.invoices.find(i=>i.customerId===p.customerId&&['pending','sent'].includes(i.status));
+        if(inv){inv.status='paid';p.invoiceId=inv.id;p.status='cleared';p.autoApplied=true;n++;
+          DB.automationLog.unshift({id:nextId('AL',DB.automationLog),trigger:`Advance ₹${p.amount.toLocaleString('en-IN')} from ${p.customer}`,action:`Auto-applied to ${inv.id} → marked Paid`,result:'success',time:today+' now'});}
+      });
+      if(n>0){toast(`${n} advance${n>1?'s':''} auto-reconciled`);render('payments');}
+      else toast('No reconcilable advances found');
+    },
+    'purchase-orders'(){
+      const lowStock=['MS Pipe 2 inch','Hex Bolts M12','Wire Mesh 6×6'];
+      let n=0;
+      lowStock.forEach(prod=>{
+        const ven=DB.vendors.find(v=>v.status==='active');
+        if(ven){
+          const id=nextId('PO',DB.purchaseOrders);
+          DB.purchaseOrders.push({id,vendor:ven.name,vendorId:ven.id,product:prod,qty:500,unitPrice:180,amount:90000,gst:18,total:106200,date:today,expected:addDays(today,7),status:'confirmed',autoCreated:true});
+          DB.documents.push({id:nextId('DOC',DB.documents),name:`${id}_Auto.pdf`,type:'Purchase Order',ref:id,size:'185 KB',date:today,category:'procurement',autoGenerated:true});
+          DB.automationLog.unshift({id:nextId('AL',DB.automationLog),trigger:`Low stock: ${prod}`,action:`Auto-raised ${id} to ${ven.name}`,result:'success',time:today+' now'});
+          n++;
+        }
+      });
+      toast(`${n} purchase order${n!==1?'s':''} auto-raised for low stock`);
+      render('purchase-orders');
+    }
+  };
+  if(flows[curPage]) flows[curPage]();
+  else toast('Auto-run not available for this module');
+}
+
+function rDash(){
+  const totalRev=DB.invoices.filter(i=>i.status==='paid').reduce((a,b)=>a+b.total,0);
+  const outstanding=DB.invoices.filter(i=>['pending','sent'].includes(i.status)).reduce((a,b)=>a+b.total,0);
+  const overdue=DB.invoices.filter(i=>i.status==='overdue');
+  const autoCount=DB.automationLog.filter(a=>a.result==='success').length;
+  return `<div class="metrics">
+    <div class="mc"><div class="mc-lbl">Revenue collected</div><div class="mc-val">${fmt(totalRev)}</div><div class="mc-sub">This month</div></div>
+    <div class="mc"><div class="mc-lbl">Outstanding</div><div class="mc-val" style="color:#993C1D">${fmt(outstanding)}</div><div class="mc-sub">${overdue.length} overdue</div></div>
+    <div class="mc"><div class="mc-lbl">Auto-actions run</div><div class="mc-val" style="color:#3C3489">${autoCount}</div><div class="mc-sub">Zero manual steps</div></div>
+    <div class="mc"><div class="mc-lbl">Active customers</div><div class="mc-val">${DB.customers.filter(c=>c.status==='active').length}</div><div class="mc-sub">${DB.customers.length} total</div></div>
+  </div>
+  <div style="background:#EEEDFE;border:0.5px solid #AFA9EC;border-radius:var(--border-radius-md);padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:12px">
+    <i class="ti ti-bolt" style="font-size:18px;color:#3C3489;flex-shrink:0" aria-hidden="true"></i>
+    <div style="flex:1">
+      <div style="font-size:12px;font-weight:500;color:#3C3489">Automation engine active</div>
+      <div style="font-size:11px;color:#534AB7">Enquiry → Quotation → Sales Order → Packing List → Invoice → Payment — all auto-linked. Click any module's <strong>Auto-run</strong> button to process pending actions instantly.</div>
+    </div>
+    <button class="btn btn-p" style="flex-shrink:0" onclick="nav('automation')">View engine</button>
+  </div>
+  <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:13px;margin-bottom:13px">
+    <div class="card">
+      <div class="sec">Automation log — recent actions</div>
+      ${DB.automationLog.slice(0,6).map(a=>`<div style="display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:0.5px solid var(--color-border-tertiary)">
+        <div style="width:7px;height:7px;border-radius:50%;background:${a.result==='success'?'#1D9E75':'#E24B4A'};flex-shrink:0;margin-top:4px"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:11px;font-weight:500;color:var(--color-text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.action}</div>
+          <div style="font-size:10px;color:var(--color-text-tertiary)">${a.trigger} · ${a.time}</div>
+        </div>
+      </div>`).join('')}
+    </div>
+    <div class="card">
+      <div class="sec">Pipeline health</div>
+      ${[['Enquiries',DB.enquiries.length,DB.enquiries.filter(e=>e.status==='new').length,'new pending'],['Quotations',DB.quotations.length,DB.quotations.filter(q=>q.status==='sent').length,'awaiting acceptance'],['Sales Orders',DB.salesOrders.length,DB.salesOrders.filter(o=>['confirmed','processing'].includes(o.status)).length,'in progress'],['Packing Lists',DB.packingLists.length,DB.packingLists.filter(p=>['ready','dispatched'].includes(p.status)).length,'dispatch queue'],['Invoices',DB.invoices.length,DB.invoices.filter(i=>i.status==='overdue').length,'overdue'],['Purchase Orders',DB.purchaseOrders.length,DB.purchaseOrders.filter(p=>p.status==='transit').length,'in transit']].map(([l,t,a,sub])=>`
+      <div style="margin-bottom:9px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+          <span style="color:var(--color-text-secondary)">${l}</span>
+          <span style="color:var(--color-text-primary);font-weight:500">${a} <span style="color:var(--color-text-tertiary);font-weight:400">${sub}</span></span>
+        </div>
+        <div class="prog-bar"><div class="prog-fill" style="width:${Math.round(a/Math.max(t,1)*100)}%"></div></div>
+      </div>`).join('')}
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:13px">
+    <div class="card"><div class="sec">Top customers</div>${DB.customers.sort((a,b)=>b.value-a.value).slice(0,4).map(c=>`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:11px"><span style="color:var(--color-text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:55%">${c.name}</span><span style="color:#3C3489;font-weight:500">${fmt(c.value)}</span></div>`).join('')}</div>
+    <div class="card"><div class="sec">Overdue invoices</div>${DB.invoices.filter(i=>i.status==='overdue').concat(DB.invoices.filter(i=>i.status==='pending')).slice(0,4).map(i=>`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:11px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:55%">${i.customer}</span><div style="display:flex;align-items:center;gap:5px">${pill(i.status)}</div></div>`).join('')}</div>
+    <div class="card"><div class="sec">Quick actions</div>
+      ${[['Auto-quote all new enquiries','enquiries'],['Convert accepted quotes → SO','quotations'],['Create packing lists for ready SO','sales-orders'],['Generate invoices from packing lists','packing-lists'],['Reconcile advance payments','payments'],['Auto-raise low stock POs','purchase-orders']].map(([l,p])=>`<div style="padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary)"><button class="btn btn-sm" style="width:100%;justify-content:flex-start;font-size:10px" onclick="nav('${p}');setTimeout(runAutoFlow,100)"><i class="ti ti-bolt" style="font-size:11px;color:#3C3489" aria-hidden="true"></i>${l}</button></div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function rAutomation(){
+  const rules=[
+    {name:'Enquiry → Quotation',trigger:'New enquiry created',action:'Auto-generate quotation with GST, PDF & send to customer',status:'active',runs:DB.automationLog.filter(a=>a.action.includes('Quotation')).length},
+    {name:'Quote accepted → Sales Order',trigger:'Quotation status = Accepted',action:'Auto-create confirmed Sales Order + PDF document',status:'active',runs:DB.automationLog.filter(a=>a.action.includes('Sales Order')).length},
+    {name:'Sales Order → Packing List',trigger:'Sales Order status = Confirmed/Ready to Dispatch',action:'Auto-create Packing List record + PDF document',status:'active',runs:DB.automationLog.filter(a=>a.action.includes('Packing List')).length},
+    {name:'Packing List → Invoice',trigger:'Packing List status = Dispatched/Delivered',action:'Auto-generate GST invoice, PDF + email to customer',status:'active',runs:DB.automationLog.filter(a=>a.action.includes('Invoice')).length},
+    {name:'Payment received → Reconcile',trigger:'Payment recorded for customer',action:'Auto-match to open invoice, mark paid, update ledger',status:'active',runs:DB.automationLog.filter(a=>a.action.includes('Paid')||a.action.includes('applied')).length},
+    {name:'Low stock → Purchase Order',trigger:'Stock falls below reorder level',action:'Auto-raise PO to preferred vendor, generate PDF',status:'active',runs:DB.automationLog.filter(a=>a.action.includes('PO')||a.action.includes('stock')).length},
+    {name:'Overdue invoice → Alert',trigger:'Invoice past due date',action:'Send escalation email to customer + admin alert',status:'active',runs:DB.automationLog.filter(a=>a.result==='alert').length},
+    {name:'New document → Auto-file',trigger:'Invoice, PO, SO, Quote, Packing List created',action:'Auto-generate PDF, tag by type, store in Documents',status:'active',runs:DB.documents.filter(d=>d.autoGenerated).length},
+    {name:'Quote expiry reminder',trigger:'Quote valid date -2 days',action:'Auto-send reminder to customer & sales team',status:'active',runs:1},
+  ];
+  return `<div style="background:#EAF3DE;border:0.5px solid #97C459;border-radius:var(--border-radius-md);padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:12px">
+    <i class="ti ti-check" style="font-size:16px;color:#3B6D11;flex-shrink:0" aria-hidden="true"></i>
+    <div style="flex:1;font-size:11px;color:#3B6D11;font-weight:500">${rules.length} automation rules active — ${DB.automationLog.filter(a=>a.result==='success').length} actions completed, 0 errors</div>
+    <button class="btn btn-sm" onclick="sendPrompt('Show me a detailed automation report with all workflow stats and recommendations for Vishak Tech Automation Suite')">Full report ↗</button>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px">
+    ${rules.map(r=>`<div class="card" style="padding:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:12px;font-weight:500;color:var(--color-text-primary)">${r.name}</div>
+        <span class="pill p-done"><span class="dot"></span>Active</span>
+      </div>
+      <div style="font-size:11px;color:var(--color-text-tertiary);margin-bottom:5px"><i class="ti ti-arrow-right" style="font-size:10px" aria-hidden="true"></i> Trigger: ${r.trigger}</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:7px">${r.action}</div>
+      <div style="font-size:10px;color:var(--color-text-tertiary)"><i class="ti ti-bolt" style="font-size:10px;color:#3C3489" aria-hidden="true"></i> ${r.runs} runs</div>
+    </div>`).join('')}
+  </div>
+  <div class="card">
+    <div class="sec">Automation log</div>
+    <table>
+      <colgroup><col style="width:70px"><col style="width:200px"><col style="width:200px"><col style="width:70px"><col style="width:100px"></colgroup>
+      <thead><tr><th>ID</th><th>Trigger</th><th>Action taken</th><th>Result</th><th>Time</th></tr></thead>
+      <tbody>${DB.automationLog.map(a=>`<tr><td style="color:#3C3489;font-weight:500">${a.id}</td><td>${a.trigger}</td><td>${a.action}</td><td>${pill(a.result)}</td><td style="font-size:10px;color:var(--color-text-tertiary)">${a.time}</td></tr>`).join('')}</tbody>
+    </table>
+  </div>`;
+}
+
+function rNotifs(){
+  const unread=DB.notifications.filter(n=>!n.read).length;
+  return `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+    <span style="font-size:12px;color:var(--color-text-secondary)">${unread} unread notification${unread!==1?'s':''}</span>
+    <button class="btn btn-sm" onclick="DB.notifications.forEach(n=>n.read=true);render('notifications');document.getElementById('nb-notif').textContent='0'">Mark all read</button>
+  </div>
+  ${DB.notifications.map((n,i)=>`<div class="notif" style="${!n.read?'background:var(--color-background-secondary)':''}">
+    <div class="notif-dot" style="background:${n.type==='auto'?'#7F77DD':'#E24B4A'}"></div>
+    <div style="flex:1;min-width:0">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+        <span style="font-size:12px;font-weight:500;color:var(--color-text-primary)">${n.title}</span>
+        ${!n.read?`<span class="pill p-new" style="font-size:9px">New</span>`:''}
+        ${n.type==='auto'?`<span class="pill p-auto" style="font-size:9px"><i class="ti ti-bolt" style="font-size:9px"></i>Auto</span>`:''}
+      </div>
+      <div style="font-size:11px;color:var(--color-text-secondary)">${n.msg}</div>
+      <div style="font-size:10px;color:var(--color-text-tertiary);margin-top:3px">${n.time}</div>
+    </div>
+    <button class="btn btn-sm" onclick="DB.notifications[${i}].read=true;render('notifications')">Dismiss</button>
+  </div>`).join('')}`;
+}
+
+function rCustomers(){
+  return tableWrap(`<table>
+    <colgroup><col style="width:70px"><col style="width:150px"><col style="width:100px"><col style="width:90px"><col style="width:95px"><col style="width:55px"><col style="width:80px"><col style="width:65px"><col style="width:100px"></colgroup>
+    <thead><tr><th>ID</th><th>Company</th><th>Contact</th><th>City</th><th>Type</th><th>Orders</th><th>Value</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>${DB.customers.map(c=>`<tr>
+      <td style="color:#3C3489;font-weight:500">${c.id}</td>
+      <td><div style="display:flex;align-items:center;gap:6px"><div class="avatar">${ini(c.name)}</div><span>${c.name}</span></div></td>
+      <td>${c.contact}</td><td>${c.city}</td><td>${c.type}</td><td>${c.orders}</td><td>${fmt(c.value)}</td><td>${pill(c.status)}</td>
+      <td>${actionButtons('customers',c.id)}</td>
+    </tr>`).join('')}</tbody>
+  </table>`);
+}
+
+function rEnquiries(){
+  return `<div style="background:#EEEDFE;border:0.5px solid #AFA9EC;border-radius:var(--border-radius-md);padding:8px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px;font-size:11px;color:#3C3489">
+    <i class="ti ti-bolt" style="font-size:13px" aria-hidden="true"></i>
+    <span>Auto-quote: When an enquiry is saved, a quotation is <strong>automatically generated with GST & PDF</strong> and sent to the customer.</span>
+    <button class="btn btn-p btn-sm" style="margin-left:auto" onclick="runAutoFlow()">Auto-quote now</button>
+  </div>
+  ${tableWrap(`<table>
+    <colgroup><col style="width:75px"><col style="width:120px"><col style="width:130px"><col style="width:45px"><col style="width:60px"><col style="width:55px"><col style="width:75px"><col style="width:60px"><col style="width:118px"></colgroup>
+    <thead><tr><th>ID</th><th>Customer</th><th>Product</th><th>Qty</th><th>Date</th><th>Source</th><th>Status</th><th>Auto</th><th>Actions</th></tr></thead>
+    <tbody>${DB.enquiries.map(e=>`<tr>
+      <td style="color:#3C3489;font-weight:500">${e.id}</td><td>${e.customer}</td><td>${e.product}</td><td>${e.qty}</td><td>${e.date}</td><td>${e.source}</td><td>${pill(e.status)}</td><td>${autoBadge(e.autoFlow)}</td>
+      <td>${actionButtons('enquiries',e.id,`<button class="btn btn-sm" onclick="autoConvertEnq('${e.id}')">Quote</button>`)}</td>
+    </tr>`).join('')}</tbody>
+  </table>`)}`;
+}
+
+window.autoConvertEnq=function(id){
+  const e=DB.enquiries.find(x=>x.id===id);
+  if(!e||['converted','quoted'].includes(e.status)){toast('Already processed');return;}
+  const amt=e.qty*e.unitPrice;const gstAmt=Math.round(amt*e.gst/100);
+  const qid=nextId('QT',DB.quotations);
+  DB.quotations.push({id:qid,customer:e.customer,customerId:e.customerId,enquiryId:id,product:e.product,qty:e.qty,unitPrice:e.unitPrice,amount:amt,gst:e.gst,total:amt+gstAmt,date:today,valid:addDays(today,14),status:'sent',autoCreated:true});
+  DB.documents.push({id:nextId('DOC',DB.documents),name:`${qid}_${e.customer.split(' ')[0]}.pdf`,type:'Quotation',ref:qid,size:'162 KB',date:today,category:'sales',autoGenerated:true});
+  DB.automationLog.unshift({id:nextId('AL',DB.automationLog),trigger:`Enquiry ${id} manually triggered`,action:`Auto-generated ${qid} + PDF`,result:'success',time:today+' now'});
+  e.status='quoted';e.autoFlow=true;
+  toast(`${qid} auto-created from ${id}`);render('enquiries');
+};
+
+function rQuotations(){
+  return `<div style="background:#EEEDFE;border:0.5px solid #AFA9EC;border-radius:var(--border-radius-md);padding:8px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px;font-size:11px;color:#3C3489">
+    <i class="ti ti-bolt" style="font-size:13px" aria-hidden="true"></i>
+    <span>Auto-convert: Accepted quotations are <strong>instantly converted to Sales Orders</strong> with delivery dates and confirmation PDFs.</span>
+    <button class="btn btn-p btn-sm" style="margin-left:auto" onclick="runAutoFlow()">Auto-convert now</button>
+  </div>
+  ${tableWrap(`<table>
+    <colgroup><col style="width:70px"><col style="width:115px"><col style="width:120px"><col style="width:45px"><col style="width:70px"><col style="width:42px"><col style="width:75px"><col style="width:75px"><col style="width:55px"><col style="width:118px"></colgroup>
+    <thead><tr><th>ID</th><th>Customer</th><th>Product</th><th>Qty</th><th>Amount</th><th>GST</th><th>Valid Till</th><th>Status</th><th>Auto</th><th>Actions</th></tr></thead>
+    <tbody>${DB.quotations.map(q=>`<tr>
+      <td style="color:#3C3489;font-weight:500">${q.id}</td><td>${q.customer}</td><td>${q.product}</td><td>${q.qty}</td><td>${fmt(q.amount)}</td><td>${q.gst}%</td><td>${q.valid}</td><td>${pill(q.status)}</td><td>${autoBadge(q.autoCreated)}</td>
+      <td>${actionButtons('quotations',q.id,`<button class="btn btn-sm" onclick="autoAcceptQt('${q.id}')">SO</button>`)}</td>
+    </tr>`).join('')}</tbody>
+  </table>`)}`;
+}
+
+window.autoAcceptQt=function(id){
+  const q=DB.quotations.find(x=>x.id===id);
+  if(!q){return;}
+  if(DB.salesOrders.find(s=>s.quotationId===id)){toast('Sales order already exists for this quote');return;}
+  q.status='accepted';
+  const sid=nextId('SO',DB.salesOrders);
+  DB.salesOrders.push({id:sid,customer:q.customer,customerId:q.customerId,quotationId:id,product:q.product,qty:q.qty,amount:q.amount,gst:q.gst,total:q.total,date:today,delivery:addDays(today,7),status:'confirmed',autoCreated:true});
+  DB.documents.push({id:nextId('DOC',DB.documents),name:`${sid}_${q.customer.split(' ')[0]}.pdf`,type:'Sales Order',ref:sid,size:'195 KB',date:today,category:'sales',autoGenerated:true});
+  DB.automationLog.unshift({id:nextId('AL',DB.automationLog),trigger:`Quote ${id} accepted`,action:`Auto-created ${sid} + PDF`,result:'success',time:today+' now'});
+  toast(`${sid} auto-created from ${id}`);render('quotations');
+};
+
+function rSalesOrders(){
+  return `<div style="background:#EEEDFE;border:0.5px solid #AFA9EC;border-radius:var(--border-radius-md);padding:8px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px;font-size:11px;color:#3C3489">
+    <i class="ti ti-bolt" style="font-size:13px" aria-hidden="true"></i>
+    <span>Auto-packing list: Confirmed or ready-to-dispatch orders <strong>automatically create Packing Lists</strong> with dispatch details and PDFs.</span>
+    <button class="btn btn-p btn-sm" style="margin-left:auto" onclick="runAutoFlow()">Auto-create PKLs</button>
+  </div>
+  ${tableWrap(`<table>
+    <colgroup><col style="width:65px"><col style="width:112px"><col style="width:112px"><col style="width:42px"><col style="width:70px"><col style="width:75px"><col style="width:75px"><col style="width:78px"><col style="width:50px"><col style="width:58px"><col style="width:96px"></colgroup>
+    <thead><tr><th>ID</th><th>Customer</th><th>Product</th><th>Qty</th><th>Amount</th><th>Order Date</th><th>Delivery</th><th>Status</th><th>Auto</th><th>PKL</th><th>Actions</th></tr></thead>
+    <tbody>${DB.salesOrders.map(o=>`<tr>
+      <td style="color:#3C3489;font-weight:500">${o.id}</td><td>${o.customer}</td><td>${o.product}</td><td>${o.qty}</td><td>${fmt(o.amount)}</td><td>${o.date}</td><td>${o.delivery}</td><td>${pill(o.status)}</td><td>${autoBadge(o.autoCreated)}</td>
+      <td>${DB.packingLists.find(p=>p.orderId===o.id)?`<button class="btn btn-sm" onclick="nav('packing-lists')">${DB.packingLists.find(p=>p.orderId===o.id).id.replace('PKL-2026-','')}</button>`:`<button class="btn btn-sm" onclick="autoCreatePkl('${o.id}')">PKL</button>`}</td>
+      <td>${actionButtons('sales-orders',o.id)}</td>
+    </tr>`).join('')}</tbody>
+  </table>`)}`;
+}
+
+window.autoCreatePkl=function(id){
+  const order=DB.salesOrders.find(o=>o.id===id);
+  if(!order){toast('Sales order not found');return;}
+  const existing=DB.packingLists.find(p=>p.orderId===id);
+  if(existing){toast(`${existing.id} already exists`);nav('packing-lists');return;}
+  const pkl=createPackingListFromOrder(order,true);
+  toast(`${pkl.id} auto-created from ${id}`);
+  render('sales-orders');
+};
+
+function rPackingLists(){
+  const totals=DB.packingLists.reduce((acc,p)=>{const t=packingTotals(p);acc.packages+=t.packages;acc.weight+=t.weight;return acc;},{packages:0,weight:0});
+  return `<div class="metrics" style="grid-template-columns:repeat(3,1fr)">
+    <div class="mc"><div class="mc-lbl">Packing lists</div><div class="mc-val">${DB.packingLists.length}</div><div class="mc-sub">Auto-linked to sales orders</div></div>
+    <div class="mc"><div class="mc-lbl">Total packages</div><div class="mc-val">${totals.packages}</div><div class="mc-sub">Bundles and packages</div></div>
+    <div class="mc"><div class="mc-lbl">Total weight</div><div class="mc-val">${kg(totals.weight)}</div><div class="mc-sub">Dispatch load</div></div>
+  </div>
+  <div style="background:#EEEDFE;border:0.5px solid #AFA9EC;border-radius:var(--border-radius-md);padding:8px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px;font-size:11px;color:#3C3489">
+    <i class="ti ti-bolt" style="font-size:13px" aria-hidden="true"></i>
+    <span>Auto-invoice: Dispatched or delivered Packing Lists <strong>automatically generate GST invoices</strong> with PDFs.</span>
+    <button class="btn btn-p btn-sm" style="margin-left:auto" onclick="runAutoFlow()">Auto-invoice now</button>
+  </div>
+  ${tableWrap(`<table>
+    <colgroup><col style="width:110px"><col style="width:108px"><col style="width:70px"><col style="width:112px"><col style="width:58px"><col style="width:74px"><col style="width:78px"><col style="width:78px"><col style="width:68px"><col style="width:108px"></colgroup>
+    <thead><tr><th>PKL No</th><th>Customer</th><th>Sales Order</th><th>Items</th><th>Packages</th><th>Weight</th><th>Vehicle</th><th>Dispatch</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>${DB.packingLists.map(p=>{const t=packingTotals(p);return `<tr>
+      <td style="color:#3C3489;font-weight:500">${p.id}</td><td>${p.customer}</td><td>${p.orderId}</td><td>${p.items.map(i=>i.product).join(', ')}</td><td>${t.packages}</td><td>${kg(t.weight)}</td><td>${p.vehicleNo}</td><td>${p.dispatchDate}</td><td>${pill(p.status)}</td>
+      <td>${actionButtons('packing-lists',p.id,`<button class="btn btn-sm btn-icon btn-print" onclick="printPackingList('${p.id}')" aria-label="Download ${p.id} PDF" title="Download PDF"><i class="ti ti-download" aria-hidden="true"></i></button>`)}</td>
+    </tr>`;}).join('')}</tbody>
+  </table>`)}`;
+}
+
+function rInvoices(){
+  const totals={total:DB.invoices.reduce((a,b)=>a+b.total,0),paid:DB.invoices.filter(i=>i.status==='paid').reduce((a,b)=>a+b.total,0),overdue:DB.invoices.filter(i=>i.status==='overdue').reduce((a,b)=>a+b.total,0)};
+  return `<div class="metrics" style="grid-template-columns:repeat(3,1fr)">
+    <div class="mc"><div class="mc-lbl">Total invoiced</div><div class="mc-val">${fmt(totals.total)}</div></div>
+    <div class="mc"><div class="mc-lbl">Collected</div><div class="mc-val" style="color:#0F6E56">${fmt(totals.paid)}</div></div>
+    <div class="mc"><div class="mc-lbl">Overdue</div><div class="mc-val" style="color:#993C1D">${fmt(totals.overdue)}</div></div>
+  </div>
+  <div style="background:#EEEDFE;border:0.5px solid #AFA9EC;border-radius:var(--border-radius-md);padding:8px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px;font-size:11px;color:#3C3489">
+    <i class="ti ti-bolt" style="font-size:13px" aria-hidden="true"></i>
+    <span>Auto-reminders: Overdue invoices trigger <strong>automatic payment reminders</strong> to customers and escalation alerts to admin.</span>
+    <button class="btn btn-p btn-sm" style="margin-left:auto" onclick="runAutoFlow()">Send reminders</button>
+  </div>
+  ${tableWrap(`<table>
+    <colgroup><col style="width:75px"><col style="width:120px"><col style="width:60px"><col style="width:70px"><col style="width:55px"><col style="width:75px"><col style="width:80px"><col style="width:70px"><col style="width:55px"><col style="width:96px"></colgroup>
+    <thead><tr><th>Invoice</th><th>Customer</th><th>Order</th><th>Amount</th><th>GST</th><th>Total</th><th>Due Date</th><th>Status</th><th>Auto</th><th>Actions</th></tr></thead>
+    <tbody>${DB.invoices.map(i=>`<tr>
+      <td style="color:#3C3489;font-weight:500">${i.id}</td><td>${i.customer}</td><td>${i.orderId}</td><td>${fmt(i.amount)}</td><td>${fmt(i.gst)}</td><td style="font-weight:500">${fmt(i.total)}</td><td style="color:${i.status==='overdue'?'var(--color-danger)':''}; font-weight:${i.status==='overdue'?'600':'400'}">${i.due}</td><td>${pill(i.status)}</td><td>${autoBadge(i.autoCreated)}</td>
+      <td>${actionButtons('invoices',i.id)}</td>
+    </tr>`).join('')}</tbody>
+  </table>`)}`;
+}
+
+function rPayments(){
+  const total=DB.payments.reduce((a,b)=>a+b.amount,0);
+  return `<div class="metrics" style="grid-template-columns:repeat(3,1fr)">
+    <div class="mc"><div class="mc-lbl">Total received</div><div class="mc-val">${fmt(total)}</div></div>
+    <div class="mc"><div class="mc-lbl">Advances pending</div><div class="mc-val">${fmt(DB.payments.filter(p=>p.status==='advance').reduce((a,b)=>a+b.amount,0))}</div></div>
+    <div class="mc"><div class="mc-lbl">Transactions</div><div class="mc-val">${DB.payments.length}</div></div>
+  </div>
+  <div style="background:#EEEDFE;border:0.5px solid #AFA9EC;border-radius:var(--border-radius-md);padding:8px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px;font-size:11px;color:#3C3489">
+    <i class="ti ti-bolt" style="font-size:13px" aria-hidden="true"></i>
+    <span>Auto-reconcile: Advance payments are <strong>automatically matched to open invoices</strong> and marked paid. No manual entry needed.</span>
+    <button class="btn btn-p btn-sm" style="margin-left:auto" onclick="runAutoFlow()">Reconcile now</button>
+  </div>
+  ${tableWrap(`<table>
+    <colgroup><col style="width:70px"><col style="width:130px"><col style="width:70px"><col style="width:75px"><col style="width:85px"><col style="width:60px"><col style="width:95px"><col style="width:70px"><col style="width:50px"><col style="width:96px"></colgroup>
+    <thead><tr><th>Pay ID</th><th>Customer</th><th>Invoice</th><th>Amount</th><th>Date</th><th>Mode</th><th>Ref</th><th>Status</th><th>Auto</th><th>Actions</th></tr></thead>
+    <tbody>${DB.payments.map(p=>`<tr>
+      <td style="color:#3C3489;font-weight:500">${p.id}</td><td>${p.customer}</td><td>${p.invoiceId}</td><td style="font-weight:500">${fmt(p.amount)}</td><td>${p.date}</td><td>${p.mode}</td><td style="font-family:var(--font-mono);font-size:10px">${p.ref}</td><td>${pill(p.status)}</td><td>${autoBadge(p.autoApplied)}</td>
+      <td>${actionButtons('payments',p.id)}</td>
+    </tr>`).join('')}</tbody>
+  </table>`)}`;
+}
+
+function rVendors(){
+  return tableWrap(`<table>
+    <colgroup><col style="width:70px"><col style="width:140px"><col style="width:95px"><col style="width:85px"><col style="width:100px"><col style="width:70px"><col style="width:55px"><col style="width:60px"><col style="width:100px"></colgroup>
+    <thead><tr><th>ID</th><th>Vendor</th><th>Contact</th><th>City</th><th>Category</th><th>Rating</th><th>POs</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>${DB.vendors.map(v=>`<tr>
+      <td style="color:#3C3489;font-weight:500">${v.id}</td>
+      <td><div style="display:flex;align-items:center;gap:6px"><div class="avatar" style="background:#E1F5EE;color:#085041">${ini(v.name)}</div><span>${v.name}</span></div></td>
+      <td>${v.contact}</td><td>${v.city}</td><td>${v.category}</td>
+      <td><div style="display:flex;gap:1px">${stars(v.rating)}</div></td>
+      <td>${v.pos}</td><td>${pill(v.status)}</td>
+      <td>${actionButtons('vendors',v.id)}</td>
+    </tr>`).join('')}</tbody>
+  </table>`);
+}
+
+function rPOs(){
+  const total=DB.purchaseOrders.reduce((a,b)=>a+b.amount,0);
+  return `<div class="metrics" style="grid-template-columns:repeat(4,1fr)">
+    <div class="mc"><div class="mc-lbl">Total PO value</div><div class="mc-val">${fmt(total)}</div></div>
+    <div class="mc"><div class="mc-lbl">Received</div><div class="mc-val">${DB.purchaseOrders.filter(p=>p.status==='received').length}</div></div>
+    <div class="mc"><div class="mc-lbl">In transit</div><div class="mc-val">${DB.purchaseOrders.filter(p=>p.status==='transit').length}</div></div>
+    <div class="mc"><div class="mc-lbl">Pending</div><div class="mc-val">${DB.purchaseOrders.filter(p=>['confirmed','draft'].includes(p.status)).length}</div></div>
+  </div>
+  <div style="background:#EEEDFE;border:0.5px solid #AFA9EC;border-radius:var(--border-radius-md);padding:8px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px;font-size:11px;color:#3C3489">
+    <i class="ti ti-bolt" style="font-size:13px" aria-hidden="true"></i>
+    <span>Auto-reorder: When stock falls below threshold, POs are <strong>automatically raised to the highest-rated vendor</strong> for that category.</span>
+    <button class="btn btn-p btn-sm" style="margin-left:auto" onclick="runAutoFlow()">Auto-reorder now</button>
+  </div>
+  ${tableWrap(`<table>
+    <colgroup><col style="width:70px"><col style="width:130px"><col style="width:130px"><col style="width:50px"><col style="width:80px"><col style="width:85px"><col style="width:85px"><col style="width:75px"><col style="width:50px"><col style="width:96px"></colgroup>
+    <thead><tr><th>PO ID</th><th>Vendor</th><th>Product</th><th>Qty</th><th>Amount</th><th>Order Date</th><th>Expected</th><th>Status</th><th>Auto</th><th>Actions</th></tr></thead>
+    <tbody>${DB.purchaseOrders.map(p=>`<tr>
+      <td style="color:#3C3489;font-weight:500">${p.id}</td><td>${p.vendor}</td><td>${p.product}</td><td>${p.qty}</td><td>${fmt(p.amount)}</td><td>${p.date}</td><td>${p.expected}</td><td>${pill(p.status)}</td><td>${autoBadge(p.autoCreated)}</td>
+      <td>${actionButtons('purchase-orders',p.id)}</td>
+    </tr>`).join('')}</tbody>
+  </table>`)}`;
+}
+
+function rDocs(){
+  const cats=['All','procurement','logistics','invoices','sales','certificates'];
+  let cur='All';
+  function drawDocs(filter){
+    const list=filter==='All'?DB.documents:DB.documents.filter(d=>d.category===filter);
+    const icons={Invoice:'ti-receipt','Purchase Order':'ti-clipboard-list','Sales Order':'ti-shopping-cart','Packing List':'ti-package',Quotation:'ti-file-text',Certificate:'ti-certificate'};
+    return list.map(d=>`<div class="workflow-step" onclick="toast('Opening ${esc(d.name)}...')">
+      <div style="width:32px;height:32px;border-radius:8px;background:#EEEDFE;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <i class="ti ${icons[d.type]||'ti-file'}" style="font-size:15px;color:#3C3489" aria-hidden="true"></i>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12px;font-weight:500;color:var(--color-text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.name}</div>
+        <div style="font-size:10px;color:var(--color-text-tertiary)">${d.type} · ${d.size} · ${d.date} · Ref: ${d.ref}</div>
+      </div>
+      ${autoBadge(d.autoGenerated)}
+      ${actionButtons('documents',d.id)}
+    </div>`).join('');
+  }
+  setTimeout(()=>{const list=document.getElementById('doc-list');if(list)list.innerHTML=drawDocs('All');},0);
+  return `<div style="display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
+    ${cats.map(c=>`<button class="btn btn-sm" id="dc-${c}" onclick="filterDocs('${c}')">${c==='All'?'All docs':c.charAt(0).toUpperCase()+c.slice(1)}</button>`).join('')}
+    <span style="font-size:11px;color:var(--color-text-tertiary);margin-left:4px">${DB.documents.filter(d=>d.autoGenerated).length} auto-generated · ${DB.documents.filter(d=>!d.autoGenerated).length} manual uploads</span>
+    <button class="btn btn-p btn-sm" style="margin-left:auto" onclick="toast('Upload dialog opened')"><i class="ti ti-upload" style="font-size:11px"></i> Upload</button>
+  </div>
+  <div id="doc-list"></div>`;
+}
+
+window.filterDocs=function(cat){
+  const cats=['All','procurement','logistics','invoices','sales','certificates'];
+  const icons={Invoice:'ti-receipt','Purchase Order':'ti-clipboard-list','Sales Order':'ti-shopping-cart','Packing List':'ti-package',Quotation:'ti-file-text',Certificate:'ti-certificate'};
+  cats.forEach(c=>{const b=document.getElementById('dc-'+c);if(b){b.style.background='';b.style.fontWeight='';}});
+  const btn=document.getElementById('dc-'+cat);
+  if(btn){btn.style.background='var(--color-background-secondary)';btn.style.fontWeight='500';}
+  const list=cat==='All'?DB.documents:DB.documents.filter(d=>d.category===cat);
+  document.getElementById('doc-list').innerHTML=list.map(d=>`<div class="workflow-step" onclick="toast('Opening ${esc(d.name)}...')">
+    <div style="width:32px;height:32px;border-radius:8px;background:#EEEDFE;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <i class="ti ${icons[d.type]||'ti-file'}" style="font-size:15px;color:#3C3489"></i>
+    </div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:12px;font-weight:500;color:var(--color-text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.name}</div>
+      <div style="font-size:10px;color:var(--color-text-tertiary)">${d.type} · ${d.size} · ${d.date} · Ref: ${d.ref}</div>
+    </div>
+    <span class="pill ${d.autoGenerated?'p-auto':'p-pend'}" style="font-size:9px">${d.autoGenerated?'Auto':'Manual'}</span>
+    ${actionButtons('documents',d.id)}
+  </div>`).join('');
+};
+
+function rReports(){
+  const months=['Jan','Feb','Mar','Apr','May','Jun'];
+  const rev=[38,52,44,71,65,89];const pur=[22,31,27,45,38,52];
+  const mxV=Math.max(...rev,...pur);
+  return `<div class="metrics">
+    <div class="mc"><div class="mc-lbl">Revenue (YTD)</div><div class="mc-val">₹4.23L</div><div class="mc-sub" style="color:#1D9E75">↑ 18% vs last yr</div></div>
+    <div class="mc"><div class="mc-lbl">Purchases (YTD)</div><div class="mc-val">₹2.15L</div><div class="mc-sub">-5% vs last yr</div></div>
+    <div class="mc"><div class="mc-lbl">Gross margin</div><div class="mc-val">49%</div><div class="mc-sub" style="color:#1D9E75">Target: 45%</div></div>
+    <div class="mc"><div class="mc-lbl">Auto-actions</div><div class="mc-val" style="color:#3C3489">${DB.automationLog.filter(a=>a.result==='success').length}</div><div class="mc-sub">This month</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:13px;margin-bottom:13px">
+    <div class="card">
+      <div class="sec">Revenue vs purchases (₹ lakhs)</div>
+      <div style="display:flex;align-items:flex-end;gap:7px;height:110px;margin-bottom:6px">
+        ${months.map((m,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px">
+          <div style="display:flex;gap:2px;align-items:flex-end;height:100px">
+            <div style="width:13px;background:#7F77DD;border-radius:3px 3px 0 0;height:${Math.round(rev[i]/mxV*100)}px"></div>
+            <div style="width:13px;background:#1D9E75;border-radius:3px 3px 0 0;height:${Math.round(pur[i]/mxV*100)}px"></div>
+          </div>
+          <div style="font-size:9px;color:var(--color-text-tertiary)">${m}</div>
+        </div>`).join('')}
+      </div>
+      <div style="display:flex;gap:14px"><span style="font-size:10px;color:var(--color-text-secondary);display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;background:#7F77DD;border-radius:2px;display:inline-block"></span>Revenue</span><span style="font-size:10px;color:var(--color-text-secondary);display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;background:#1D9E75;border-radius:2px;display:inline-block"></span>Purchases</span></div>
+    </div>
+    <div class="card">
+      <div class="sec">Invoice status</div>
+      ${[['Paid',DB.invoices.filter(i=>i.status==='paid').length,'#1D9E75'],['Pending',DB.invoices.filter(i=>i.status==='pending').length,'#BA7517'],['Overdue',DB.invoices.filter(i=>i.status==='overdue').length,'#E24B4A'],['Draft/Sent',DB.invoices.filter(i=>['draft','sent'].includes(i.status)).length,'#7F77DD']].map(([l,n,c])=>`
+      <div style="display:flex;align-items:center;gap:9px;margin-bottom:9px">
+        <div style="width:9px;height:9px;border-radius:50%;background:${c};flex-shrink:0"></div>
+        <div style="flex:1;font-size:11px;color:var(--color-text-primary)">${l}</div>
+        <div style="font-size:11px;font-weight:500">${n}</div>
+        <div class="prog-bar" style="width:70px"><div class="prog-fill" style="width:${Math.round(n/DB.invoices.length*100)}%;background:${c}"></div></div>
+      </div>`).join('')}
+    </div>
+  </div>
+  <div class="card">
+    <div class="sec" style="margin-bottom:10px">AI-powered report generation</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap">
+      ${['Sales Analysis','Purchase Report','Customer Ageing','Payment Register','Vendor Performance','Automation Audit','GST Summary','Profitability Report'].map(r=>`<button class="btn btn-sm" onclick="sendPrompt('Generate detailed ${r} for Vishak Tech June 2026 with charts, insights and recommendations')"><i class="ti ti-chart-bar" style="font-size:11px" aria-hidden="true"></i> ${r} ↗</button>`).join('')}
+    </div>
+  </div>`;
+}
+
+function handleAdd(){
+  const c=document.getElementById('content');
+  c.innerHTML=genericForm(curPage);
+}
+
+function genericForm(p){
+  const configs={
+    customers:{title:'New customer',fields:`<div class="g2"><div class="fg"><label class="fl">Company name</label><input class="fi" placeholder="e.g. Aravind Industries"></div><div class="fg"><label class="fl">Contact person</label><input class="fi" placeholder="Full name"></div></div><div class="g2"><div class="fg"><label class="fl">Phone</label><input class="fi" placeholder="9876543210"></div><div class="fg"><label class="fl">Email</label><input class="fi" type="email" placeholder="email@company.com"></div></div><div class="g2"><div class="fg"><label class="fl">City</label><input class="fi" placeholder="City"></div><div class="fg"><label class="fl">Type</label><select class="fi"><option>Manufacturer</option><option>Trader</option><option>Contractor</option><option>Service Provider</option></select></div></div>`},
+    enquiries:{title:'New enquiry',autoNote:'On save, a quotation will be <strong>auto-generated with GST & PDF</strong> and sent to the customer.',fields:`<div class="g2"><div class="fg"><label class="fl">Customer</label><select class="fi">${DB.customers.map(c=>`<option>${c.name}</option>`).join('')}</select></div><div class="fg"><label class="fl">Product / Item</label><input class="fi" placeholder="e.g. Steel Rods 10mm" id="enq-prod"></div></div><div class="g3"><div class="fg"><label class="fl">Quantity</label><input class="fi" type="number" placeholder="0" id="enq-qty"></div><div class="fg"><label class="fl">Unit Price (₹)</label><input class="fi" type="number" placeholder="0" id="enq-price"></div><div class="fg"><label class="fl">GST %</label><select class="fi" id="enq-gst"><option>18</option><option>12</option><option>5</option><option>0</option><option>28</option></select></div></div><div class="g2"><div class="fg"><label class="fl">Source</label><select class="fi"><option>Phone</option><option>Email</option><option>Walk-in</option><option>Referral</option><option>Website</option></select></div><div class="fg"><label class="fl">Notes</label><input class="fi" placeholder="Any special requirements"></div></div>`},
+    quotations:{title:'New quotation',fields:`<div class="g2"><div class="fg"><label class="fl">Customer</label><select class="fi">${DB.customers.map(c=>`<option>${c.name}</option>`).join('')}</select></div><div class="fg"><label class="fl">Product</label><input class="fi" placeholder="Product description"></div></div><div class="g3"><div class="fg"><label class="fl">Quantity</label><input class="fi" type="number" placeholder="0"></div><div class="fg"><label class="fl">Unit price (₹)</label><input class="fi" type="number" placeholder="0"></div><div class="fg"><label class="fl">GST %</label><select class="fi"><option>18</option><option>12</option><option>5</option><option>0</option></select></div></div><div class="g2"><div class="fg"><label class="fl">Valid till</label><input class="fi" type="date"></div><div class="fg"><label class="fl">Payment terms</label><input class="fi" placeholder="e.g. 30 days net"></div></div>`},
+    'sales-orders':{title:'New sales order',fields:`<div class="g2"><div class="fg"><label class="fl">Customer</label><select class="fi">${DB.customers.map(c=>`<option>${c.name}</option>`).join('')}</select></div><div class="fg"><label class="fl">Quotation ref</label><select class="fi"><option>— manual —</option>${DB.quotations.map(q=>`<option>${q.id} – ${q.customer}</option>`).join('')}</select></div></div><div class="g3"><div class="fg"><label class="fl">Product</label><input class="fi" placeholder="Product"></div><div class="fg"><label class="fl">Quantity</label><input class="fi" type="number" placeholder="0"></div><div class="fg"><label class="fl">Amount (₹)</label><input class="fi" type="number" placeholder="0"></div></div><div class="g2"><div class="fg"><label class="fl">Delivery date</label><input class="fi" type="date"></div><div class="fg"><label class="fl">GST %</label><select class="fi"><option>18</option><option>12</option><option>5</option></select></div></div>`},
+    'packing-lists':{title:'New packing list',autoNote:'Packing Lists are <strong>auto-created from confirmed Sales Orders</strong> with package count, weight, dispatch details and PDF.',fields:`<div class="g2"><div class="fg"><label class="fl">Sales order</label><select class="fi">${DB.salesOrders.map(o=>`<option>${o.id} – ${o.customer}</option>`).join('')}</select></div><div class="fg"><label class="fl">Vehicle no</label><input class="fi" placeholder="TN-01-AB-1234"></div></div><div class="g3"><div class="fg"><label class="fl">Driver</label><input class="fi" placeholder="Driver name"></div><div class="fg"><label class="fl">Dispatch date</label><input class="fi" type="date"></div><div class="fg"><label class="fl">Total packages</label><input class="fi" type="number" placeholder="0"></div></div><div class="g2"><div class="fg"><label class="fl">Unit weight</label><input class="fi" placeholder="e.g. 5.2 kg"></div><div class="fg"><label class="fl">Signatory</label><input class="fi" placeholder="Stores / dispatch in-charge"></div></div>`},
+    invoices:{title:'New invoice',autoNote:'Invoices are <strong>auto-generated from dispatched Packing Lists</strong>. Manual creation only when needed.',fields:`<div class="g2"><div class="fg"><label class="fl">Packing list</label><select class="fi">${DB.packingLists.map(p=>`<option>${p.id} – ${p.customer}</option>`).join('')}</select></div><div class="fg"><label class="fl">Amount (₹)</label><input class="fi" type="number" placeholder="0"></div></div><div class="g2"><div class="fg"><label class="fl">GST %</label><select class="fi"><option>18</option><option>12</option><option>5</option><option>0</option></select></div><div class="fg"><label class="fl">Due date</label><input class="fi" type="date"></div></div>`},
+    payments:{title:'Record payment',fields:`<div class="g2"><div class="fg"><label class="fl">Invoice</label><select class="fi">${DB.invoices.filter(i=>i.status!=='paid').map(i=>`<option>${i.id} – ${i.customer} – ${fmt(i.total)}</option>`).join('')}</select></div><div class="fg"><label class="fl">Amount received (₹)</label><input class="fi" type="number" placeholder="0"></div></div><div class="g3"><div class="fg"><label class="fl">Mode</label><select class="fi"><option>NEFT</option><option>RTGS</option><option>UPI</option><option>Cheque</option><option>Cash</option></select></div><div class="fg"><label class="fl">Reference</label><input class="fi" placeholder="TXN / Cheque no."></div><div class="fg"><label class="fl">Date</label><input class="fi" type="date"></div></div>`},
+    vendors:{title:'Add vendor',fields:`<div class="g2"><div class="fg"><label class="fl">Vendor / Company</label><input class="fi" placeholder="Company name"></div><div class="fg"><label class="fl">Contact person</label><input class="fi" placeholder="Full name"></div></div><div class="g2"><div class="fg"><label class="fl">Phone</label><input class="fi" placeholder="9876543210"></div><div class="fg"><label class="fl">City</label><input class="fi" placeholder="City"></div></div><div class="g2"><div class="fg"><label class="fl">Category</label><select class="fi"><option>Raw Material</option><option>Fasteners</option><option>Pipes</option><option>Wire Products</option><option>Construction</option><option>General</option></select></div><div class="fg"><label class="fl">Rating</label><select class="fi"><option>5 Stars</option><option>4 Stars</option><option>3 Stars</option><option>2 Stars</option></select></div></div>`},
+    'purchase-orders':{title:'New purchase order',autoNote:'POs are <strong>auto-raised when stock is low</strong>. Manual entry for planned procurement.',fields:`<div class="g2"><div class="fg"><label class="fl">Vendor</label><select class="fi">${DB.vendors.filter(v=>v.status==='active').map(v=>`<option>${v.name}</option>`).join('')}</select></div><div class="fg"><label class="fl">Product</label><input class="fi" placeholder="Product description"></div></div><div class="g3"><div class="fg"><label class="fl">Quantity</label><input class="fi" type="number" placeholder="0"></div><div class="fg"><label class="fl">Unit price (₹)</label><input class="fi" type="number" placeholder="0"></div><div class="fg"><label class="fl">GST %</label><select class="fi"><option>18</option><option>12</option><option>5</option></select></div></div><div class="g2"><div class="fg"><label class="fl">Expected delivery</label><input class="fi" type="date"></div><div class="fg"><label class="fl">Delivery address</label><input class="fi" placeholder="Delivery location"></div></div>`},
+    documents:{title:'Upload document',fields:`<div class="g2"><div class="fg"><label class="fl">Document type</label><select class="fi"><option>Invoice</option><option>Packing List</option><option>Purchase Order</option><option>Sales Order</option><option>Quotation</option><option>Certificate</option><option>Contract</option><option>Other</option></select></div><div class="fg"><label class="fl">Reference</label><input class="fi" placeholder="e.g. PO-001"></div></div><div class="fg" style="margin-bottom:11px"><label class="fl">File</label><input class="fi" type="file" accept=".pdf,.docx,.xlsx,.jpg,.png"></div>`},
+  };
+  const cfg=configs[p]||{title:'New record',fields:''};
+  const saveFn=p==='enquiries'?`saveEnquiryAuto()`:`genericSave('${p}')`;
+  return `<div style="max-width:540px">
+    <div style="font-size:13px;font-weight:500;color:var(--color-text-secondary);margin-bottom:12px">${cfg.title}</div>
+    ${cfg.autoNote?`<div style="background:#EEEDFE;border:0.5px solid #AFA9EC;border-radius:var(--border-radius-md);padding:8px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px;font-size:11px;color:#3C3489"><i class="ti ti-bolt" style="font-size:13px;flex-shrink:0"></i><span>${cfg.autoNote}</span></div>`:''}
+    ${cfg.fields}
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn btn-p" onclick="${saveFn}"><i class="ti ti-bolt" style="font-size:12px" aria-hidden="true"></i> Save & auto-process</button>
+      <button class="btn" onclick="nav('${p}')">Cancel</button>
+    </div>
+  </div>`;
+}
+
+window.saveEnquiryAuto=function(){
+  const v=formValues();
+  const cust=pickCustomer(v[0]);
+  const eid=nextId('ENQ',DB.enquiries);
+  const product=v[1]||'New Product';
+  const qty=Math.max(1,num(v[2],200));
+  const price=Math.max(1,num(v[3],180));
+  const gst=Math.max(0,num(v[4],18));
+  const source=v[5]||'Manual';
+  const notes=v[6]||'';
+  const amt=qty*price;const gstAmt=Math.round(amt*gst/100);
+  DB.enquiries.push({id:eid,customer:cust.name,customerId:cust.id,product,qty,unitPrice:price,date:today,source,status:'quoted',gst,notes,autoFlow:true});
+  const qid=nextId('QT',DB.quotations);
+  DB.quotations.push({id:qid,customer:cust.name,customerId:cust.id,enquiryId:eid,product,qty,unitPrice:price,amount:amt,gst,total:amt+gstAmt,date:today,valid:addDays(today,14),status:'sent',autoCreated:true});
+  DB.documents.push({id:nextId('DOC',DB.documents),name:`${qid}_Auto.pdf`,type:'Quotation',ref:qid,size:'160 KB',date:today,category:'sales',autoGenerated:true});
+  DB.automationLog.unshift({id:nextId('AL',DB.automationLog),trigger:`New ${eid} saved`,action:`Auto-generated ${qid} + PDF + email`,result:'success',time:today+' now'});
+  toast(`${eid} saved -> ${qid} auto-generated`);nav('enquiries');
+};
+
+window.genericSave=function(p){
+  const v=formValues();
+  const handlers={
+    customers(){
+      const id=nextId('CUS',DB.customers);
+      DB.customers.push({id,name:v[0]||'New Customer',contact:v[1]||'-',phone:v[2]||'-',email:v[3]||'-',city:v[4]||'-',type:v[5]||'Trader',status:'active',orders:0,value:0});
+      return `${id} customer added`;
+    },
+    quotations(){
+      const cust=pickCustomer(v[0]);
+      const qty=Math.max(1,num(v[2],1));
+      const unitPrice=Math.max(1,num(v[3],1));
+      const parts=moneyParts(qty*unitPrice,v[4]||18);
+      const id=nextId('QT',DB.quotations);
+      DB.quotations.push({id,customer:cust.name,customerId:cust.id,enquiryId:'',product:v[1]||'Manual item',qty,unitPrice,amount:parts.amount,gst:num(v[4],18),total:parts.total,date:today,valid:v[5]||addDays(today,14),status:'sent',autoCreated:false});
+      DB.documents.push({id:nextId('DOC',DB.documents),name:`${id}_${cust.name.split(' ')[0]}.pdf`,type:'Quotation',ref:id,size:'162 KB',date:today,category:'sales',autoGenerated:true});
+      DB.automationLog.unshift({id:nextId('AL',DB.automationLog),trigger:`Manual quotation ${id}`,action:`Generated ${id} PDF`,result:'success',time:today+' now'});
+      return `${id} quotation saved with PDF`;
+    },
+    'sales-orders'(){
+      const cust=pickCustomer(v[0]);
+      const quoteId=token(v[1]);
+      const quote=DB.quotations.find(q=>q.id===quoteId);
+      const product=v[2]||quote?.product||'Manual item';
+      const qty=Math.max(1,num(v[3],quote?.qty||1));
+      const amount=Math.max(1,num(v[4],quote?.amount||1));
+      const gst=num(v[6],quote?.gst||18);
+      const parts=moneyParts(amount,gst);
+      const id=nextId('SO',DB.salesOrders);
+      const order={id,customer:cust.name,customerId:cust.id,quotationId:quote?quote.id:'',product,qty,amount:parts.amount,gst,total:parts.total,date:today,delivery:v[5]||addDays(today,7),status:'confirmed',autoCreated:false};
+      DB.salesOrders.push(order);
+      DB.documents.push({id:nextId('DOC',DB.documents),name:`${id}_${cust.name.split(' ')[0]}.pdf`,type:'Sales Order',ref:id,size:'195 KB',date:today,category:'sales',autoGenerated:true});
+      const pkl=createPackingListFromOrder(order,true);
+      return `${id} saved -> ${pkl.id} auto-created`;
+    },
+    'packing-lists'(){
+      const orderId=token(v[0]);
+      const order=DB.salesOrders.find(o=>o.id===orderId);
+      if(!order)return 'Sales order not found';
+      const pkl=createPackingListFromOrder(order,false);
+      pkl.vehicleNo=v[1]||pkl.vehicleNo;
+      pkl.driver=v[2]||pkl.driver;
+      pkl.dispatchDate=v[3]||pkl.dispatchDate;
+      pkl.signature=v[6]||pkl.signature;
+      if(v[4])pkl.items.forEach(item=>item.packages=Math.max(1,num(v[4],item.packages)));
+      if(v[5])pkl.items.forEach(item=>item.unitWeight=Math.max(.01,num(v[5],item.unitWeight)));
+      return `${pkl.id} packing list ready`;
+    },
+    invoices(){
+      const pklId=token(v[0]);
+      const pkl=DB.packingLists.find(x=>x.id===pklId);
+      if(!pkl)return 'Packing list not found';
+      const existing=DB.invoices.find(i=>i.orderId===pkl.orderId);
+      if(existing)return `${existing.id} already exists`;
+      const id=createInvoiceFromPackingList(pkl);
+      const invoice=DB.invoices.find(i=>i.id===id);
+      if(invoice){
+        if(v[1])invoice.amount=num(v[1],invoice.amount);
+        if(v[2]){invoice.gst=Math.round(invoice.amount*num(v[2],18)/100);invoice.total=invoice.amount+invoice.gst;}
+        invoice.due=v[3]||invoice.due;
+      }
+      return `${id} invoice generated`;
+    },
+    payments(){
+      const invoiceId=token(v[0]);
+      const invoice=DB.invoices.find(i=>i.id===invoiceId);
+      if(!invoice)return 'Invoice not found';
+      const amount=Math.max(1,num(v[1],invoice.total));
+      const id=nextId('PAY',DB.payments);
+      const cleared=amount>=invoice.total;
+      DB.payments.push({id,customer:invoice.customer,customerId:invoice.customerId,invoiceId:invoice.id,amount,date:v[4]||today,mode:v[2]||'NEFT',ref:v[3]||'-',status:cleared?'cleared':'partial',autoApplied:true});
+      if(cleared)invoice.status='paid';
+      DB.automationLog.unshift({id:nextId('AL',DB.automationLog),trigger:`Payment ${id} received`,action:`Applied to ${invoice.id}${cleared?' and marked Paid':''}`,result:'success',time:today+' now'});
+      return `${id} payment recorded`;
+    },
+    vendors(){
+      const id=nextId('VEN',DB.vendors);
+      DB.vendors.push({id,name:v[0]||'New Vendor',contact:v[1]||'-',phone:v[2]||'-',city:v[3]||'-',category:v[4]||'General',rating:num(v[5],4),status:'active',pos:0});
+      return `${id} vendor added`;
+    },
+    'purchase-orders'(){
+      const vendor=pickVendor(v[0]);
+      const qty=Math.max(1,num(v[2],1));
+      const unitPrice=Math.max(1,num(v[3],1));
+      const parts=moneyParts(qty*unitPrice,v[4]||18);
+      const id=nextId('PO',DB.purchaseOrders);
+      DB.purchaseOrders.push({id,vendor:vendor.name,vendorId:vendor.id,product:v[1]||'Manual item',qty,unitPrice,amount:parts.amount,gst:num(v[4],18),total:parts.total,date:today,expected:v[5]||addDays(today,7),status:'confirmed',autoCreated:false});
+      DB.documents.push({id:nextId('DOC',DB.documents),name:`${id}_${vendor.name.split(' ')[0]}.pdf`,type:'Purchase Order',ref:id,size:'185 KB',date:today,category:'procurement',autoGenerated:true});
+      return `${id} purchase order generated`;
+    },
+    documents(){
+      const id=nextId('DOC',DB.documents);
+      const type=v[0]||'Other';
+      DB.documents.push({id,name:`${type.replace(/\s+/g,'_')}_${v[1]||id}.pdf`,type,ref:v[1]||'-',size:'100 KB',date:today,category:'uploaded',autoGenerated:false});
+      return `${id} document filed`;
+    }
+  };
+  const msg=handlers[p]?handlers[p]():'Record saved & auto-processed';
+  syncBadges();
+  toast(msg);
+  nav(p);
+};
+
+hydrateDb();
+render('dashboard');
+initFirebaseSync();
+</script>
+</body>
+</html>
